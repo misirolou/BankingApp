@@ -11,15 +11,17 @@ namespace App1
     {
         public App()
         {
+            var button1 = new Button();
             // The root page of your application
             MainPage = new ContentPage
             {
-                Content = new StackLayout
+               Content = new StackLayout
                 {
                     VerticalOptions = LayoutOptions.Center,
                     Children = {
+                        button1,
                         new Label {
-                            XAlign = TextAlignment.Center,
+                            HorizontalOptions = LayoutOptions.Center,
                             Text = "Welcome to Xamarin Forms!"
                         }
                     }
