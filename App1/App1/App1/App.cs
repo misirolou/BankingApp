@@ -22,7 +22,7 @@ namespace App1
                         button1,
                         new Label {
                             HorizontalOptions = LayoutOptions.Center,
-                            Text = "Welcome to Xamarin Forms!"
+                            Text = "Welcome to Xamarin Forms!" + "Daniel Faria"
                         }
                     }
                 }
