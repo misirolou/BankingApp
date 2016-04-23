@@ -2,32 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using App1.Layout;
 using Xamarin.Forms;
 
 namespace App1
 {
     public class App : Application
     {
+        //the main Application and its functionalities
         public App()
         {
-            var button1 = new Button();
-            // The root page of your application
-            MainPage = new ContentPage
+            if (UserLoggedIn)
             {
-               Content = new StackLayout
-                {
-                    VerticalOptions = LayoutOptions.Center,
-                    Children = {
-                        button1,
-                        new Label {
-                            HorizontalOptions = LayoutOptions.Center,
-                            Text = "Welcome to Xamarin Forms!" + "Daniel Faria"
-                        }
-                    }
-                }
-            };
-        }
+                MainPage = new NavigationPage(PrincipalPage);
+            }
+            else
+            {
+                MainPage = new NavigationPage(new LoginPage());
+            }
+       }
+
+        public Page PrincipalPage { get; set; }
+
+        public static bool UserLoggedIn { get; set; }
 
         protected override void OnStart()
         {
