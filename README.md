@@ -1,7 +1,7 @@
 # BankingApp
 BankingApp created with Xamarin.Forms and OpenBank Project
 
-ABOUT OpenBank Project and Xamarin.Forms
+# ABOUT OpenBank Project and Xamarin.Forms
 
 The Open Bank Project is an open source API for banks that enables account holders to interact with their bank using a wider range of applications and services.
 
