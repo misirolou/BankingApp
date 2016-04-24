@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using App1.Layout;
@@ -13,7 +15,7 @@ namespace App1
     public class LoginPage : ContentPage
     {
         Entry userEntry, passwordEntry;
-        Label messageLabel;
+        Label messageLabel, privacy;
 
         //layout of the page
         public LoginPage()
@@ -34,12 +36,24 @@ namespace App1
                 Text = "Login"
             };
             loginButton.Clicked += OnLoginButtonClicked;
+            //switch button choosing if you want your information public or private
+            Switch switcher = new Switch()
+            {
+                HorizontalOptions = LayoutOptions.End
+            };
+            switcher.IsToggled = IsEnabled;
+            //label for private mode
+            privacy = new Label()
+            {
+                Text = "Private Mode",
+                HorizontalOptions = LayoutOptions.Center
+            };
             //contacts button should take you to the contacts page
             var ContactButton = new Button()
             {
                 Text = "Contacts",
                 VerticalOptions = LayoutOptions.End,
-                HorizontalOptions = LayoutOptions.Start
+                HorizontalOptions = LayoutOptions.Start   
             };
             ContactButton.Clicked += OnContactButtonClicked;
             //Balcao button should take you to the banks location page
@@ -62,24 +76,57 @@ namespace App1
 
             Title = "Login";
             //Specific layout of each of the labels and buttons used
-            Content = new StackLayout
+            StackLayout stackLayout = new StackLayout
             {
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                Children = {
-                    new Label { Text = "Username" },
-                    userEntry,
-                    new Label { Text = "Password" },
-                    passwordEntry,
-                    loginButton,
-                    messageLabel,
-                    ContactButton,
-                    BalcaoButton,
-                    AtmButton
+                BackgroundColor = Color.Teal,
+                Spacing = 10,
+                //VerticalOptions = LayoutOptions.StartAndExpand,
+                Children =
+                {
+                    new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        VerticalOptions = LayoutOptions.CenterAndExpand,
+                        Children =
+                        {
+                            privacy,
+                            switcher
+                        }
+                    },
+                    new StackLayout
+                    {
+                        BackgroundColor = Color.Gray,
+                        VerticalOptions = LayoutOptions.CenterAndExpand,
+                        Spacing = 10,
+                        Children =
+                        {
+                            new Label {Text = "Username"},
+                            userEntry,
+                            new Label {Text = "Password"},
+                            passwordEntry,
+                            loginButton,
+                            messageLabel,
+                        }
+                    },
+                   new StackLayout()
+                   {
+                       VerticalOptions = LayoutOptions.EndAndExpand,
+                       Orientation = StackOrientation.Horizontal,
+                       Spacing = 5,
+                       Children =
+                       {
+                           ContactButton,
+                           BalcaoButton,
+                           AtmButton
+                       }
+                   }
                 }
                 
             };
+            this.Content = stackLayout;
         }
 
+        
         //what happens when we click the login button
         async void OnLoginButtonClicked(object sender, EventArgs e)
         {

@@ -20,7 +20,7 @@ namespace App1
             {
                 MainPage = new NavigationPage(new LoginPage());
             }
-       }
+        }
 
         public Page PrincipalPage { get; set; }
 
