@@ -9,17 +9,20 @@ namespace App1
 {
     public class App : Application
     {
+        
         //the main Application and its functionalities
         public App()
         {
-            if (UserLoggedIn)
+            
+            MainPage = new NavigationPage(new LoginPage());
+           /* if (UserLoggedIn)
             {
                 MainPage = new NavigationPage(PrincipalPage);
             }
             else
             {
                 MainPage = new NavigationPage(new LoginPage());
-            }
+            }*/
         }
 
         public Page PrincipalPage { get; set; }

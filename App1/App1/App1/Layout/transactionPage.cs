@@ -7,9 +7,9 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    internal class transactions : ContentPage
+    internal class transactionPage : ContentPage
     {
-        public transactions()
+        public transactionPage()
         {
             Title = "TransactionsPage";
             Content = new StackLayout
