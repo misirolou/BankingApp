@@ -38,9 +38,11 @@
     <Compile Include="App.cs" />
     <Compile Include="Layout\AtmPage.cs" />
     <Compile Include="Layout\BalcaoPage.cs" />
+    <Compile Include="Layout\cards.cs" />
     <Compile Include="Layout\ContactPage.cs" />
     <Compile Include="Layout\LoginPage.cs" />
     <Compile Include="Layout\PrincipalPage.cs" />
+    <Compile Include="Layout\transactions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="REST\Users.cs" />
   </ItemGroup>
@@ -70,7 +72,6 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.2.1.0.6529\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.1.0.6529\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
