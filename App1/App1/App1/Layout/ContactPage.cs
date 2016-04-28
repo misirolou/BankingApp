@@ -11,18 +11,36 @@ namespace App1.Layout
     {
         public ContactPage()
         {
-
+            //The contact page will contain the banks URLs to websites
             Title = "ContactPage";
-            Content = new StackLayout
+            Icon = new FileImageSource {File = "robot.png"};
+            StackLayout stackLayout = new StackLayout
             {
+
+                BackgroundColor = Color.Teal,
+                Spacing = 10,
                 Children = {
                     new Label {
-                        Text = "ContactPage should have a the contacts to the bank probably invented",
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
+                        BackgroundColor = Color.Gray,
+                        Text = "Bank 1 : RBS URL",
+                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                        VerticalOptions = LayoutOptions.Start
+                    },
+                    new Label {
+                        BackgroundColor = Color.Gray,
+                        Text = "Bank 2 : OBP",
+                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                        VerticalOptions = LayoutOptions.Start
+                    },
+                    new Label {
+                        BackgroundColor = Color.Gray,
+                        Text = "Bank 3 : OBP2",
+                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                        VerticalOptions = LayoutOptions.Start
                     }
                 }
             };
+            this.Content = stackLayout;
         }
     }
 }

@@ -67,9 +67,9 @@ namespace App1.Layout
             };
             //specifying location for each platform
             menu.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("Images/robot.png"),
-                Android: ImageSource.FromFile("robot.png"),
-                WinPhone: ImageSource.FromFile("Images/robot.png"));
+                iOS: ImageSource.FromFile("menu.png"),
+                Android: ImageSource.FromFile("menu.png"),
+                WinPhone: ImageSource.FromFile("menu.png"));
 
             var exit = new Image()
             {
@@ -78,12 +78,13 @@ namespace App1.Layout
             };
             //specifying location for each platform
             exit.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("Images/robot.png"),
+                iOS: ImageSource.FromFile("robot.png"),
                 Android: ImageSource.FromFile("robot.png"),
-                WinPhone: ImageSource.FromFile("Images/robot.png"));
+                WinPhone: ImageSource.FromFile("robot.png"));
             
             //Layout of the Home page(PrincipalPage.cs)
             Title = "Home";
+            Icon = new FileImageSource() {File = "robot.png"};
             //this is the type of layout the grids will be specified in 
             var stackLayout = new StackLayout
             {

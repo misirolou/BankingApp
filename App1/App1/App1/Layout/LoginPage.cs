@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -14,8 +15,8 @@ namespace App1
 {
     public class LoginPage : ContentPage
     {
-        Entry userEntry, passwordEntry;
-        Label messageLabel, privacy;
+        Entry userEntry, passwordEntry, BankEntry;
+        Label messageLabel, privacy, publiclab;
 
         //layout of the page
         public LoginPage()
@@ -30,10 +31,14 @@ namespace App1
             {
                 IsPassword = true
             };
-            //login button
-            var loginButton = new Button
+            BankEntry = new Entry()
             {
-                Text = "Login"
+                Placeholder = "Your Bank"
+            };
+            //login button
+            Button loginButton = new Button
+            {
+                Text = "Login",
             };
             loginButton.Clicked += OnLoginButtonClicked;
             //switch button choosing if you want your information public or private
@@ -41,10 +46,16 @@ namespace App1
             {
                 HorizontalOptions = LayoutOptions.End
             };
+            switcher.Toggled += switchertoggled;
             //label for private mode
             privacy = new Label()
             {
                 Text = "Private Mode",
+                HorizontalOptions = LayoutOptions.Start
+            };
+            publiclab = new Label()
+            {
+                Text = "Public",
                 HorizontalOptions = LayoutOptions.Start
             };
             //contacts button should take you to the contacts page
@@ -74,27 +85,28 @@ namespace App1
             //login image
             var ImageRobot = new Image()
             {
+                Aspect = Aspect.AspectFit,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Center,
             };
             //specifying location for each platform
             ImageRobot.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("Images/robot.png"),
+                iOS: ImageSource.FromFile("robot.png"),
                 Android: ImageSource.FromFile("robot.png"),
-                WinPhone: ImageSource.FromFile("Images/robot.png"));
+                WinPhone: ImageSource.FromFile("robot.png"));
 
             //Layout of the login page
             Title = "Login";
+            Icon = new FileImageSource() {File = "robot.png"};
             //this is the type of layout the grids will be specified in 
             var stackLayout = new StackLayout
             {
                 //Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.Teal,
-                Spacing = 10,
                 Padding = 1
             };
 
-            //specification of the switcher grid layout
+            //specification of the image grid layout
             var imagegrid = new Grid
             {
                 VerticalOptions = LayoutOptions.Start,
@@ -117,6 +129,9 @@ namespace App1
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)}
                 }
             };
 
@@ -140,20 +155,28 @@ namespace App1
             //imagegrid contains the inicial image of the login page
             imagegrid.Children.Add(ImageRobot,0,0);
 
-            //innergrid contaning login for user to provide login info
+            //innergrid contaning login for user to provide ´the necessary login information
+            innerGrid.Children.Add(privacy,0,0);
+            innerGrid.Children.Add(switcher,0,0);
+            innerGrid.Children.Add(new Label()
+            {
+                BackgroundColor = Color.Gray,
+                Text = "Bank"
+            }, 0, 1);
+            innerGrid.Children.Add(BankEntry,0,2);
             innerGrid.Children.Add(new Label()
             {
                 BackgroundColor = Color.Gray,
                 Text = "username"
-            },0,0);
-            innerGrid.Children.Add(userEntry,0,1);
+            },0,3);
+            innerGrid.Children.Add(userEntry,0,4);
             innerGrid.Children.Add(new Label()
             {
                 BackgroundColor = Color.Gray,
                 Text = "Password"
-            },0,2);
-            innerGrid.Children.Add(passwordEntry,0,3);
-            innerGrid.Children.Add(loginButton,0,4);
+            },0,5);
+            innerGrid.Children.Add(passwordEntry,0,6);
+            innerGrid.Children.Add(loginButton,0,7);
 
             //button grid containg buttons that alocate you to another page
             buttongrid.Children.Add(ContactButton,0,0);
@@ -161,6 +184,7 @@ namespace App1
             buttongrid.Children.Add(AtmButton,2,0);
 
             // stackLayout.Children.Add(outerGrid);
+            stackLayout.Spacing.Equals(10);
             stackLayout.Children.Add(imagegrid);
             stackLayout.Children.Add(innerGrid);
             stackLayout.Children.Add(buttongrid);
@@ -172,6 +196,7 @@ namespace App1
         {
             var user = new Users
             {
+                Bank = BankEntry.Text,
                 User = userEntry.Text,
                 Password = passwordEntry.Text
             };
@@ -186,6 +211,7 @@ namespace App1
             }
             else
             {
+                messageLabel.Text = "bank not valid";
                 messageLabel.Text = "Login failed";
                 passwordEntry.Text = string.Empty;
             }
@@ -201,6 +227,12 @@ namespace App1
         {
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
+        }
+
+        //changes the mode according to the switch to public or private verification
+        void switchertoggled(object sender, ToggledEventArgs e)
+        {
+            privacy.Text = String.Format("{0} mode", publiclab);
         }
 
         //what happens when we click the Balcao button

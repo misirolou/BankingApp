@@ -12,6 +12,7 @@ namespace App1.Layout
         public AtmPage()
         {
             Title = "AtmPage";
+            Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout
             {
                 Children = {

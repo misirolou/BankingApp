@@ -12,5 +12,7 @@ namespace App1.REST
         public string User { get; set; }
 
         public string Password { get; set; }
+
+        public string Bank { get; set; }
     }
 }

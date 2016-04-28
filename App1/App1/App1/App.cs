@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using App1.Layout;
+using Xamarin.Auth;
 using Xamarin.Forms;
 
 namespace App1
 {
     public class App : Application
     {
-        
         //the main Application and its functionalities
         public App()
         {
             
             MainPage = new NavigationPage(new LoginPage());
-           /* if (UserLoggedIn)
+            /* if (UserLoggedIn)
             {
                 MainPage = new NavigationPage(PrincipalPage);
             }

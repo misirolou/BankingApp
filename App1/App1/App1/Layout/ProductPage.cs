@@ -7,23 +7,23 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    class BalcaoPage : ContentPage
+    class ProductPage : ContentPage
     {
-        public BalcaoPage()
+        public ProductPage()
         {
-
-            Title = "BalcaoPage";
+            Title = "Products";
             Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout
             {
                 Children = {
                     new Label {
-                        Text = "BalcaoPage should have a map of Banks",
+                        Text = "Product page should contain products of the bank",
                         HorizontalOptions = LayoutOptions.Center,
                         VerticalOptions = LayoutOptions.Center
                     }
                 }
             };
         }
+
     }
 }
