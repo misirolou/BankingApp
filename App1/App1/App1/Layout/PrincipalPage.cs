@@ -60,7 +60,7 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
             //image
-            var menu = new Image()
+           /* var menu = new Image()
             {
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
@@ -70,18 +70,37 @@ namespace App1.Layout
                 iOS: ImageSource.FromFile("menu.png"),
                 Android: ImageSource.FromFile("menu.png"),
                 WinPhone: ImageSource.FromFile("menu.png"));
-
-            var exit = new Image()
+            */
+            ImageCell menu = new ImageCell()
             {
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start,
+                 ImageSource  = Device.OnPlatform(
+                    iOS: ImageSource.FromFile("menu.png"),
+                    Android: ImageSource.FromFile("menu.png"),
+                    WinPhone: ImageSource.FromFile("menu.png"))
             };
-            //specifying location for each platform
-            exit.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("robot.png"),
-                Android: ImageSource.FromFile("robot.png"),
-                WinPhone: ImageSource.FromFile("robot.png"));
-            
+            menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+
+            //Exit image to exit the application
+            /* var exit = new Image()
+             {
+                 VerticalOptions = LayoutOptions.Start,
+                 HorizontalOptions = LayoutOptions.Start,
+             };
+             //specifying location for each platform
+             exit.Source = Device.OnPlatform(
+                 iOS: ImageSource.FromFile("robot.png"),
+                 Android: ImageSource.FromFile("robot.png"),
+                 WinPhone: ImageSource.FromFile("robot.png"));*/
+            //For now the app will exit if you tap the exit image
+            ImageCell exit = new ImageCell()
+            {
+                ImageSource = Device.OnPlatform(
+                iOS: ImageSource.FromFile("menu.png"),
+                Android: ImageSource.FromFile("menu.png"),
+                WinPhone: ImageSource.FromFile("menu.png")),
+            };
+            exit.Tapped += async (sender, args) => await Navigation.PushAsync(new LoginPage());
+
             //Layout of the Home page(PrincipalPage.cs)
             Title = "Home";
             Icon = new FileImageSource() {File = "robot.png"};
@@ -93,16 +112,30 @@ namespace App1.Layout
                 Spacing = 10,
                 Padding = 1
             };
-            //specification of the switcher grid layout
-                        var menubar = new Grid
-                        {
-                            VerticalOptions = LayoutOptions.Start,
-                            HorizontalOptions = LayoutOptions.StartAndExpand,
-                            RowDefinitions =
-                            {
-                                new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
-                            },
-                            ColumnDefinitions =
+
+            //adding a table view for the images of the menu and exit images
+            var tableview = new TableView()
+            {
+                Intent = TableIntent.Form,
+                Root = new TableRoot()
+                {
+                    new TableSection()
+                    {
+                        menu, exit
+                    }
+                }
+            };
+            tableview.Root = new TableRoot {new TableSection() { new ViewCell()  {View = stackLayout}}};
+
+            var menubar = new Grid
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                RowDefinitions =
+                {
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
+                },
+                ColumnDefinitions =
                             {
                                 new ColumnDefinition { Width = GridLength.Auto},
                                 new ColumnDefinition { Width = GridLength.Auto},
@@ -143,12 +176,7 @@ namespace App1.Layout
                             }
                         };
 
-                        //imagegrid contains the inicial image of the login page
-                        menubar.Children.Add(menu, 0, 0);
-                        menubar.Children.Add(lastaccess, 1, 0);
-                        menubar.Children.Add(exit, 2, 0);
-
-                        //innergrid contaning login for user to provide login info
+                        //infogrid contining users info
                         infoGrid.Children.Add(accountid,0,0);
                         infoGrid.Children.Add(owner, 0, 1);
                         infoGrid.Children.Add(iban, 0, 2);
@@ -160,7 +188,7 @@ namespace App1.Layout
                         button2grid.Children.Add(transactionButton, 0, 0);
                         button2grid.Children.Add(cardsbutton, 1, 0);
                         
-                        // stackLayout.Children.Add(outerGrid);
+                        stackLayout.Children.Add(tableview);
                         stackLayout.Children.Add(menubar);
                         stackLayout.Children.Add(infoGrid);
                         stackLayout.Children.Add(button2grid);
