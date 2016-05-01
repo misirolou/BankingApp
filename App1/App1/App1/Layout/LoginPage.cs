@@ -53,11 +53,6 @@ namespace App1
                 Text = "Private Mode",
                 HorizontalOptions = LayoutOptions.Start
             };
-            publiclab = new Label()
-            {
-                Text = "Public",
-                HorizontalOptions = LayoutOptions.Start
-            };
             //contacts button should take you to the contacts page
             var ContactButton = new Button()
             {
@@ -85,7 +80,7 @@ namespace App1
             //login image
             var ImageRobot = new Image()
             {
-                Aspect = Aspect.AspectFit,
+                Aspect = Aspect.AspectFill,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Center,
             };
@@ -138,7 +133,7 @@ namespace App1
             //specfication of the button grids layout
             var buttongrid = new Grid
             {
-                VerticalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 RowDefinitions =
                 {
@@ -184,9 +179,11 @@ namespace App1
             buttongrid.Children.Add(AtmButton,2,0);
 
             // stackLayout.Children.Add(outerGrid);
-            stackLayout.Spacing.Equals(10);
+            stackLayout.VerticalOptions = LayoutOptions.StartAndExpand;
             stackLayout.Children.Add(imagegrid);
+            stackLayout.VerticalOptions = LayoutOptions.CenterAndExpand;
             stackLayout.Children.Add(innerGrid);
+            stackLayout.VerticalOptions = LayoutOptions.EndAndExpand;
             stackLayout.Children.Add(buttongrid);
             this.Content = stackLayout;
         }
@@ -222,17 +219,17 @@ namespace App1
             return true;
         }
 
+        //changes the mode according to the switch to public or private verification
+        void switchertoggled(object sender, ToggledEventArgs e)
+        {
+            privacy.Text = String.Format("{0} mode", e.Value);
+        }
+
         //what happens when we click the contact button
         async void OnContactButtonClicked(object sender, EventArgs e)
         {
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
-        }
-
-        //changes the mode according to the switch to public or private verification
-        void switchertoggled(object sender, ToggledEventArgs e)
-        {
-            privacy.Text = String.Format("{0} mode", publiclab);
         }
 
         //what happens when we click the Balcao button

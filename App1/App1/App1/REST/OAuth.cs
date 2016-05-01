@@ -117,7 +117,7 @@ namespace App1.REST
             authorizationstring += "oauth_signature=" + oauth_signature;
 
             //pedido ao servidor pelo request token
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(RequestTokenUri);
+       /*     HttpWebRequest request = (HttpWebRequest) WebRequest.Create(RequestTokenUri);
             request.Method = method;
             request.Headers.Add("Authorization", "OAuth " + authorizationstring);
             HttpWebResponse response = (HttpWebResponse) request.GetResponse();
@@ -126,7 +126,7 @@ namespace App1.REST
             string responseFromServer = reader.ReadToEnd();
             reader.Close();
             dataStream.Close();
-            response.Close();
+            response.Close();*/
         }
 
 
@@ -219,7 +219,7 @@ namespace App1.REST
             }
             authorizationstring += "oauth_signature=" + oauth_signature;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenUri);
+         /*   HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenUri);
             request.Method = method;
             request.Headers.Add("Authorization", "OAuth " + authorizationstring);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -231,7 +231,7 @@ namespace App1.REST
             response.Close();
 
             Console.WriteLine(responseFromServer);
-            Console.ReadLine(); //Pause
+            Console.ReadLine(); //Pause*/
         }
     }
 
