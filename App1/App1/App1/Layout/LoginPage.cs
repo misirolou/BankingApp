@@ -29,7 +29,8 @@ namespace App1
             };
             passwordEntry = new Entry
             {
-                IsPassword = true
+                IsPassword = true,
+                Placeholder = "Password"
             };
             BankEntry = new Entry()
             {
@@ -81,8 +82,8 @@ namespace App1
             var ImageRobot = new Image()
             {
                 Aspect = Aspect.AspectFill,
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
             //specifying location for each platform
             ImageRobot.Source = Device.OnPlatform(
@@ -93,98 +94,123 @@ namespace App1
             //Layout of the login page
             Title = "Login";
             Icon = new FileImageSource() {File = "robot.png"};
+            
             //this is the type of layout the grids will be specified in 
             var stackLayout = new StackLayout
             {
-                //Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.Teal,
                 Padding = 1
             };
 
-            //specification of the image grid layout
-            var imagegrid = new Grid
+            //All the grids are contained in this outergrid
+            var outergrid = new Grid()
             {
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
                 RowDefinitions =
                 {
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
                 }
             };
-
-            //specification of the innergrid layout
-            var innerGrid = new Grid
+            //specification of the image grid layout
+            var imagegrid = new Grid
             {
-                VerticalOptions = LayoutOptions.Center,
+                //VerticalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Center,
+                RowDefinitions =
+                {
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
+                }
+            };
+
+            var Switchergrid = new Grid
+            {
+                //VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 RowDefinitions =
                 {
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)}
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)}
+                }
+            };
+            //specification of the innergrid layout
+            var innerGrid = new Grid
+            {
+                //VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                RowDefinitions =
+                {
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                   /* new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)}*/
                 }
             };
 
             //specfication of the button grids layout
             var buttongrid = new Grid
             {
-                VerticalOptions = LayoutOptions.EndAndExpand,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                //VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
                 RowDefinitions =
                 {
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
                 },
                 ColumnDefinitions =
                 {
-                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto)},
-                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto)},
-                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
                 }
             };
+        
+            outergrid.Children.Add(imagegrid,0,0);
+            outergrid.Children.Add(Switchergrid,0,1);
+            outergrid.Children.Add(innerGrid,0,2);
+            outergrid.Children.Add(buttongrid,0,3);
 
             //imagegrid contains the inicial image of the login page
             imagegrid.Children.Add(ImageRobot,0,0);
 
+            //Switcher grid containing the switcher used to choose between public and private accounts
+            Switchergrid.Children.Add(privacy,0,0);
+            Switchergrid.Children.Add(switcher, 1, 0);
+
             //innergrid contaning login for user to provide ´the necessary login information
-            innerGrid.Children.Add(privacy,0,0);
-            innerGrid.Children.Add(switcher,0,0);
-            innerGrid.Children.Add(new Label()
+           /* innerGrid.Children.Add(new Label()
             {
                 BackgroundColor = Color.Gray,
                 Text = "Bank"
-            }, 0, 1);
-            innerGrid.Children.Add(BankEntry,0,2);
-            innerGrid.Children.Add(new Label()
+            }, 0,0);*/
+            innerGrid.Children.Add(BankEntry,0,0);
+           /* innerGrid.Children.Add(new Label()
             {
                 BackgroundColor = Color.Gray,
                 Text = "username"
-            },0,3);
-            innerGrid.Children.Add(userEntry,0,4);
-            innerGrid.Children.Add(new Label()
+            },0,2);*/
+            innerGrid.Children.Add(userEntry,0,1);
+           /* innerGrid.Children.Add(new Label()
             {
                 BackgroundColor = Color.Gray,
                 Text = "Password"
-            },0,5);
-            innerGrid.Children.Add(passwordEntry,0,6);
-            innerGrid.Children.Add(loginButton,0,7);
+            },0,4);*/
+            innerGrid.Children.Add(passwordEntry,0,2);
+            innerGrid.Children.Add(loginButton,0,3);
 
             //button grid containg buttons that alocate you to another page
             buttongrid.Children.Add(ContactButton,0,0);
             buttongrid.Children.Add(BalcaoButton,1,0);
             buttongrid.Children.Add(AtmButton,2,0);
 
-            // stackLayout.Children.Add(outerGrid);
-            stackLayout.VerticalOptions = LayoutOptions.StartAndExpand;
-            stackLayout.Children.Add(imagegrid);
-            stackLayout.VerticalOptions = LayoutOptions.CenterAndExpand;
-            stackLayout.Children.Add(innerGrid);
-            stackLayout.VerticalOptions = LayoutOptions.EndAndExpand;
-            stackLayout.Children.Add(buttongrid);
+            stackLayout.Children.Add(outergrid);
             this.Content = stackLayout;
         }
         

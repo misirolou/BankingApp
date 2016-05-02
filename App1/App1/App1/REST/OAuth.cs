@@ -7,12 +7,15 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Portable.Text;
 using Xamarin.Auth;
+using Xamarin.Utilities;
 using Encoder = Portable.Text.Encoder;
+using Encoding = System.Text.Encoding;
 
 namespace App1.REST
 {
@@ -25,27 +28,36 @@ namespace App1.REST
         // Credentials that are hard coded into the REST service for Direct Login
         public static string Username = "danielfaria921@gmail.com";
         public static string Password = "Bankingdont243**";
+
+        // oauth_consumer_key
+        protected static string oauth_consumer_key = "ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd";
+
+        // Use your own oauth_consumer_secret
+        protected static string oauth_consumer_secret = "4hsiqdzrs3iszz2jzjzlrit0yd4cv4c10w0hpjhj";
+
+        // version of oauth used
+        protected const string oauth_version = "1.0";
         
+        // Encryption method used
+        protected const string oauth_signature_method = "HMAC-SHA1";
+
+        enum signaturetypes
+        {
+            HMACSHA1,
+            RSASHA1
+        }
         //Request token needed to verify users authentication
         private static void RequestToken(string[] args)
         {
             // callback to the app
             string oauth_callback = "oob";
-            // oauth_consumer_key
-            string oauth_consumer_key = "ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd";
             // oauth_nonce used only once
             string oauth_nonce = new Random().Next(123400, 9999999).ToString();
             // this is left blank for now
             string oauth_signature = "";
-            // Encryption method used
-            string oauth_signature_method = "HMAC-SHA1";
             // timestamp used when making your token
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             string oauth_timestamp = Convert.ToInt64(ts.TotalSeconds).ToString();
-            // version of oauth used
-            string oauth_version = "1.0";
-            // Use your own oauth_consumer_secret
-            string oauth_consumer_secret = "4hsiqdzrs3iszz2jzjzlrit0yd4cv4c10w0hpjhj";
             
             //method used and request token url
             string method = "POST";
@@ -64,10 +76,10 @@ namespace App1.REST
             oauthparameters.Sort((x, y) => x.Key.CompareTo(y.Key));
 
             // Construct the Base String           
-            string basestring = method.ToUpper() + "&" + HttpUtility.UrlEncode(RequestTokenUri) + "&";
+            string basestring = method.ToUpper() + "&" + WebUtility.UrlEncode(RequestTokenUri) + "&";
             foreach (KeyValuePair<string, string> pair in oauthparameters)
             {
-                basestring += pair.Key + "%3D" + HttpUtility.UrlEncode(pair.Value) + "%26";
+                basestring += pair.Key + "%3D" + WebUtility.UrlEncode(pair.Value) + "%26";
             }
             basestring = basestring.Substring(0, basestring.Length - 3);
             //Gets rid of the last "%26" added by the foreach loop
@@ -87,12 +99,9 @@ namespace App1.REST
             }
             basestring = new string(basestringchararray);
 
-            // Encrypt with either SHA1 creating the Signature
-            var enc = Encoding.UTF8;
+            // Encrypt with SHA1 creating the Signature
+            var enc = ASCIIEncoding.ASCII;
             /* create the crypto class we use to generate a signature for the request */
-            HMACSHA1 sha1 = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&"));
-
-
             HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&"));
             hmac.Initialize();          
             byte[] buffer = enc.GetBytes(basestring);
@@ -103,7 +112,7 @@ namespace App1.REST
                 resultantArray[i] = Convert.ToByte(hmacsha1.Substring(i * 2, 2), 16);
             }
             string base64 = Convert.ToBase64String(resultantArray);
-            oauth_signature = HttpUtility.UrlEncode(base64);
+            oauth_signature = WebUtility.UrlEncode(base64);
            
             // Create the Authorization string for the WebRequest header
             string authorizationstring = "";
@@ -117,18 +126,20 @@ namespace App1.REST
             authorizationstring += "oauth_signature=" + oauth_signature;
 
             //pedido ao servidor pelo request token
-       /*     HttpWebRequest request = (HttpWebRequest) WebRequest.Create(RequestTokenUri);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(RequestTokenUri);
             request.Method = method;
             request.Headers.Add("Authorization", "OAuth " + authorizationstring);
-            HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+            HttpWebResponse response = (HttpWebResponse) request.GetResponse(); 
             Stream dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
             string responseFromServer = reader.ReadToEnd();
-            reader.Close();
+            this["token"] = responseFromServer["oauth_token"];
+            this["token_secret"] = responseFromServer["oauth_token_secret"];
+            return; 
+            /*reader.Close();
             dataStream.Close();
-            response.Close();*/
+            response.Close();*/           
         }
-
 
         //Receiving the access token needed to do requests from OpenBank API
         static void AccessToken(string[] args)
@@ -137,10 +148,8 @@ namespace App1.REST
             string oauth_verifier = "";
             // Use the oauth_token in the previous step
             string oauth_token = "";
-            // oauth_consumer_key
-            string oauth_consumer_key = "ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd";
             // oauth_nonce used only once
-            string oauth_nonce = "";
+            string oauth_nonce = new Random().Next(123400, 9999999).ToString();
             // Leave this blank for now
             string oauth_signature = "";
             
@@ -148,10 +157,6 @@ namespace App1.REST
             // oauth_timestamp used when we received our request token
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             string oauth_timestamp = Convert.ToInt64(ts.TotalSeconds).ToString();
-            // version of oauth used
-            string oauth_version = "1.0";
-            // oauth_consumer_secret
-            string oauth_consumer_secret = "";
             // oauth_token_secret
             string oauth_token_secret = "";
             
@@ -173,10 +178,10 @@ namespace App1.REST
             oauthparameters.Sort((x, y) => x.Key.CompareTo(y.Key));
 
             // Construct the Base String
-            string basestring = method.ToUpper() + "&" + HttpUtility.UrlEncode(AccessTokenUri) + "&";
+            string basestring = method.ToUpper() + "&" + WebUtility.UrlEncode(AccessTokenUri) + "&";
             foreach (KeyValuePair<string, string> pair in oauthparameters)
             {
-                basestring += pair.Key + "%3D" + HttpUtility.UrlEncode(pair.Value) + "%26";
+                basestring += pair.Key + "%3D" + WebUtility.UrlEncode(pair.Value) + "%26";
             }
             basestring = basestring.Substring(0, basestring.Length - 3);
             //Gets rid of the last "%26" added by the foreach loop
@@ -206,7 +211,7 @@ namespace App1.REST
                     resultantArray[i] = Convert.ToByte(hmacsha1.Substring(i * 2, 2), 16);
                 }
                 string base64 = Convert.ToBase64String(resultantArray);
-                oauth_signature = HttpUtility.UrlEncode(base64);
+                oauth_signature = WebUtility.UrlEncode(base64);
            
             // Create the Authorization string for the WebRequest header
             string authorizationstring = "";
@@ -219,27 +224,18 @@ namespace App1.REST
             }
             authorizationstring += "oauth_signature=" + oauth_signature;
 
-         /*   HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenUri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenUri);
             request.Method = method;
             request.Headers.Add("Authorization", "OAuth " + authorizationstring);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
             string responseFromServer = reader.ReadToEnd();
+            this("access_token") = responseFromServer.IndexOf("oauth_access_token");
+            this["token_secret"] = responseFromServer["oauth_access_token_secret"];
             reader.Close();
             dataStream.Close();
             response.Close();
-
-            Console.WriteLine(responseFromServer);
-            Console.ReadLine(); //Pause*/
-        }
-    }
-
-    internal class HttpUtility
-    {
-        public static string UrlEncode(string accessTokenUri)
-        {
-            throw new NotImplementedException();
         }
     }
 
