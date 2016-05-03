@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using App1.Layout;
+﻿using App1.Layout;
 using App1.REST;
-using Microsoft.VisualBasic;
+using System;
 using Xamarin.Forms;
 
 namespace App1
 {
     public class LoginPage : ContentPage
     {
-        Entry userEntry, passwordEntry, BankEntry;
-        Label messageLabel, privacy, publiclab;
+        private Entry userEntry, passwordEntry, BankEntry;
+        private Label messageLabel, privacy, publiclab;
 
         //layout of the page
         public LoginPage()
@@ -59,7 +51,7 @@ namespace App1
             {
                 Text = "Contacts",
                 VerticalOptions = LayoutOptions.EndAndExpand,
-                HorizontalOptions = LayoutOptions.StartAndExpand   
+                HorizontalOptions = LayoutOptions.StartAndExpand
             };
             ContactButton.Clicked += OnContactButtonClicked;
             //Balcao button should take you to the banks location page
@@ -93,9 +85,9 @@ namespace App1
 
             //Layout of the login page
             Title = "Login";
-            Icon = new FileImageSource() {File = "robot.png"};
-            
-            //this is the type of layout the grids will be specified in 
+            Icon = new FileImageSource() { File = "robot.png" };
+
+            //this is the type of layout the grids will be specified in
             var stackLayout = new StackLayout
             {
                 BackgroundColor = Color.Teal,
@@ -171,51 +163,51 @@ namespace App1
                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
                 }
             };
-        
-            outergrid.Children.Add(imagegrid,0,0);
-            outergrid.Children.Add(Switchergrid,0,1);
-            outergrid.Children.Add(innerGrid,0,2);
-            outergrid.Children.Add(buttongrid,0,3);
+
+            outergrid.Children.Add(imagegrid, 0, 0);
+            outergrid.Children.Add(Switchergrid, 0, 1);
+            outergrid.Children.Add(innerGrid, 0, 2);
+            outergrid.Children.Add(buttongrid, 0, 3);
 
             //imagegrid contains the inicial image of the login page
-            imagegrid.Children.Add(ImageRobot,0,0);
+            imagegrid.Children.Add(ImageRobot, 0, 0);
 
             //Switcher grid containing the switcher used to choose between public and private accounts
-            Switchergrid.Children.Add(privacy,0,0);
+            Switchergrid.Children.Add(privacy, 0, 0);
             Switchergrid.Children.Add(switcher, 1, 0);
 
             //innergrid contaning login for user to provide ´the necessary login information
-           /* innerGrid.Children.Add(new Label()
-            {
-                BackgroundColor = Color.Gray,
-                Text = "Bank"
-            }, 0,0);*/
-            innerGrid.Children.Add(BankEntry,0,0);
-           /* innerGrid.Children.Add(new Label()
-            {
-                BackgroundColor = Color.Gray,
-                Text = "username"
-            },0,2);*/
-            innerGrid.Children.Add(userEntry,0,1);
-           /* innerGrid.Children.Add(new Label()
-            {
-                BackgroundColor = Color.Gray,
-                Text = "Password"
-            },0,4);*/
-            innerGrid.Children.Add(passwordEntry,0,2);
-            innerGrid.Children.Add(loginButton,0,3);
+            /* innerGrid.Children.Add(new Label()
+             {
+                 BackgroundColor = Color.Gray,
+                 Text = "Bank"
+             }, 0,0);*/
+            innerGrid.Children.Add(BankEntry, 0, 0);
+            /* innerGrid.Children.Add(new Label()
+             {
+                 BackgroundColor = Color.Gray,
+                 Text = "username"
+             },0,2);*/
+            innerGrid.Children.Add(userEntry, 0, 1);
+            /* innerGrid.Children.Add(new Label()
+             {
+                 BackgroundColor = Color.Gray,
+                 Text = "Password"
+             },0,4);*/
+            innerGrid.Children.Add(passwordEntry, 0, 2);
+            innerGrid.Children.Add(loginButton, 0, 3);
 
             //button grid containg buttons that alocate you to another page
-            buttongrid.Children.Add(ContactButton,0,0);
-            buttongrid.Children.Add(BalcaoButton,1,0);
-            buttongrid.Children.Add(AtmButton,2,0);
+            buttongrid.Children.Add(ContactButton, 0, 0);
+            buttongrid.Children.Add(BalcaoButton, 1, 0);
+            buttongrid.Children.Add(AtmButton, 2, 0);
 
             stackLayout.Children.Add(outergrid);
             this.Content = stackLayout;
         }
-        
+
         //what happens when we click the login button
-        async void OnLoginButtonClicked(object sender, EventArgs e)
+        private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
             var user = new Users
             {
@@ -239,34 +231,35 @@ namespace App1
                 passwordEntry.Text = string.Empty;
             }
         }
+
         //verifing info that is contained in the REST API OpenBank
-        bool VerifyInfo(Users user)
+        private bool VerifyInfo(Users user)
         {
             return true;
         }
 
         //changes the mode according to the switch to public or private verification
-        void switchertoggled(object sender, ToggledEventArgs e)
+        private void switchertoggled(object sender, ToggledEventArgs e)
         {
             privacy.Text = String.Format("{0} mode", e.Value);
         }
 
         //what happens when we click the contact button
-        async void OnContactButtonClicked(object sender, EventArgs e)
+        private async void OnContactButtonClicked(object sender, EventArgs e)
         {
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
         }
 
         //what happens when we click the Balcao button
-        async void OnBalcaoButtonClicked(object sender, EventArgs e)
+        private async void OnBalcaoButtonClicked(object sender, EventArgs e)
         {
             Navigation.InsertPageBefore(new BalcaoPage(), this);
             await Navigation.PopAsync();
         }
 
         //what happens when we click the Atm button
-        async void OnAtmButtonClicked(object sender, EventArgs e)
+        private async void OnAtmButtonClicked(object sender, EventArgs e)
         {
             Navigation.InsertPageBefore(new AtmPage(), this);
             await Navigation.PopAsync();

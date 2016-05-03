@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    class PrincipalPage : ContentPage
+    internal class PrincipalPage : ContentPage
     {
-        Label accountid, lastaccess, owner, iban, balance, bank, currency, typeaccount;
+        private Label accountid, lastaccess, owner, iban, balance, bank, currency, typeaccount;
 
-        public PrincipalPage() 
+        public PrincipalPage()
         {
             //specifying labels and buttons utilized
             accountid = new Label();
-           //movement button should take you to the movements page
+            //movement button should take you to the movements page
             lastaccess = new Label()
             {
                 Text = "last access: ",
@@ -60,20 +56,20 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
             //image
-           /* var menu = new Image()
-            {
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start,
-            };
-            //specifying location for each platform
-            menu.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("menu.png"),
-                Android: ImageSource.FromFile("menu.png"),
-                WinPhone: ImageSource.FromFile("menu.png"));
-            */
+            /* var menu = new Image()
+             {
+                 VerticalOptions = LayoutOptions.Start,
+                 HorizontalOptions = LayoutOptions.Start,
+             };
+             //specifying location for each platform
+             menu.Source = Device.OnPlatform(
+                 iOS: ImageSource.FromFile("menu.png"),
+                 Android: ImageSource.FromFile("menu.png"),
+                 WinPhone: ImageSource.FromFile("menu.png"));
+             */
             ImageCell menu = new ImageCell()
             {
-                 ImageSource  = Device.OnPlatform(
+                ImageSource = Device.OnPlatform(
                     iOS: ImageSource.FromFile("menu.png"),
                     Android: ImageSource.FromFile("menu.png"),
                     WinPhone: ImageSource.FromFile("menu.png"))
@@ -103,8 +99,8 @@ namespace App1.Layout
 
             //Layout of the Home page(PrincipalPage.cs)
             Title = "Home";
-            Icon = new FileImageSource() {File = "robot.png"};
-            //this is the type of layout the grids will be specified in 
+            Icon = new FileImageSource() { File = "robot.png" };
+            //this is the type of layout the grids will be specified in
             var stackLayout = new StackLayout
             {
                 //Orientation = StackOrientation.Vertical,
@@ -125,7 +121,7 @@ namespace App1.Layout
                     }
                 }
             };
-            tableview.Root = new TableRoot {new TableSection() { new ViewCell()  {View = stackLayout}}};
+            tableview.Root = new TableRoot { new TableSection() { new ViewCell() { View = stackLayout } } };
 
             var menubar = new Grid
             {
@@ -141,14 +137,14 @@ namespace App1.Layout
                                 new ColumnDefinition { Width = GridLength.Auto},
                                 new ColumnDefinition { Width = GridLength.Auto}
                             }
-                        };
+            };
 
-                        //specification of the innergrid layout
-                        var infoGrid = new Grid
-                        {
-                            VerticalOptions = LayoutOptions.Center,
-                            HorizontalOptions = LayoutOptions.StartAndExpand,
-                            RowDefinitions =
+            //specification of the innergrid layout
+            var infoGrid = new Grid
+            {
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                RowDefinitions =
                             {
                                 new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                                 new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
@@ -158,56 +154,55 @@ namespace App1.Layout
                                 new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                                 new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                             }
-                        };
+            };
 
-                        //specfication of the button grids layout
-                        var button2grid = new Grid
-                        {
-                            VerticalOptions = LayoutOptions.End,
-                            HorizontalOptions = LayoutOptions.StartAndExpand,
-                            RowDefinitions =
+            //specfication of the button grids layout
+            var button2grid = new Grid
+            {
+                VerticalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                RowDefinitions =
                             {
                                 new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                             },
-                            ColumnDefinitions =
+                ColumnDefinitions =
                             {
                                 new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto)},
                                 new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto)}
                             }
-                        };
+            };
 
-                        //infogrid contining users info
-                        infoGrid.Children.Add(accountid,0,0);
-                        infoGrid.Children.Add(owner, 0, 1);
-                        infoGrid.Children.Add(iban, 0, 2);
-                        infoGrid.Children.Add(balance, 0, 3);
-                        infoGrid.Children.Add(bank, 0, 4);
-                        infoGrid.Children.Add(currency, 0, 5);
-                        infoGrid.Children.Add(typeaccount, 0, 6);
-                        //button grid containg buttons that alocate you to another page
-                        button2grid.Children.Add(transactionButton, 0, 0);
-                        button2grid.Children.Add(cardsbutton, 1, 0);
-                        
-                        stackLayout.Children.Add(tableview);
-                        stackLayout.Children.Add(menubar);
-                        stackLayout.Children.Add(infoGrid);
-                        stackLayout.Children.Add(button2grid);
-                        this.Content = stackLayout;
+            //infogrid contining users info
+            infoGrid.Children.Add(accountid, 0, 0);
+            infoGrid.Children.Add(owner, 0, 1);
+            infoGrid.Children.Add(iban, 0, 2);
+            infoGrid.Children.Add(balance, 0, 3);
+            infoGrid.Children.Add(bank, 0, 4);
+            infoGrid.Children.Add(currency, 0, 5);
+            infoGrid.Children.Add(typeaccount, 0, 6);
+            //button grid containg buttons that alocate you to another page
+            button2grid.Children.Add(transactionButton, 0, 0);
+            button2grid.Children.Add(cardsbutton, 1, 0);
+
+            stackLayout.Children.Add(tableview);
+            stackLayout.Children.Add(menubar);
+            stackLayout.Children.Add(infoGrid);
+            stackLayout.Children.Add(button2grid);
+            this.Content = stackLayout;
         }
 
         //should take te user to the transaction page
-        async void OntransactionButtonClicked(object sender, EventArgs e)
+        private async void OntransactionButtonClicked(object sender, EventArgs e)
         {
             Navigation.InsertPageBefore(new transactionPage(), this);
             await Navigation.PopAsync();
         }
 
         //should take the user to the cards page
-        async void OncardsButtonClicked(object sender, EventArgs e)
+        private async void OncardsButtonClicked(object sender, EventArgs e)
         {
             Navigation.InsertPageBefore(new cardPage(), this);
             await Navigation.PopAsync();
         }
-
     }
 }

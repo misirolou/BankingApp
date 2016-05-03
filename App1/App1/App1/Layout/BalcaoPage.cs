@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    class BalcaoPage : ContentPage
+    internal class BalcaoPage : ContentPage
     {
         public BalcaoPage()
         {
-
             Title = "BalcaoPage";
             Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout

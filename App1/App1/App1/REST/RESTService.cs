@@ -1,21 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 
 namespace App1.REST
 {
-    class RESTService : IRESTService
+    internal class RESTService : IRESTService
     {
-        HttpClient restClient;
+        private HttpClient restClient;
 
-       public List<AccountInfo> Info { get; private set; } 
+        public List<AccountInfo> Info { get; private set; }
 
         public RESTService()
         {
@@ -29,7 +27,7 @@ namespace App1.REST
 
         public async Task<List<AccountInfo>> RefreshDataAsync()
         {
-            Info = new List<AccountInfo> ();
+            Info = new List<AccountInfo>();
 
             var uri = new Uri(string.Format(OAuth.OpenBankAPI, string.Empty));
 
@@ -73,7 +71,6 @@ namespace App1.REST
                 {
                     Debug.WriteLine(@"				TodoItem successfully saved.");
                 }
-
             }
             catch (Exception ex)
             {
@@ -93,7 +90,6 @@ namespace App1.REST
                 {
                     Debug.WriteLine(@"				TodoItem successfully deleted.");
                 }
-
             }
             catch (Exception ex)
             {

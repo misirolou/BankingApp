@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace App1.REST
 {
-    class ManagerRESTService
+    internal class ManagerRESTService
     {
-        IRESTService restService;
+        private IRESTService restService;
 
         public ManagerRESTService(IRESTService service)
         {

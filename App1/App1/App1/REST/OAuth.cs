@@ -1,32 +1,21 @@
-﻿using System;
+﻿using Portable.Text;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
-using Portable.Text;
-using Xamarin.Auth;
-using Xamarin.Utilities;
-using Encoder = Portable.Text.Encoder;
 using Encoding = System.Text.Encoding;
 
 namespace App1.REST
 {
-    class OAuth
+    internal class OAuth
     {
-        
         // URL of REST service
         public static string OpenBankAPI = "https://apisandbox.openbankproject.com/obp/v2.0.0{0}";
-        
+
         // Credentials that are hard coded into the REST service for Direct Login
         public static string Username = "danielfaria921@gmail.com";
+
         public static string Password = "Bankingdont243**";
 
         // oauth_consumer_key
@@ -37,15 +26,13 @@ namespace App1.REST
 
         // version of oauth used
         protected const string oauth_version = "1.0";
-        
+
         // Encryption method used
         protected const string oauth_signature_method = "HMAC-SHA1";
 
-        enum signaturetypes
-        {
-            HMACSHA1,
-            RSASHA1
-        }
+        protected static string oauth_token = "";
+        protected static string oauth_token_secret = "";
+
         //Request token needed to verify users authentication
         private static void RequestToken(string[] args)
         {
@@ -58,7 +45,11 @@ namespace App1.REST
             // timestamp used when making your token
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             string oauth_timestamp = Convert.ToInt64(ts.TotalSeconds).ToString();
-            
+
+            //Tokens needed to verify users authentication access
+            string oauth_request_token = "";
+            string oauth_request_token_secret = "";
+
             //method used and request token url
             string method = "POST";
             string RequestTokenUri = "https://apisandbox.openbankproject.com/oauth/initiate";
@@ -75,7 +66,7 @@ namespace App1.REST
             // Sort the OAuth parameters on the key
             oauthparameters.Sort((x, y) => x.Key.CompareTo(y.Key));
 
-            // Construct the Base String           
+            // Construct the Base String
             string basestring = method.ToUpper() + "&" + WebUtility.UrlEncode(RequestTokenUri) + "&";
             foreach (KeyValuePair<string, string> pair in oauthparameters)
             {
@@ -84,7 +75,7 @@ namespace App1.REST
             basestring = basestring.Substring(0, basestring.Length - 3);
             //Gets rid of the last "%26" added by the foreach loop
 
-            // Makes sure all the Url encoding gives capital letter hexadecimal 
+            // Makes sure all the Url encoding gives capital letter hexadecimal
             // i.e. "=" is encoded to "%3D", not "%3d"
 
             //basestring used to get the signature
@@ -103,7 +94,7 @@ namespace App1.REST
             var enc = ASCIIEncoding.ASCII;
             /* create the crypto class we use to generate a signature for the request */
             HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&"));
-            hmac.Initialize();          
+            hmac.Initialize();
             byte[] buffer = enc.GetBytes(basestring);
             string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
             byte[] resultantArray = new byte[hmacsha1.Length / 2];
@@ -113,7 +104,7 @@ namespace App1.REST
             }
             string base64 = Convert.ToBase64String(resultantArray);
             oauth_signature = WebUtility.UrlEncode(base64);
-           
+
             // Create the Authorization string for the WebRequest header
             string authorizationstring = "";
             foreach (KeyValuePair<string, string> pair in oauthparameters)
@@ -125,41 +116,72 @@ namespace App1.REST
             }
             authorizationstring += "oauth_signature=" + oauth_signature;
 
+            string responseFromServer = "";
             //pedido ao servidor pelo request token
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(RequestTokenUri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(RequestTokenUri);
             request.Method = method;
-            request.Headers.Add("Authorization", "OAuth " + authorizationstring);
-            HttpWebResponse response = (HttpWebResponse) request.GetResponse(); 
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
-            this["token"] = responseFromServer["oauth_token"];
-            this["token_secret"] = responseFromServer["oauth_token_secret"];
-            return; 
-            /*reader.Close();
-            dataStream.Close();
-            response.Close();*/           
+            // request.Headers.Add("Authorization", "OAuth " + authorizationstring);
+            request.Headers["Authorization"] = "OAuth " + authorizationstring;
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                try
+                {
+                    Debug.WriteLine(response);
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                }
+                catch (WebException err)
+                {
+                    Stream dataStream = err.Response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                }
+            }
+            Debug.WriteLine(responseFromServer);
+
+            // if it worked, we should have oauth_token and oauth_token_secret in the response
+            foreach (string pair in responseFromServer.Split(new char[] { '&' }))
+            {
+                string[] split_pair = pair.Split(new char[] { '=' });
+
+                switch (split_pair[0])
+                {
+                    case "oauth_token":
+                        oauth_request_token = split_pair[1];
+                        break;
+
+                    case "oauth_token_secret":
+                        oauth_request_token_secret = split_pair[1];
+                        break;
+                }
+            }
+            Debug.WriteLine(oauth_request_token);
+            Debug.WriteLine(oauth_request_token_secret);
         }
 
         //Receiving the access token needed to do requests from OpenBank API
-        static void AccessToken(string[] args)
+        private static void AccessToken(string[] args)
         {
             // Use the oauth_verifier in the previous step
             string oauth_verifier = "";
             // Use the oauth_token in the previous step
-            string oauth_token = "";
+            string oauth_request_token = "";
             // oauth_nonce used only once
             string oauth_nonce = new Random().Next(123400, 9999999).ToString();
             // Leave this blank for now
             string oauth_signature = "";
-            
+
             string oauth_signature_method = "HMAC-SHA1";
             // oauth_timestamp used when we received our request token
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             string oauth_timestamp = Convert.ToInt64(ts.TotalSeconds).ToString();
-            // oauth_token_secret
+            // oauth_request_token_secret
             string oauth_token_secret = "";
-            
+
+            //tokens we are trying to get, needed to access nformation of the OpenBank API
+            string oauth_access_token = "";
+            string oauth_access_token_secret = "";
 
             string method = "POST";
             string AccessTokenUri = "https://apisandbox.openbankproject.com/oauth/token";
@@ -186,7 +208,7 @@ namespace App1.REST
             basestring = basestring.Substring(0, basestring.Length - 3);
             //Gets rid of the last "%26" added by the foreach loop
 
-            // Makes sure all the Url encoding gives capital letter hexadecimal 
+            // Makes sure all the Url encoding gives capital letter hexadecimal
             // i.e. "=" is encoded to "%3D", not "%3d"
             char[] basestringchararray = basestring.ToCharArray();
             for (int i = 0; i < basestringchararray.Length - 2; i++)
@@ -202,17 +224,17 @@ namespace App1.REST
             // Encrypt with either SHA1 or SHA256, creating the Signature
             var enc = Encoding.UTF8;
             HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&" + oauth_token_secret));
-                hmac.Initialize();
-                byte[] buffer = enc.GetBytes(basestring);
-                string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
-                byte[] resultantArray = new byte[hmacsha1.Length / 2];
-                for (int i = 0; i < resultantArray.Length; i++)
-                {
-                    resultantArray[i] = Convert.ToByte(hmacsha1.Substring(i * 2, 2), 16);
-                }
-                string base64 = Convert.ToBase64String(resultantArray);
-                oauth_signature = WebUtility.UrlEncode(base64);
-           
+            hmac.Initialize();
+            byte[] buffer = enc.GetBytes(basestring);
+            string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
+            byte[] resultantArray = new byte[hmacsha1.Length / 2];
+            for (int i = 0; i < resultantArray.Length; i++)
+            {
+                resultantArray[i] = Convert.ToByte(hmacsha1.Substring(i * 2, 2), 16);
+            }
+            string base64 = Convert.ToBase64String(resultantArray);
+            oauth_signature = WebUtility.UrlEncode(base64);
+
             // Create the Authorization string for the WebRequest header
             string authorizationstring = "";
             foreach (KeyValuePair<string, string> pair in oauthparameters)
@@ -224,18 +246,48 @@ namespace App1.REST
             }
             authorizationstring += "oauth_signature=" + oauth_signature;
 
+            string responseFromServer = "";
+            //pedido ao servidor pelo request token
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenUri);
             request.Method = method;
-            request.Headers.Add("Authorization", "OAuth " + authorizationstring);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
-            this("access_token") = responseFromServer.IndexOf("oauth_access_token");
-            this["token_secret"] = responseFromServer["oauth_access_token_secret"];
-            reader.Close();
-            dataStream.Close();
-            response.Close();
+            // request.Headers.Add("Authorization", "OAuth " + authorizationstring);
+            request.Headers["Authorization"] = "OAuth " + authorizationstring;
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                try
+                {
+                    Debug.WriteLine(response);
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                }
+                catch (WebException err)
+                {
+                    Stream dataStream = err.Response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                }
+            }
+            Debug.WriteLine(responseFromServer);
+
+            // if it worked, we should have oauth_token and oauth_token_secret in the response
+            foreach (string pair in responseFromServer.Split(new char[] { '&' }))
+            {
+                string[] split_pair = pair.Split(new char[] { '=' });
+
+                switch (split_pair[0])
+                {
+                    case "oauth_token":
+                        oauth_access_token = split_pair[1];
+                        break;
+
+                    case "oauth_token_secret":
+                        oauth_access_token_secret = split_pair[1];
+                        break;
+                }
+            }
+            Debug.WriteLine(oauth_access_token);
+            Debug.WriteLine(oauth_access_token_secret);
         }
     }
 

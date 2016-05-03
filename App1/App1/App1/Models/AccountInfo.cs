@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace App1.REST
+﻿namespace App1.REST
 {
-    class AccountInfo
+    internal class AccountInfo
     {
         public string Owner { get; set; }
 
@@ -23,6 +17,5 @@ namespace App1.REST
         public string Currency { get; set; }
 
         public string Typeaccount { get; set; }
-
     }
 }

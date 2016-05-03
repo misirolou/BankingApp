@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    class cardPage : ContentPage
+    internal class cardPage : ContentPage
     {
         public cardPage()
         {
@@ -26,4 +21,3 @@ namespace App1.Layout
         }
     }
 }
-

@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    class ContactPage : ContentPage
+    internal class ContactPage : ContentPage
     {
         public ContactPage()
         {
             //The contact page will contain the banks URLs to websites
             Title = "ContactPage";
-            Icon = new FileImageSource {File = "robot.png"};
+            Icon = new FileImageSource { File = "robot.png" };
             StackLayout stackLayout = new StackLayout
             {
-
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
                 Children = {

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace App1.Models
+﻿namespace App1.Models
 {
-    class Banks
+    internal class Banks
     {
         public string BankId { get; set; }
 
