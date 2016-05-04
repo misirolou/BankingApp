@@ -14,14 +14,14 @@ namespace App1
         {
             MainPage = new NavigationPage(new LoginPage());
             NavigateAsync(FirstPage.Login);
-            /* if (UserLoggedIn)
+            if (UserLoggedIn)
             {
                 MainPage = new NavigationPage(PrincipalPage);
             }
             else
             {
                 MainPage = new NavigationPage(new LoginPage());
-            }*/
+            }
             Pages = new Dictionary<FirstPage, NavigationPage>();
             //Master = new LoginPage(this);
             /*BindingContext = new BaseViewModel(Navigation)

@@ -3,11 +3,12 @@ using App1.REST;
 using System;
 using Xamarin.Forms;
 
+
 namespace App1
 {
     public class LoginPage : ContentPage
     {
-        private Entry userEntry, passwordEntry, BankEntry;
+        private Entry userEntry, passwordEntry;
         private Label messageLabel, privacy, publiclab;
 
         //layout of the page
@@ -23,10 +24,6 @@ namespace App1
             {
                 IsPassword = true,
                 Placeholder = "Password"
-            };
-            BankEntry = new Entry()
-            {
-                Placeholder = "Your Bank"
             };
             //login button
             Button loginButton = new Button
@@ -122,7 +119,7 @@ namespace App1
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 RowDefinitions =
                 {
-                    new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
                 },
                 ColumnDefinitions =
                 {
@@ -141,8 +138,8 @@ namespace App1
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                   /* new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                   /* new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)}*/
                 }
             };
@@ -154,7 +151,7 @@ namespace App1
                 HorizontalOptions = LayoutOptions.Start,
                 RowDefinitions =
                 {
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                 },
                 ColumnDefinitions =
                 {
@@ -177,25 +174,19 @@ namespace App1
             Switchergrid.Children.Add(switcher, 1, 0);
 
             //innergrid contaning login for user to provide ´the necessary login information
-            /* innerGrid.Children.Add(new Label()
-             {
-                 BackgroundColor = Color.Gray,
-                 Text = "Bank"
-             }, 0,0);*/
-            innerGrid.Children.Add(BankEntry, 0, 0);
-            /* innerGrid.Children.Add(new Label()
+            innerGrid.Children.Add(new Label()
              {
                  BackgroundColor = Color.Gray,
                  Text = "username"
-             },0,2);*/
+             },0,0);
             innerGrid.Children.Add(userEntry, 0, 1);
-            /* innerGrid.Children.Add(new Label()
+            innerGrid.Children.Add(new Label()
              {
                  BackgroundColor = Color.Gray,
                  Text = "Password"
-             },0,4);*/
-            innerGrid.Children.Add(passwordEntry, 0, 2);
-            innerGrid.Children.Add(loginButton, 0, 3);
+             },0,2);
+            innerGrid.Children.Add(passwordEntry, 0, 3);
+            innerGrid.Children.Add(loginButton, 0, 4);
 
             //button grid containg buttons that alocate you to another page
             buttongrid.Children.Add(ContactButton, 0, 0);
@@ -211,7 +202,6 @@ namespace App1
         {
             var user = new Users
             {
-                Bank = BankEntry.Text,
                 User = userEntry.Text,
                 Password = passwordEntry.Text
             };
@@ -226,7 +216,6 @@ namespace App1
             }
             else
             {
-                messageLabel.Text = "bank not valid";
                 messageLabel.Text = "Login failed";
                 passwordEntry.Text = string.Empty;
             }
@@ -235,7 +224,15 @@ namespace App1
         //verifing info that is contained in the REST API OpenBank
         private bool VerifyInfo(Users user)
         {
-            return true;
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (Object.Equals(OAuth.Username, userEntry) && Object.Equals(OAuth.Password, passwordEntry))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         //changes the mode according to the switch to public or private verification

@@ -10,5 +10,6 @@ namespace App1.REST
         Task SaveInfoAsync(AccountInfo item, bool isNewItem);
 
         Task DeleteInfoAsync(string id);
+
     }
 }

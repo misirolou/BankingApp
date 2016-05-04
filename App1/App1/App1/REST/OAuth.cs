@@ -3,7 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq.Expressions;
 using System.Net;
+using System.Security;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Xamarin.Utilities;
 using Encoding = System.Text.Encoding;
 
 namespace App1.REST
@@ -34,7 +40,7 @@ namespace App1.REST
         protected static string oauth_token_secret = "";
 
         //Request token needed to verify users authentication
-        private static void RequestToken(string[] args)
+        private static async void RequestToken(string[] args)
         {
             // callback to the app
             string oauth_callback = "oob";
@@ -74,7 +80,6 @@ namespace App1.REST
             }
             basestring = basestring.Substring(0, basestring.Length - 3);
             //Gets rid of the last "%26" added by the foreach loop
-
             // Makes sure all the Url encoding gives capital letter hexadecimal
             // i.e. "=" is encoded to "%3D", not "%3d"
 
@@ -92,9 +97,10 @@ namespace App1.REST
 
             // Encrypt with SHA1 creating the Signature
             var enc = ASCIIEncoding.ASCII;
+
             /* create the crypto class we use to generate a signature for the request */
             HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&"));
-            hmac.Initialize();
+            //hmac.intialize();
             byte[] buffer = enc.GetBytes(basestring);
             string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
             byte[] resultantArray = new byte[hmacsha1.Length / 2];
@@ -118,27 +124,31 @@ namespace App1.REST
 
             string responseFromServer = "";
             //pedido ao servidor pelo request token
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(RequestTokenUri);
+            WebRequest request = (HttpWebRequest)WebRequest.Create(RequestTokenUri);
             request.Method = method;
             // request.Headers.Add("Authorization", "OAuth " + authorizationstring);
             request.Headers["Authorization"] = "OAuth " + authorizationstring;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                try
+            var asyncResult = request.BeginGetResponse(
+                ar =>
                 {
-                    Debug.WriteLine(response);
-                    Stream dataStream = response.GetResponseStream();
-                    StreamReader reader = new StreamReader(dataStream);
-                    responseFromServer = reader.ReadToEnd();
-                }
-                catch (WebException err)
-                {
-                    Stream dataStream = err.Response.GetResponseStream();
-                    StreamReader reader = new StreamReader(dataStream);
-                    responseFromServer = reader.ReadToEnd();
-                }
-            }
+                    using (WebResponse response = request.EndGetResponse(ar))
+                        try
+                        {
+                            Stream dataStream = response.GetResponseStream();
+                            StreamReader reader = new StreamReader(dataStream);
+                            responseFromServer = reader.ReadToEnd();
+                        }
+                        catch (WebException err)
+                        {
+                            Stream dataStream = err.Response.GetResponseStream();
+                            StreamReader reader = new StreamReader(dataStream);
+                            responseFromServer = reader.ReadToEnd();
+                        }
+                    
+                }, request);
+            
             Debug.WriteLine(responseFromServer);
+            Debug.WriteLine(asyncResult);
 
             // if it worked, we should have oauth_token and oauth_token_secret in the response
             foreach (string pair in responseFromServer.Split(new char[] { '&' }))
@@ -224,7 +234,7 @@ namespace App1.REST
             // Encrypt with either SHA1 or SHA256, creating the Signature
             var enc = Encoding.UTF8;
             HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&" + oauth_token_secret));
-            hmac.Initialize();
+           // hmac.Initialize();
             byte[] buffer = enc.GetBytes(basestring);
             string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
             byte[] resultantArray = new byte[hmacsha1.Length / 2];
@@ -252,23 +262,27 @@ namespace App1.REST
             request.Method = method;
             // request.Headers.Add("Authorization", "OAuth " + authorizationstring);
             request.Headers["Authorization"] = "OAuth " + authorizationstring;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                try
+            var asyncResult = request.BeginGetResponse(
+                ar =>
                 {
-                    Debug.WriteLine(response);
-                    Stream dataStream = response.GetResponseStream();
-                    StreamReader reader = new StreamReader(dataStream);
-                    responseFromServer = reader.ReadToEnd();
-                }
-                catch (WebException err)
-                {
-                    Stream dataStream = err.Response.GetResponseStream();
-                    StreamReader reader = new StreamReader(dataStream);
-                    responseFromServer = reader.ReadToEnd();
-                }
-            }
+                    using (WebResponse response = request.EndGetResponse(ar))
+                        try
+                        {
+                            Stream dataStream = response.GetResponseStream();
+                            StreamReader reader = new StreamReader(dataStream);
+                            responseFromServer = reader.ReadToEnd();
+                        }
+                        catch (WebException err)
+                        {
+                            Stream dataStream = err.Response.GetResponseStream();
+                            StreamReader reader = new StreamReader(dataStream);
+                            responseFromServer = reader.ReadToEnd();
+                        }
+                    
+                }, request);
+            
             Debug.WriteLine(responseFromServer);
+            Debug.WriteLine(asyncResult);
 
             // if it worked, we should have oauth_token and oauth_token_secret in the response
             foreach (string pair in responseFromServer.Split(new char[] { '&' }))
@@ -288,24 +302,6 @@ namespace App1.REST
             }
             Debug.WriteLine(oauth_access_token);
             Debug.WriteLine(oauth_access_token_secret);
-        }
-    }
-
-    internal class HMACSHA1
-    {
-        public HMACSHA1(byte[] getBytes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Initialize()
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] ComputeHash(byte[] buffer)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace App1.REST
 
         public List<AccountInfo> Info { get; private set; }
 
+        //login into the API with my account Direct Login
         public RESTService()
         {
             var authData = string.Format("{0}:{1}", OAuth.Username, OAuth.Password);
@@ -25,6 +26,7 @@ namespace App1.REST
             restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
         }
 
+        //Refreshing information
         public async Task<List<AccountInfo>> RefreshDataAsync()
         {
             Info = new List<AccountInfo>();
