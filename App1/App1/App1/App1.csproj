@@ -53,6 +53,7 @@
     <Compile Include="REST\OAuth.cs" />
     <Compile Include="REST\RESTService.cs" />
     <Compile Include="Models\Users.cs" />
+    <Compile Include="ITextSpeech.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />

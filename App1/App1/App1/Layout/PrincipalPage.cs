@@ -56,7 +56,7 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
             //image
-            /* var menu = new Image()
+             /*var menu = new Image()
              {
                  VerticalOptions = LayoutOptions.Start,
                  HorizontalOptions = LayoutOptions.Start,

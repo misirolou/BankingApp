@@ -1,7 +1,9 @@
 ﻿namespace App1.REST
 {
-    internal class AccountInfo
+    public class AccountInfo
     {
+        public string AccountInfoUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/accounts";
+
         public string Owner { get; set; }
 
         public string AccountId { get; set; }

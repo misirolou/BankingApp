@@ -17,7 +17,7 @@ namespace App1.REST
     internal class OAuth
     {
         // URL of REST service
-        public static string OpenBankAPI = "https://apisandbox.openbankproject.com/obp/v2.0.0{0}";
+        public static string OpenBankAPI = "https://apisandbox.openbankproject.com/my/logins/direct{0}";
 
         // Credentials that are hard coded into the REST service for Direct Login
         public static string Username = "danielfaria921@gmail.com";
@@ -25,7 +25,7 @@ namespace App1.REST
         public static string Password = "Bankingdont243**";
 
         // oauth_consumer_key
-        protected static string oauth_consumer_key = "ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd";
+        public static string oauth_consumer_key = "ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd";
 
         // Use your own oauth_consumer_secret
         protected static string oauth_consumer_secret = "4hsiqdzrs3iszz2jzjzlrit0yd4cv4c10w0hpjhj";

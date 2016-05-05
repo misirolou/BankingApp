@@ -1,6 +1,7 @@
 ﻿using App1.Layout;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using App1.REST;
 using Xamarin.Forms;
 
 namespace App1
@@ -9,9 +10,12 @@ namespace App1
     {
         private Dictionary<FirstPage, NavigationPage> Pages { get; set; }
 
+        public static ManagerRESTService ManagerRest { get; private set; }
+
         //the main Application and its functionalities
         public App()
         {
+            ManagerRest = new ManagerRESTService(new RESTService());
             MainPage = new NavigationPage(new LoginPage());
             NavigateAsync(FirstPage.Login);
             if (UserLoggedIn)
@@ -157,10 +161,22 @@ namespace App1
         }
 
         public Page Detail { get; set; }
+        public static ITextSpeech Speech { get; set; }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            var ImageRobot = new Image()
+            {
+                Aspect = Aspect.AspectFill,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+            };
+            //specifying location for each platform
+            ImageRobot.Source = Device.OnPlatform(
+                iOS: ImageSource.FromFile("robot.png"),
+                Android: ImageSource.FromFile("robot.png"),
+                WinPhone: ImageSource.FromFile("robot.png"));
+
         }
 
         protected override void OnSleep()

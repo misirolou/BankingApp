@@ -23,6 +23,7 @@ namespace App1.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+            App.Speech = new Speech();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace App1.REST
 {
-    internal class RESTService : IRESTService
+    public class RESTService : IRESTService
     {
         private HttpClient restClient;
 
@@ -18,12 +18,14 @@ namespace App1.REST
         //login into the API with my account Direct Login
         public RESTService()
         {
-            var authData = string.Format("{0}:{1}", OAuth.Username, OAuth.Password);
+            var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
             var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
+
+            Debug.WriteLine(authHeaderValue);
 
             restClient = new HttpClient();
             restClient.MaxResponseContentBufferSize = 256000;
-            restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeaderValue);
+            restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DirectLogin", authHeaderValue);
         }
 
         //Refreshing information

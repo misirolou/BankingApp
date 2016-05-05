@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace App1.REST
 {
-    internal interface IRESTService
+    public interface IRESTService
     {
         Task<List<AccountInfo>> RefreshDataAsync();
 

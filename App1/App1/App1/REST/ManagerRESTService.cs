@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace App1.REST
 {
-    internal class ManagerRESTService
+    public class ManagerRESTService
     {
         private IRESTService restService;
 

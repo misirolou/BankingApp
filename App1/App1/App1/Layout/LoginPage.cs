@@ -1,6 +1,7 @@
 ﻿using App1.Layout;
 using App1.REST;
 using System;
+using App1.Models;
 using Xamarin.Forms;
 
 
@@ -9,7 +10,7 @@ namespace App1
     public class LoginPage : ContentPage
     {
         private Entry userEntry, passwordEntry;
-        private Label messageLabel, privacy, publiclab;
+        private Label messageLabel, privacy;
 
         //layout of the page
         public LoginPage()
@@ -54,7 +55,7 @@ namespace App1
             //Balcao button should take you to the banks location page
             var BalcaoButton = new Button()
             {
-                Text = "Bank GPS",
+                Text = "Bank Map",
                 VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand
             };
@@ -62,7 +63,7 @@ namespace App1
             //Atm button should take you to the ATM location page
             var AtmButton = new Button()
             {
-                Text = "ATM GPS",
+                Text = "ATM Map",
                 VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
@@ -96,7 +97,7 @@ namespace App1
             {
                 RowDefinitions =
                 {
-                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height = new GridLength(3, GridUnitType.Auto)},
                     new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
@@ -105,7 +106,6 @@ namespace App1
             //specification of the image grid layout
             var imagegrid = new Grid
             {
-                //VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.Center,
                 RowDefinitions =
                 {
@@ -113,10 +113,10 @@ namespace App1
                 }
             };
 
+            //switcher grid choosing if you want your public or private accounts
             var Switchergrid = new Grid
             {
-                //VerticalOptions = LayoutOptions.StartAndExpand,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
                 RowDefinitions =
                 {
                     new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
@@ -127,28 +127,25 @@ namespace App1
                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)}
                 }
             };
+
             //specification of the innergrid layout
-            var innerGrid = new Grid
+             var innerGrid = new Grid
             {
-                //VerticalOptions = LayoutOptions.CenterAndExpand,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
                 RowDefinitions =
                 {
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                   /* new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)},
-                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Star)}*/
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                 }
             };
 
             //specfication of the button grids layout
             var buttongrid = new Grid
             {
-                //VerticalOptions = LayoutOptions.EndAndExpand,
-                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.EndAndExpand,
                 RowDefinitions =
                 {
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
@@ -174,7 +171,7 @@ namespace App1
             Switchergrid.Children.Add(switcher, 1, 0);
 
             //innergrid contaning login for user to provide ´the necessary login information
-            innerGrid.Children.Add(new Label()
+             innerGrid.Children.Add(new Label()
              {
                  BackgroundColor = Color.Gray,
                  Text = "username"
@@ -224,28 +221,30 @@ namespace App1
         //verifing info that is contained in the REST API OpenBank
         private bool VerifyInfo(Users user)
         {
-            if (user == null) throw new ArgumentNullException(nameof(user));
-            if (Object.Equals(OAuth.Username, userEntry) && Object.Equals(OAuth.Password, passwordEntry))
+            //if (user == null) throw new ArgumentNullException(nameof(user));
+            if (Object.Equals(userEntry, OAuth.Username) && Object.Equals(passwordEntry, OAuth.Password))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         //changes the mode according to the switch to public or private verification
         private void switchertoggled(object sender, ToggledEventArgs e)
         {
-            privacy.Text = String.Format("{0} mode", e.Value);
+            if (!IsEnabled)
+            {
+                privacy.Text = String.Format("{0} mode", "Public");
+            }
+            else
+            privacy.Text = String.Format("{0} mode", "Private");
         }
 
         //what happens when we click the contact button
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
-            Navigation.InsertPageBefore(new ContactPage(), this);
-            await Navigation.PopAsync();
+             Navigation.InsertPageBefore(new ContactPage(), this);
+             await Navigation.PopAsync();
         }
 
         //what happens when we click the Balcao button
