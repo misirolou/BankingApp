@@ -9,6 +9,8 @@ using System.Security;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using App1.Models;
+using Xamarin.Forms;
 using Xamarin.Utilities;
 using Encoding = System.Text.Encoding;
 
@@ -38,7 +40,7 @@ namespace App1.REST
 
         protected static string oauth_token = "";
         protected static string oauth_token_secret = "";
-
+        
         //Request token needed to verify users authentication
         private static async void RequestToken(string[] args)
         {

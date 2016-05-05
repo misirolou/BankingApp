@@ -1,6 +1,7 @@
 ﻿using App1.Layout;
 using App1.REST;
 using System;
+using System.Diagnostics;
 using App1.Models;
 using Xamarin.Forms;
 
@@ -158,11 +159,13 @@ namespace App1
                 }
             };
 
+            messageLabel.BackgroundColor = Color.Gray;
+
             outergrid.Children.Add(imagegrid, 0, 0);
             outergrid.Children.Add(Switchergrid, 0, 1);
             outergrid.Children.Add(innerGrid, 0, 2);
             outergrid.Children.Add(buttongrid, 0, 3);
-
+            
             //imagegrid contains the inicial image of the login page
             imagegrid.Children.Add(ImageRobot, 0, 0);
 
@@ -184,6 +187,7 @@ namespace App1
              },0,2);
             innerGrid.Children.Add(passwordEntry, 0, 3);
             innerGrid.Children.Add(loginButton, 0, 4);
+            innerGrid.Children.Add(messageLabel,0,5);
 
             //button grid containg buttons that alocate you to another page
             buttongrid.Children.Add(ContactButton, 0, 0);
@@ -207,9 +211,10 @@ namespace App1
             var Verification = VerifyInfo(user);
             if (Verification)
             {
+                Debug.WriteLine("verifcation is true");
                 App.UserLoggedIn = true;
-                Navigation.InsertPageBefore(new PrincipalPage(), this);
-                await Navigation.PopAsync();
+               Navigation.InsertPageBefore(new PrincipalPage(), this);
+               await Navigation.PopAsync();
             }
             else
             {
@@ -221,35 +226,38 @@ namespace App1
         //verifing info that is contained in the REST API OpenBank
         private bool VerifyInfo(Users user)
         {
-            //if (user == null) throw new ArgumentNullException(nameof(user));
-            if (Object.Equals(userEntry, OAuth.Username) && Object.Equals(passwordEntry, OAuth.Password))
-            {
-                return true;
-            }
-            return false;
+            Debug.WriteLine("VerifyInfo user: " + user.User);
+            Debug.WriteLine("VerifyInfo password: " + user.Password);
+            return user.User == userEntry.Text && user.Password == passwordEntry.Text; 
         }
 
         //changes the mode according to the switch to public or private verification
         private void switchertoggled(object sender, ToggledEventArgs e)
         {
-            if (!IsEnabled)
+            if (e.Value.Equals(true))
             {
+                Debug.WriteLine("changed text to public");
                 privacy.Text = String.Format("{0} mode", "Public");
             }
             else
-            privacy.Text = String.Format("{0} mode", "Private");
+            {
+                Debug.WriteLine("changed text to private");
+                privacy.Text = String.Format("{0} mode", "Private");
+            }
         }
 
         //what happens when we click the contact button
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
-             Navigation.InsertPageBefore(new ContactPage(), this);
-             await Navigation.PopAsync();
+            Debug.WriteLine("Clicked contact button");
+            Navigation.InsertPageBefore(new ContactPage(), this);
+            await Navigation.PopAsync();
         }
 
         //what happens when we click the Balcao button
         private async void OnBalcaoButtonClicked(object sender, EventArgs e)
         {
+            Debug.WriteLine("Clicked Bank Map button");
             Navigation.InsertPageBefore(new BalcaoPage(), this);
             await Navigation.PopAsync();
         }
@@ -257,6 +265,7 @@ namespace App1
         //what happens when we click the Atm button
         private async void OnAtmButtonClicked(object sender, EventArgs e)
         {
+            Debug.WriteLine("Clicked ATM Map button");
             Navigation.InsertPageBefore(new AtmPage(), this);
             await Navigation.PopAsync();
         }

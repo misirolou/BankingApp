@@ -15,13 +15,22 @@ namespace App1.REST
 
         public List<AccountInfo> Info { get; private set; }
 
+      /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
+        400 (BAD REQUEST) – the request is not understood by the server.
+        404 (NOT FOUND) – the requested resource does not exist on the server.*/
+
         //login into the API with my account Direct Login
         public RESTService()
-        {
+        {   
+            var users = new Users();
+            users.User = OAuth.Username;
+            users.Password = OAuth.Password;
+            Debug.WriteLine("in RestService");
+            //authorization header used to send information to receive token
             var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
             var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
 
-            Debug.WriteLine(authHeaderValue);
+            Debug.WriteLine("RestService authHeadrer: " + authHeaderValue);
 
             restClient = new HttpClient();
             restClient.MaxResponseContentBufferSize = 256000;
@@ -54,7 +63,7 @@ namespace App1.REST
 
         public async Task SaveInfoAsync(AccountInfo Info, bool isNewItem = false)
         {
-            var uri = new Uri(string.Format(OAuth.OpenBankAPI, Info.AccountId));
+            var uri = new Uri(string.Format(OAuth.OpenBankAPI, Info.token));
 
             try
             {
@@ -64,16 +73,18 @@ namespace App1.REST
                 HttpResponseMessage response = null;
                 if (isNewItem)
                 {
+                    //Creates the new data fetched from the API
                     response = await restClient.PostAsync(uri, content);
                 }
                 else
                 {
+                    //Update data from the API
                     response = await restClient.PutAsync(uri, content);
                 }
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Debug.WriteLine(@"				TodoItem successfully saved.");
+                    Debug.WriteLine(@"				Token successfully saved.");
                 }
             }
             catch (Exception ex)
@@ -82,9 +93,9 @@ namespace App1.REST
             }
         }
 
-        public async Task DeleteInfoAsync(string id)
+        public async Task DeleteInfoAsync(string token)
         {
-            var uri = new Uri(string.Format(OAuth.OpenBankAPI, id));
+            var uri = new Uri(string.Format(OAuth.OpenBankAPI, token));
 
             try
             {
@@ -92,7 +103,7 @@ namespace App1.REST
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Debug.WriteLine(@"				TodoItem successfully deleted.");
+                    Debug.WriteLine(@"				token successfully deleted.");
                 }
             }
             catch (Exception ex)

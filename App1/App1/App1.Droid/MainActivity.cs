@@ -18,8 +18,9 @@ namespace App1.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
+            App.Speech = new Speech();
             LoadApplication(new App());
-            //App.Speech = new Speech();
+            
         }
     }
 }

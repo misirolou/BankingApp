@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using App1.Models;
+using App1.REST;
+using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -12,15 +18,14 @@ namespace App1.Layout
         private Label BankInfo;
         
         public ContactPage()
-        {       
+        {
             var searchBanks = new Banks();
-
             UserInContactPage(searchBanks);
             BankInfo = new Label();
             //The contact page will contain the banks URLs to websites
             Title = "ContactPage";
             Icon = new FileImageSource { File = "robot.png" };
-            StackLayout stackLayout = new StackLayout
+            var stackLayout = new StackLayout
             {
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
@@ -46,6 +51,7 @@ namespace App1.Layout
                     }
                 }
             };
+            stackLayout.Children.Add(BankInfo);
             this.Content = stackLayout;
         }
 
@@ -72,8 +78,8 @@ namespace App1.Layout
                         }
 
                 }, request);
-            Debug.WriteLine(responseFromServer);
-            Debug.WriteLine(asyncResult);
+            Debug.WriteLine("userincontactpage response: "+ responseFromServer);
+            Debug.WriteLine("userincontactpage asyncresult" + asyncResult);
 
             // if it worked, we should have oauth_token and oauth_token_secret in the response
             foreach (string pair in responseFromServer.Split(new char[] { ',' }))

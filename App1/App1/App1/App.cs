@@ -1,5 +1,6 @@
 ﻿using App1.Layout;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using App1.REST;
 using Xamarin.Forms;
@@ -18,23 +19,23 @@ namespace App1
             ManagerRest = new ManagerRESTService(new RESTService());
             MainPage = new NavigationPage(new LoginPage());
             NavigateAsync(FirstPage.Login);
+            UserLoggedIn = false;
+            Debug.WriteLine("App testing userloggedIn");
             if (UserLoggedIn)
             {
-                MainPage = new NavigationPage(PrincipalPage);
+                Debug.WriteLine("userloggedIn is true");
+                MainPage = new NavigationPage(new PrincipalPage());
             }
             else
             {
+                Debug.WriteLine("userloggedIn is false");
                 MainPage = new NavigationPage(new LoginPage());
+                
             }
             Pages = new Dictionary<FirstPage, NavigationPage>();
             //Master = new LoginPage(this);
-            /*BindingContext = new BaseViewModel(Navigation)
-            {
-                Title = "Xamarin CRM",
-                Icon = "slideout.png"
-            };
             //setup home page
-            NavigateAsync(UserLoggedIn);*/
+             //NavigateAsync(UserLoggedIn);
         }
 
         private void SetDetailIfNull(Page page)
@@ -165,7 +166,8 @@ namespace App1
 
         protected override void OnStart()
         {
-            var ImageRobot = new Image()
+            // Handle when your app starts
+           /* var ImageRobot = new Image()
             {
                 Aspect = Aspect.AspectFill,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -175,8 +177,7 @@ namespace App1
             ImageRobot.Source = Device.OnPlatform(
                 iOS: ImageSource.FromFile("robot.png"),
                 Android: ImageSource.FromFile("robot.png"),
-                WinPhone: ImageSource.FromFile("robot.png"));
-
+                WinPhone: ImageSource.FromFile("robot.png"));*/
         }
 
         protected override void OnSleep()

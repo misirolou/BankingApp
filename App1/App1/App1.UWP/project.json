@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "Microsoft.Bcl.Build": "1.0.21",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0",
     "Xamarin.Auth": "1.3.0",
     "Xamarin.Forms": "2.2.0.31"
