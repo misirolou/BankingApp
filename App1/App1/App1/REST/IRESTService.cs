@@ -11,5 +11,6 @@ namespace App1.REST
 
         Task DeleteInfoAsync(string id);
 
+        Task<object> CreateSession(AccountInfo item);
     }
 }

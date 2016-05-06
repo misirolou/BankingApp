@@ -1,8 +1,8 @@
 ﻿using App1.Layout;
+using App1.REST;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using App1.REST;
 using Xamarin.Forms;
 
 namespace App1
@@ -23,6 +23,8 @@ namespace App1
             Debug.WriteLine("App testing userloggedIn");
             if (UserLoggedIn)
             {
+                var Info = new AccountInfo();
+                ManagerRest.CreateSession(Info.token);
                 Debug.WriteLine("userloggedIn is true");
                 MainPage = new NavigationPage(new PrincipalPage());
             }
@@ -30,12 +32,11 @@ namespace App1
             {
                 Debug.WriteLine("userloggedIn is false");
                 MainPage = new NavigationPage(new LoginPage());
-                
             }
             Pages = new Dictionary<FirstPage, NavigationPage>();
             //Master = new LoginPage(this);
             //setup home page
-             //NavigateAsync(UserLoggedIn);
+            //NavigateAsync(UserLoggedIn);
         }
 
         private void SetDetailIfNull(Page page)
@@ -167,17 +168,17 @@ namespace App1
         protected override void OnStart()
         {
             // Handle when your app starts
-           /* var ImageRobot = new Image()
-            {
-                Aspect = Aspect.AspectFill,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-            };
-            //specifying location for each platform
-            ImageRobot.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("robot.png"),
-                Android: ImageSource.FromFile("robot.png"),
-                WinPhone: ImageSource.FromFile("robot.png"));*/
+            /* var ImageRobot = new Image()
+             {
+                 Aspect = Aspect.AspectFill,
+                 VerticalOptions = LayoutOptions.CenterAndExpand,
+                 HorizontalOptions = LayoutOptions.CenterAndExpand,
+             };
+             //specifying location for each platform
+             ImageRobot.Source = Device.OnPlatform(
+                 iOS: ImageSource.FromFile("robot.png"),
+                 Android: ImageSource.FromFile("robot.png"),
+                 WinPhone: ImageSource.FromFile("robot.png"));*/
         }
 
         protected override void OnSleep()

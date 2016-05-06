@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AVFoundation;
+﻿using AVFoundation;
 
 namespace App1.iOS
 {
-    class Speech : ITextSpeech
+    internal class Speech : ITextSpeech
     {
-        float volume = 0.5f;
-        float pitch = 1.0f;
+        private float volume = 0.5f;
+        private float pitch = 1.0f;
 
         public void Speak(string text)
         {

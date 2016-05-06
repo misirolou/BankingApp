@@ -15,13 +15,13 @@ namespace App1.REST
 
         public List<AccountInfo> Info { get; private set; }
 
-      /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
+        /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
         400 (BAD REQUEST) – the request is not understood by the server.
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //login into the API with my account Direct Login
         public RESTService()
-        {   
+        {
             var users = new Users();
             users.User = OAuth.Username;
             users.Password = OAuth.Password;
@@ -34,7 +34,8 @@ namespace App1.REST
 
             restClient = new HttpClient();
             restClient.MaxResponseContentBufferSize = 256000;
-            restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DirectLogin", authHeaderValue);
+            restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DirectLogin",
+                authHeaderValue);
         }
 
         //Refreshing information
@@ -110,6 +111,38 @@ namespace App1.REST
             {
                 Debug.WriteLine(@"				ERROR {0}", ex.Message);
             }
+        }
+
+        public async Task<object> CreateSession(AccountInfo info)
+        {
+            using (var client = new HttpClient())
+            {
+                //Url link to OpenBankAPI
+                var url = string.Format(OAuth.OpenBankAPI);
+                //Converting to JSON
+                var json = JsonConvert.SerializeObject(info);
+
+                //headers data that goes with the information given
+                var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
+                var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
+
+                Debug.WriteLine("RestService authHeadrer: " + authHeaderValue);
+
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("DirectLogin", authHeaderValue);
+
+                //defining post method
+                var resp = await client.PostAsync(url, content);
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    var result = JsonConvert.DeserializeObject<AccountInfo>(resp.Content.ReadAsStringAsync().Result);
+                    var Token = result.token;
+                    Debug.WriteLine(Token);
+                    return Token;
+                }
+            }
+            return null;
         }
     }
 }

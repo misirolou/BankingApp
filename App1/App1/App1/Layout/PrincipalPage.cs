@@ -56,17 +56,17 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
             //image
-             /*var menu = new Image()
-             {
-                 VerticalOptions = LayoutOptions.Start,
-                 HorizontalOptions = LayoutOptions.Start,
-             };
-             //specifying location for each platform
-             menu.Source = Device.OnPlatform(
-                 iOS: ImageSource.FromFile("menu.png"),
-                 Android: ImageSource.FromFile("menu.png"),
-                 WinPhone: ImageSource.FromFile("menu.png"));
-             */
+            /*var menu = new Image()
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Start,
+            };
+            //specifying location for each platform
+            menu.Source = Device.OnPlatform(
+                iOS: ImageSource.FromFile("menu.png"),
+                Android: ImageSource.FromFile("menu.png"),
+                WinPhone: ImageSource.FromFile("menu.png"));
+            */
             ImageCell menu = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(

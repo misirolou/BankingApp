@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using App1.Models;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using App1.Models;
-using App1.REST;
-using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -16,7 +10,7 @@ namespace App1.Layout
     internal class ContactPage : ContentPage
     {
         private Label BankInfo;
-        
+
         public ContactPage()
         {
             var searchBanks = new Banks();
@@ -76,9 +70,8 @@ namespace App1.Layout
                             StreamReader reader = new StreamReader(dataStream);
                             responseFromServer = reader.ReadToEnd();
                         }
-
                 }, request);
-            Debug.WriteLine("userincontactpage response: "+ responseFromServer);
+            Debug.WriteLine("userincontactpage response: " + responseFromServer);
             Debug.WriteLine("userincontactpage asyncresult" + asyncResult);
 
             // if it worked, we should have oauth_token and oauth_token_secret in the response
@@ -109,7 +102,7 @@ namespace App1.Layout
             Debug.WriteLine(banks.BankfullName);
             Debug.WriteLine(banks.BankshortName);
             Debug.WriteLine(banks.Bankwebsite);
-            BankInfo.Text =  String.Format("{0}:{1}:{2}", banks.BankfullName, banks.BankshortName, banks.Bankwebsite);
+            BankInfo.Text = String.Format("{0}:{1}:{2}", banks.BankfullName, banks.BankshortName, banks.Bankwebsite);
             BankInfo.BackgroundColor = Color.Gray;
         }
     }

@@ -1,23 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Speech.Tts;
-using Android.Views;
-using Android.Widget;
+using System.Collections.Generic;
 using Xamarin.Forms;
 
 namespace App1.Droid
 {
     public class Speech : Java.Lang.Object, ITextSpeech, TextToSpeech.IOnInitListener
     {
-        TextToSpeech textToSpeech;
-        string toSpeak;
+        private TextToSpeech textToSpeech;
+        private string toSpeak;
 
         //information used to interact between the app and the API OpenBank
         public void Speak(string text)

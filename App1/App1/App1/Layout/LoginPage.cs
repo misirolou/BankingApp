@@ -2,9 +2,7 @@
 using App1.REST;
 using System;
 using System.Diagnostics;
-using App1.Models;
 using Xamarin.Forms;
-
 
 namespace App1
 {
@@ -12,6 +10,8 @@ namespace App1
     {
         private Entry userEntry, passwordEntry;
         private Label messageLabel, privacy;
+
+        public static ManagerRESTService ManagerRest { get; private set; }
 
         //layout of the page
         public LoginPage()
@@ -130,7 +130,7 @@ namespace App1
             };
 
             //specification of the innergrid layout
-             var innerGrid = new Grid
+            var innerGrid = new Grid
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 RowDefinitions =
@@ -165,7 +165,7 @@ namespace App1
             outergrid.Children.Add(Switchergrid, 0, 1);
             outergrid.Children.Add(innerGrid, 0, 2);
             outergrid.Children.Add(buttongrid, 0, 3);
-            
+
             //imagegrid contains the inicial image of the login page
             imagegrid.Children.Add(ImageRobot, 0, 0);
 
@@ -174,20 +174,20 @@ namespace App1
             Switchergrid.Children.Add(switcher, 1, 0);
 
             //innergrid contaning login for user to provide ´the necessary login information
-             innerGrid.Children.Add(new Label()
-             {
-                 BackgroundColor = Color.Gray,
-                 Text = "username"
-             },0,0);
+            innerGrid.Children.Add(new Label()
+            {
+                BackgroundColor = Color.Gray,
+                Text = "username"
+            }, 0, 0);
             innerGrid.Children.Add(userEntry, 0, 1);
             innerGrid.Children.Add(new Label()
-             {
-                 BackgroundColor = Color.Gray,
-                 Text = "Password"
-             },0,2);
+            {
+                BackgroundColor = Color.Gray,
+                Text = "Password"
+            }, 0, 2);
             innerGrid.Children.Add(passwordEntry, 0, 3);
             innerGrid.Children.Add(loginButton, 0, 4);
-            innerGrid.Children.Add(messageLabel,0,5);
+            innerGrid.Children.Add(messageLabel, 0, 5);
 
             //button grid containg buttons that alocate you to another page
             buttongrid.Children.Add(ContactButton, 0, 0);
@@ -201,20 +201,27 @@ namespace App1
         //what happens when we click the login button
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
+            var token = new AccountInfo();
+
             var user = new Users
             {
                 User = userEntry.Text,
                 Password = passwordEntry.Text
             };
-
+            if (userEntry.Text == null || passwordEntry.Text == null)
+            {
+                userEntry.Text = String.Empty;
+                passwordEntry.Text = String.Empty;
+            }
             //verfication of users information should be able to connect to class that takes care of users information
             var Verification = VerifyInfo(user);
-            if (Verification)
+            if (Verification.Equals(true))
             {
+                // await ManagerRest.CreateSession(token.token);
                 Debug.WriteLine("verifcation is true");
                 App.UserLoggedIn = true;
-               Navigation.InsertPageBefore(new PrincipalPage(), this);
-               await Navigation.PopAsync();
+                Navigation.InsertPageBefore(new PrincipalPage(), this);
+                await Navigation.PopAsync();
             }
             else
             {
@@ -228,7 +235,7 @@ namespace App1
         {
             Debug.WriteLine("VerifyInfo user: " + user.User);
             Debug.WriteLine("VerifyInfo password: " + user.Password);
-            return user.User == userEntry.Text && user.Password == passwordEntry.Text; 
+            return user.User == userEntry.Text && user.Password == passwordEntry.Text;
         }
 
         //changes the mode according to the switch to public or private verification

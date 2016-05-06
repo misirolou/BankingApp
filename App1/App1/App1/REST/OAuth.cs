@@ -3,15 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq.Expressions;
 using System.Net;
-using System.Security;
-using System.Net.Http.Headers;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
-using App1.Models;
-using Xamarin.Forms;
-using Xamarin.Utilities;
 using Encoding = System.Text.Encoding;
 
 namespace App1.REST
@@ -40,7 +33,7 @@ namespace App1.REST
 
         protected static string oauth_token = "";
         protected static string oauth_token_secret = "";
-        
+
         //Request token needed to verify users authentication
         private static async void RequestToken(string[] args)
         {
@@ -146,9 +139,8 @@ namespace App1.REST
                             StreamReader reader = new StreamReader(dataStream);
                             responseFromServer = reader.ReadToEnd();
                         }
-                    
                 }, request);
-            
+
             Debug.WriteLine(responseFromServer);
             Debug.WriteLine(asyncResult);
 
@@ -236,7 +228,7 @@ namespace App1.REST
             // Encrypt with either SHA1 or SHA256, creating the Signature
             var enc = Encoding.UTF8;
             HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&" + oauth_token_secret));
-           // hmac.Initialize();
+            // hmac.Initialize();
             byte[] buffer = enc.GetBytes(basestring);
             string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
             byte[] resultantArray = new byte[hmacsha1.Length / 2];
@@ -280,9 +272,8 @@ namespace App1.REST
                             StreamReader reader = new StreamReader(dataStream);
                             responseFromServer = reader.ReadToEnd();
                         }
-                    
                 }, request);
-            
+
             Debug.WriteLine(responseFromServer);
             Debug.WriteLine(asyncResult);
 

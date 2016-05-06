@@ -26,5 +26,10 @@ namespace App1.REST
         {
             return restService.DeleteInfoAsync(item.AccountId);
         }
+
+        public Task CreateSession(AccountInfo item)
+        {
+            return restService.CreateSession(item.token);
+        }
     }
 }
