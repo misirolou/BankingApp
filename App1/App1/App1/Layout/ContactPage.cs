@@ -13,6 +13,18 @@ namespace App1.Layout
 
         public ContactPage()
         {
+            Button Back = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Back.png"),
+                        Android: ImageSource.FromFile("Back.png"),
+                        WinPhone: ImageSource.FromFile("Back.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+            Back.Clicked += BackButtonClicked;
+
+
             var searchBanks = new Banks();
             UserInContactPage(searchBanks);
             BankInfo = new Label();
@@ -47,6 +59,12 @@ namespace App1.Layout
             };
             stackLayout.Children.Add(BankInfo);
             this.Content = stackLayout;
+        }
+
+        private async void BackButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.InsertPageBefore(new LoginPage(), this);
+            await Navigation.PopAsync();
         }
 
         private void UserInContactPage(Banks banks)

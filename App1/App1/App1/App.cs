@@ -23,8 +23,8 @@ namespace App1
             Debug.WriteLine("App testing userloggedIn");
             if (UserLoggedIn)
             {
-                var Info = new AccountInfo();
-                ManagerRest.CreateSession(Info.token);
+                //var Info = new AccountInfo();
+                //ManagerRest.CreateSession(Info.token);
                 Debug.WriteLine("userloggedIn is true");
                 MainPage = new NavigationPage(new PrincipalPage());
             }

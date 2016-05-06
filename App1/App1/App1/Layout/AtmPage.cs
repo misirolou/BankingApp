@@ -1,11 +1,26 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 
 namespace App1.Layout
 {
     internal class AtmPage : ContentPage
     {
+
+
         public AtmPage()
         {
+
+            Button Back = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Back.png"),
+                    Android: ImageSource.FromFile("Back.png"),
+                    WinPhone: ImageSource.FromFile("Back.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+            Back.Clicked += BackButtonClicked;
+
             Title = "AtmPage";
             Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout
@@ -18,6 +33,12 @@ namespace App1.Layout
                     }
                 }
             };
+        }
+
+        private async void BackButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.InsertPageBefore(new LoginPage(), this);
+            await Navigation.PopAsync();
         }
     }
 }

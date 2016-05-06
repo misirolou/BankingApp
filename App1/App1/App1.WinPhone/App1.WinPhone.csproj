@@ -97,7 +97,12 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Back.png" />
+    <Content Include="Assets\Bank.png" />
+    <Content Include="Assets\Home.png" />
+    <Content Include="Assets\Location.png" />
     <Content Include="Assets\menu.png" />
+    <Content Include="Assets\Phone.png" />
     <Content Include="Assets\robot.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
