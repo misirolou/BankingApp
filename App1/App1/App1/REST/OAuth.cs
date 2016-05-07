@@ -12,7 +12,7 @@ namespace App1.REST
     internal class OAuth
     {
         // URL of REST service
-        public static string OpenBankAPI = "https://apisandbox.openbankproject.com/my/logins/direct{0}";
+        public static string OpenBankAPI = "https://apisandbox.openbankproject.com/my/logins/direct";
 
         // Credentials that are hard coded into the REST service for Direct Login
         public static string Username = "danielfaria921@gmail.com";
@@ -34,7 +34,7 @@ namespace App1.REST
         protected static string oauth_token = "";
         protected static string oauth_token_secret = "";
 
-        //Request token needed to verify users authentication
+      /*  //Request token needed to verify users authentication
         private static async void RequestToken(string[] args)
         {
             // callback to the app
@@ -94,7 +94,7 @@ namespace App1.REST
             var enc = ASCIIEncoding.ASCII;
 
             /* create the crypto class we use to generate a signature for the request */
-            HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&"));
+          /*  HMACSHA1 hmac = new HMACSHA1(enc.GetBytes(oauth_consumer_secret + "&"));
             //hmac.intialize();
             byte[] buffer = enc.GetBytes(basestring);
             string hmacsha1 = BitConverter.ToString(hmac.ComputeHash(buffer)).Replace("-", "").ToLower();
@@ -120,9 +120,10 @@ namespace App1.REST
             string responseFromServer = "";
             //pedido ao servidor pelo request token
             WebRequest request = (HttpWebRequest)WebRequest.Create(RequestTokenUri);
-            request.Method = method;
+            request.ContentType = "application/json";
+            request.Method = "POST";
             // request.Headers.Add("Authorization", "OAuth " + authorizationstring);
-            request.Headers["Authorization"] = "OAuth " + authorizationstring;
+            request.Headers["Authorizaton"] = "DirectLogin" + authorizationstring;
             var asyncResult = request.BeginGetResponse(
                 ar =>
                 {
@@ -295,6 +296,6 @@ namespace App1.REST
             }
             Debug.WriteLine(oauth_access_token);
             Debug.WriteLine(oauth_access_token_secret);
-        }
+        }*/
     }
 }

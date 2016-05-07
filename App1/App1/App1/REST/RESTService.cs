@@ -2,10 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Json;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using App1.Models;
 
 namespace App1.REST
 {
@@ -113,36 +117,100 @@ namespace App1.REST
             }
         }
 
-        public async Task<object> CreateSession(AccountInfo info)
+        public async Task<JsonValue> NewSession()
+        {
+
+          //  string responseFromServer = "";
+            //pedido ao servidor pelo request token
+            WebRequest request = (HttpWebRequest)WebRequest.Create(OAuth.OpenBankAPI);
+            request.ContentType = "application/json";
+            request.Method = "POST";
+            // request.Headers.Add("Authorization", "OAuth " + authorizationstring);
+           // var authData = string.Format("username={0},password={1},consumer_key={2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
+            var authdata = string.Format("username= \"danielfaria921@gmail.com\",password= \"Bankingdont243**\",consumer_key=\"ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd\"");
+            request.Headers["Authorizaton"] = "DirectLogin" + authdata;
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                using (Stream dataStream = response.GetResponseStream())
+                {
+                    JsonValue jsondoc = await Task.Run(() => JsonObject.Load(dataStream));
+                    Debug.WriteLine("Response {0}", jsondoc.ToString());
+                    return jsondoc;
+                }
+            }
+        }
+
+
+
+        public async Task<JsonValue> UserInContactPage()
+        {
+            var request2 = (HttpWebRequest) WebRequest.Create(Banks.BankUrl);
+            request2.ContentType = "application/json";
+            request2.Method = "GET";
+
+            using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                    Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    var content = reader.ReadToEnd();
+                    if (string.IsNullOrWhiteSpace(content))
+                    {
+                        Debug.WriteLine("Response contained empty body...");
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Response Body: \r\n {0}", content);
+                    }
+                    return content;
+                }
+            }
+
+          /*  //pedido ao servidor pelo request token
+            WebRequest request = (HttpWebRequest) WebRequest.Create(Banks.BankUrl);
+            request.Method = "GET";
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                using (Stream dataStream = response.GetResponseStream())
+                {
+                    JsonValue jsondoc = await Task.Run(() => JsonValue.Load(dataStream));
+                    Debug.WriteLine("Response: {0}", jsondoc);
+                    return jsondoc;
+                }
+            }*/
+        }
+
+        public async Task<string> CreateSession(string user, string pass)
         {
             using (var client = new HttpClient())
             {
-                //Url link to OpenBankAPI
-                var url = string.Format(OAuth.OpenBankAPI);
-                //Converting to JSON
-                var json = JsonConvert.SerializeObject(info);
+            //Url link to OpenBankAPI
+                      var url = string.Format(OAuth.OpenBankAPI);
+                      //Converting to JSON
+                      var json = JsonConvert.SerializeObject(user);
 
-                //headers data that goes with the information given
-                var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
-                var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
+                      //headers data that goes with the information given
+                      var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
+                      var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
 
-                Debug.WriteLine("RestService authHeadrer: " + authHeaderValue);
+                      Debug.WriteLine("RestService authHeader: " + authHeaderValue);
 
-                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                client.DefaultRequestHeaders.Add("DirectLogin", authHeaderValue);
+                      HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                      client.DefaultRequestHeaders.Add("DirectLogin", authHeaderValue);
 
-                //defining post method
-                var resp = await client.PostAsync(url, content);
+                      //defining post method
+                      var resp = await client.PostAsync(url, content);
 
-                if (resp.IsSuccessStatusCode)
-                {
-                    var result = JsonConvert.DeserializeObject<AccountInfo>(resp.Content.ReadAsStringAsync().Result);
-                    var Token = result.token;
-                    Debug.WriteLine(Token);
-                    return Token;
-                }
-            }
-            return null;
+                      if (resp.IsSuccessStatusCode)
+                      {
+                          var result = JsonConvert.DeserializeObject<Users>(resp.Content.ReadAsStringAsync().Result);
+                          var Token = result.token;
+                          Debug.WriteLine(Token);
+                          return Token;
+                      }
+                  }
+                  return null;
+              }
         }
-    }
 }

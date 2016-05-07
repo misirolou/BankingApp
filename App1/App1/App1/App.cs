@@ -16,7 +16,8 @@ namespace App1
         //the main Application and its functionalities
         public App()
         {
-            ManagerRest = new ManagerRESTService(new RESTService());
+            var users = new Users();
+            //ManagerRest = new ManagerRESTService(new RESTService());
             MainPage = new NavigationPage(new LoginPage());
             NavigateAsync(FirstPage.Login);
             UserLoggedIn = false;
@@ -24,7 +25,7 @@ namespace App1
             if (UserLoggedIn)
             {
                 //var Info = new AccountInfo();
-                //ManagerRest.CreateSession(Info.token);
+                ManagerRest.CreateSession(users.User , users.Password);
                 Debug.WriteLine("userloggedIn is true");
                 MainPage = new NavigationPage(new PrincipalPage());
             }

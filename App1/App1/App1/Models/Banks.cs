@@ -2,7 +2,7 @@
 {
     internal class Banks
     {
-        public const string BankUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks{0}";
+        public const string BankUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks";
 
         public string BankId { get; set; }
 

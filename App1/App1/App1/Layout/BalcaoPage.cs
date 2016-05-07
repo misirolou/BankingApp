@@ -14,7 +14,8 @@ namespace App1.Layout
                         Android: ImageSource.FromFile("Back.png"),
                         WinPhone: ImageSource.FromFile("Back.png")),
                         VerticalOptions = LayoutOptions.Start,
-                        HorizontalOptions = LayoutOptions.EndAndExpand
+                        HorizontalOptions = LayoutOptions.EndAndExpand,
+                        BackgroundColor = Color.Gray
                 };
                 Back.Clicked += BackButtonClicked;
                 Title = "BalcaoPage";
@@ -22,6 +23,7 @@ namespace App1.Layout
                 Content = new StackLayout
                 {
                     Children = {
+                        Back,
                         new Label {
                             Text = "BalcaoPage should have a map of Banks",
                             HorizontalOptions = LayoutOptions.Center,

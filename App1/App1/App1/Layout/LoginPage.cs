@@ -2,6 +2,8 @@
 using App1.REST;
 using System;
 using System.Diagnostics;
+using System.Json;
+using System.Security.Cryptography;
 using Xamarin.Forms;
 
 namespace App1
@@ -201,11 +203,13 @@ namespace App1
         //what happens when we click the login button
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
-            var token = new AccountInfo();
-
             var user = new Users
             {
                 User = userEntry.Text,
+                
+            };
+            var pass = new Users()
+            {
                 Password = passwordEntry.Text
             };
             if (userEntry.Text == null || passwordEntry.Text == null)
@@ -214,11 +218,12 @@ namespace App1
                 passwordEntry.Text = String.Empty;
             }
             //verfication of users information should be able to connect to class that takes care of users information
-            var Verification = VerifyInfo(user);
+            var Verification = VerifyInfo(user, pass);
             if (Verification.Equals(true))
             {
-                // await ManagerRest.CreateSession(token.token);
-                Debug.WriteLine("verifcation is true");
+                //JsonValue json = await ManagerRest.NewSession();
+               // await ManagerRest.CreateSession(user, pass);
+               // Debug.WriteLine("verifcation is true");
                 App.UserLoggedIn = true;
                 Navigation.InsertPageBefore(new PrincipalPage(), this);
                 await Navigation.PopAsync();
@@ -231,11 +236,11 @@ namespace App1
         }
 
         //verifing info that is contained in the REST API OpenBank
-        private bool VerifyInfo(Users user)
+        private bool VerifyInfo(Users user, Users pass)
         {
             Debug.WriteLine("VerifyInfo user: " + user.User);
-            Debug.WriteLine("VerifyInfo password: " + user.Password);
-            return user.User == userEntry.Text && user.Password == passwordEntry.Text;
+            Debug.WriteLine("VerifyInfo password: " + pass.Password);
+            return user.User == userEntry.Text && pass.Password == passwordEntry.Text;
         }
 
         //changes the mode according to the switch to public or private verification
@@ -257,6 +262,7 @@ namespace App1
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
             Debug.WriteLine("Clicked contact button");
+            JsonValue json = await ManagerRest.UserInContactPage();
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
         }

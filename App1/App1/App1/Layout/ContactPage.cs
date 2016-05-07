@@ -2,7 +2,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Json;
 using System.Net;
+using System.Threading.Tasks;
+using App1.REST;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -20,24 +23,24 @@ namespace App1.Layout
                         Android: ImageSource.FromFile("Back.png"),
                         WinPhone: ImageSource.FromFile("Back.png")),
                 VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Gray
+                
             };
             Back.Clicked += BackButtonClicked;
 
-
-            var searchBanks = new Banks();
-            UserInContactPage(searchBanks);
             BankInfo = new Label();
             //The contact page will contain the banks URLs to websites
             Title = "ContactPage";
-            Icon = new FileImageSource { File = "robot.png" };
+            Icon = new FileImageSource { File = "Phone.png" };
             var stackLayout = new StackLayout
             {
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
                 Children = {
+                    Back,
                     BankInfo,
-                    new Label {
+                    new Label() {
                         BackgroundColor = Color.Gray,
                         Text = "",
                         HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -67,61 +70,71 @@ namespace App1.Layout
             await Navigation.PopAsync();
         }
 
-        private void UserInContactPage(Banks banks)
+        // Parse the various requests made from the httprequests and add them to the screen
+        // conditions, and location to the screen.
+        private void ParseAndDisplay(JsonValue json)
         {
-            string responseFromServer = "";
-            WebRequest request = (HttpWebRequest)WebRequest.Create(Banks.BankUrl);
-            request.Method = "GET";
-            var asyncResult = request.BeginGetResponse(
-                ar =>
-                {
-                    using (WebResponse response = request.EndGetResponse(ar))
-                        try
-                        {
-                            Stream dataStream = response.GetResponseStream();
-                            StreamReader reader = new StreamReader(dataStream);
-                            responseFromServer = reader.ReadToEnd();
-                        }
-                        catch (WebException err)
-                        {
-                            Stream dataStream = err.Response.GetResponseStream();
-                            StreamReader reader = new StreamReader(dataStream);
-                            responseFromServer = reader.ReadToEnd();
-                        }
-                }, request);
-            Debug.WriteLine("userincontactpage response: " + responseFromServer);
-            Debug.WriteLine("userincontactpage asyncresult" + asyncResult);
+            var term = new Banks();
+            var obj = JsonObject.Parse(json);
+            //specifying the main key which is the object
+            var properties = obj["Banks"];
+            //specifying the properties used in the banks obj key
+            term.BankId = properties["id"];
+            term.BankshortName = properties["short_name"];
+            term.BankfullName = properties["full_name"];
+            term.Bankwebsite = properties["website"];
+            // Get the weather reporting fields from the layout resource:
+           // JsonValue BankID =  Task<Label>(Banks BankID);
 
-            // if it worked, we should have oauth_token and oauth_token_secret in the response
-            foreach (string pair in responseFromServer.Split(new char[] { ',' }))
-            {
-                string[] split_pair = pair.Split(new char[] { '"' });
-
-                switch (split_pair[0])
-                {
-                    case "id":
-                        banks.BankId = split_pair[1];
-                        break;
-
-                    case "full_name":
-                        banks.BankfullName = split_pair[1];
-                        break;
-
-                    case "short_name":
-                        banks.BankshortName = split_pair[1];
-                        break;
-
-                    case "website":
-                        banks.Bankwebsite = split_pair[1];
-                        break;
-                }
-            }
-            Debug.WriteLine(banks.BankId);
-            Debug.WriteLine(banks.BankfullName);
-            Debug.WriteLine(banks.BankshortName);
-            Debug.WriteLine(banks.Bankwebsite);
-            BankInfo.Text = String.Format("{0}:{1}:{2}", banks.BankfullName, banks.BankshortName, banks.Bankwebsite);
-            BankInfo.BackgroundColor = Color.Gray;
+            // Extract the array of name/value results for the field name "weatherObservation". 
+            //BankID = json["id"];
         }
+
+        /*  public async Task<JsonValue> UserInContactPage()
+          {
+              //pedido ao servidor pelo request token
+              WebRequest request = (HttpWebRequest)WebRequest.Create(Banks.BankUrl);
+              request.Method = "GET";
+              using (WebResponse response = await request.GetResponseAsync())
+              {
+                  using (Stream dataStream = response.GetResponseStream())
+                  {
+                      JsonValue jsondoc = await Task.Run(() => JsonObject.Load(dataStream));
+                      Debug.WriteLine("Response {0}", jsondoc.ToString());
+                      return jsondoc;
+                  }
+              }
+
+              // if it worked, we should have oauth_token and oauth_token_secret in the response
+             /* foreach (string pair in .Split(new char[] { ',' }))
+              {
+                  string[] split_pair = pair.Split(new char[] { '"' });
+
+                  switch (split_pair[0])
+                  {
+                      case "id":
+                          banks.BankId = split_pair[1];
+                          break;
+
+                      case "full_name":
+                          banks.BankfullName = split_pair[1];
+                          break;
+
+                      case "short_name":
+                          banks.BankshortName = split_pair[1];
+                          break;
+
+                      case "website":
+                          banks.Bankwebsite = split_pair[1];
+                          break;
+                  }
+              }
+              Debug.WriteLine(banks.BankId);
+              Debug.WriteLine(banks.BankfullName);
+              Debug.WriteLine(banks.BankshortName);
+              Debug.WriteLine(banks.Bankwebsite);
+              BankInfo.Text = String.Format("{0}:{1}:{2}", banks.BankfullName, banks.BankshortName, banks.Bankwebsite);
+              BankInfo.BackgroundColor = Color.Gray;*/
+
     }
 }

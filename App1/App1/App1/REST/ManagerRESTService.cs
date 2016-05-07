@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Json;
 using System.Threading.Tasks;
 
 namespace App1.REST
@@ -10,6 +11,10 @@ namespace App1.REST
         public ManagerRESTService(IRESTService service)
         {
             restService = service;
+        }
+
+        public ManagerRESTService()
+        {
         }
 
         public Task<List<AccountInfo>> GetTasksAsync()
@@ -27,9 +32,19 @@ namespace App1.REST
             return restService.DeleteInfoAsync(item.AccountId);
         }
 
-        public Task CreateSession(AccountInfo item)
+        public Task<string> CreateSession(string user, string pass)
         {
-            return restService.CreateSession(item.token);
+            return restService.CreateSession(user, pass);
+        }
+
+        public async Task<JsonValue> NewSession()
+        {
+            return await restService.NewSession();
+        }
+
+        public async Task<JsonValue> UserInContactPage()
+        {
+            return await restService.UserInContactPage();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Json;
 using System.Threading.Tasks;
 
 namespace App1.REST
@@ -11,6 +12,10 @@ namespace App1.REST
 
         Task DeleteInfoAsync(string id);
 
-        Task<object> CreateSession(AccountInfo item);
+        Task<string> CreateSession(string user, string pass);
+
+        Task<JsonValue> NewSession();
+
+        Task<JsonValue> UserInContactPage();
     }
 }
