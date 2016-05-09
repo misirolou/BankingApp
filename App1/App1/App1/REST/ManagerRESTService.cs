@@ -37,7 +37,7 @@ namespace App1.REST
             return restService.CreateSession(user, pass);
         }
 
-        public async Task<JsonValue> NewSession()
+        public async Task<string> NewSession()
         {
             return await restService.NewSession();
         }

@@ -3,7 +3,6 @@ using App1.REST;
 using System;
 using System.Diagnostics;
 using System.Json;
-using System.Security.Cryptography;
 using Xamarin.Forms;
 
 namespace App1
@@ -206,7 +205,6 @@ namespace App1
             var user = new Users
             {
                 User = userEntry.Text,
-                
             };
             var pass = new Users()
             {
@@ -219,12 +217,20 @@ namespace App1
             }
             //verfication of users information should be able to connect to class that takes care of users information
             var Verification = VerifyInfo(user, pass);
+            while (userEntry.Text == String.Empty && passwordEntry.Text == String.Empty)
+            {
+            }
             if (Verification.Equals(true))
             {
-                //JsonValue json = await ManagerRest.NewSession();
-               // await ManagerRest.CreateSession(user, pass);
-               // Debug.WriteLine("verifcation is true");
-                App.UserLoggedIn = true;
+                JsonValue json = await ManagerRest.NewSession();
+                //await ManagerRest.CreateSession(user, pass);
+                Debug.WriteLine("verifcation is true");
+                if (!App.UserLoggedIn)
+                {
+                    await Navigation.PushModalAsync(new LoginPage());
+                }
+                else
+                    App.UserLoggedIn = true;
                 Navigation.InsertPageBefore(new PrincipalPage(), this);
                 await Navigation.PopAsync();
             }
@@ -262,7 +268,8 @@ namespace App1
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
             Debug.WriteLine("Clicked contact button");
-            JsonValue json = await ManagerRest.UserInContactPage();
+            //JsonValue json = await ManagerRest.UserInContactPage();
+            //Debug.WriteLine(json);
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
         }

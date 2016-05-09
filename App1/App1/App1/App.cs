@@ -19,13 +19,14 @@ namespace App1
             var users = new Users();
             //ManagerRest = new ManagerRESTService(new RESTService());
             MainPage = new NavigationPage(new LoginPage());
-            NavigateAsync(FirstPage.Login);
+            //await   NavigateAsync(FirstPage.Login);
+            NavigateAsync(FirstPage.Login).GetAwaiter();
             UserLoggedIn = false;
             Debug.WriteLine("App testing userloggedIn");
             if (UserLoggedIn)
             {
                 //var Info = new AccountInfo();
-                ManagerRest.CreateSession(users.User , users.Password);
+                ManagerRest.CreateSession(users.User, users.Password);
                 Debug.WriteLine("userloggedIn is true");
                 MainPage = new NavigationPage(new PrincipalPage());
             }
@@ -164,22 +165,11 @@ namespace App1
         }
 
         public Page Detail { get; set; }
-        public static ITextSpeech Speech { get; set; }
+        // public static ITextSpeech Speech { get; set; }
 
         protected override void OnStart()
         {
             // Handle when your app starts
-            /* var ImageRobot = new Image()
-             {
-                 Aspect = Aspect.AspectFill,
-                 VerticalOptions = LayoutOptions.CenterAndExpand,
-                 HorizontalOptions = LayoutOptions.CenterAndExpand,
-             };
-             //specifying location for each platform
-             ImageRobot.Source = Device.OnPlatform(
-                 iOS: ImageSource.FromFile("robot.png"),
-                 Android: ImageSource.FromFile("robot.png"),
-                 WinPhone: ImageSource.FromFile("robot.png"));*/
         }
 
         protected override void OnSleep()

@@ -5,7 +5,6 @@ using System.IO;
 using System.Json;
 using System.Net;
 using System.Threading.Tasks;
-using App1.REST;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -25,7 +24,6 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 BackgroundColor = Color.Gray
-                
             };
             Back.Clicked += BackButtonClicked;
 
@@ -84,57 +82,57 @@ namespace App1.Layout
             term.BankfullName = properties["full_name"];
             term.Bankwebsite = properties["website"];
             // Get the weather reporting fields from the layout resource:
-           // JsonValue BankID =  Task<Label>(Banks BankID);
+            // JsonValue BankID =  Task<Label>(Banks BankID);
 
-            // Extract the array of name/value results for the field name "weatherObservation". 
+            // Extract the array of name/value results for the field name "weatherObservation".
             //BankID = json["id"];
         }
 
-        /*  public async Task<JsonValue> UserInContactPage()
-          {
-              //pedido ao servidor pelo request token
-              WebRequest request = (HttpWebRequest)WebRequest.Create(Banks.BankUrl);
-              request.Method = "GET";
-              using (WebResponse response = await request.GetResponseAsync())
-              {
-                  using (Stream dataStream = response.GetResponseStream())
-                  {
-                      JsonValue jsondoc = await Task.Run(() => JsonObject.Load(dataStream));
-                      Debug.WriteLine("Response {0}", jsondoc.ToString());
-                      return jsondoc;
-                  }
-              }
+        public async Task<JsonValue> UserInContactPage()
+        {
+            //pedido ao servidor pelo request token
+            WebRequest request = (HttpWebRequest)WebRequest.Create(Banks.BankUrl);
+            request.Method = "GET";
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                using (Stream dataStream = response.GetResponseStream())
+                {
+                    JsonValue jsondoc = await Task.Run(() => JsonObject.Load(dataStream));
+                    Debug.WriteLine("Response {0}", jsondoc.ToString());
+                    return jsondoc;
+                }
+            }
+        }
 
-              // if it worked, we should have oauth_token and oauth_token_secret in the response
-             /* foreach (string pair in .Split(new char[] { ',' }))
-              {
-                  string[] split_pair = pair.Split(new char[] { '"' });
+        // if it worked, we should have oauth_token and oauth_token_secret in the response
+        /* foreach (string pair in .Split(new char[] { ',' }))
+         {
+             string[] split_pair = pair.Split(new char[] { '"' });
 
-                  switch (split_pair[0])
-                  {
-                      case "id":
-                          banks.BankId = split_pair[1];
-                          break;
+             switch (split_pair[0])
+             {
+                 case "id":
+                     banks.BankId = split_pair[1];
+                     break;
 
-                      case "full_name":
-                          banks.BankfullName = split_pair[1];
-                          break;
+                 case "full_name":
+                     banks.BankfullName = split_pair[1];
+                     break;
 
-                      case "short_name":
-                          banks.BankshortName = split_pair[1];
-                          break;
+                 case "short_name":
+                     banks.BankshortName = split_pair[1];
+                     break;
 
-                      case "website":
-                          banks.Bankwebsite = split_pair[1];
-                          break;
-                  }
-              }
-              Debug.WriteLine(banks.BankId);
-              Debug.WriteLine(banks.BankfullName);
-              Debug.WriteLine(banks.BankshortName);
-              Debug.WriteLine(banks.Bankwebsite);
-              BankInfo.Text = String.Format("{0}:{1}:{2}", banks.BankfullName, banks.BankshortName, banks.Bankwebsite);
-              BankInfo.BackgroundColor = Color.Gray;*/
-
+                 case "website":
+                     banks.Bankwebsite = split_pair[1];
+                     break;
+             }
+         }
+         Debug.WriteLine(banks.BankId);
+         Debug.WriteLine(banks.BankfullName);
+         Debug.WriteLine(banks.BankshortName);
+         Debug.WriteLine(banks.Bankwebsite);
+         BankInfo.Text = String.Format("{0}:{1}:{2}", banks.BankfullName, banks.BankshortName, banks.Bankwebsite);
+         BankInfo.BackgroundColor = Color.Gray;*/
     }
 }

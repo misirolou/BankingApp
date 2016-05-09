@@ -5,11 +5,8 @@ namespace App1.Layout
 {
     internal class AtmPage : ContentPage
     {
-
-
         public AtmPage()
         {
-
             Button Back = new Button()
             {
                 Image = (FileImageSource)Device.OnPlatform(

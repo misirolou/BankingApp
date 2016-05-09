@@ -11,9 +11,10 @@ namespace App1.Droid
         {
             base.OnCreate(bundle);
 
+            Xamarin.FormsMaps.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            App.Speech = new Speech();
+            //App.Speech = new Speech();
             LoadApplication(new App());
         }
     }

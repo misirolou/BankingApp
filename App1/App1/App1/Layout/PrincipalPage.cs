@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    internal class PrincipalPage : ContentPage
+    internal class PrincipalPage : BaseContentPage
     {
         private Label accountid, lastaccess, owner, iban, balance, bank, currency, typeaccount;
 

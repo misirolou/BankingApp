@@ -1,36 +1,61 @@
 ﻿using System;
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
 
 namespace App1.Layout
 {
     internal class BalcaoPage : ContentPage
     {
-            public BalcaoPage()
+        public BalcaoPage()
+        {
+            //Button to go back
+            Button Back = new Button()
             {
-                Button Back = new Button()
-                {
-                    Image = (FileImageSource) Device.OnPlatform(
-                        iOS: ImageSource.FromFile("Back.png"),
-                        Android: ImageSource.FromFile("Back.png"),
-                        WinPhone: ImageSource.FromFile("Back.png")),
-                        VerticalOptions = LayoutOptions.Start,
-                        HorizontalOptions = LayoutOptions.EndAndExpand,
-                        BackgroundColor = Color.Gray
-                };
-                Back.Clicked += BackButtonClicked;
-                Title = "BalcaoPage";
-                Icon = new FileImageSource { File = "robot.png" };
-                Content = new StackLayout
-                {
-                    Children = {
+                Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Back.png"),
+                    Android: ImageSource.FromFile("Back.png"),
+                    WinPhone: ImageSource.FromFile("Back.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Gray
+            };
+            Back.Clicked += BackButtonClicked;
+
+            //the map view of the area
+            var map = new Map(MapSpan.FromCenterAndRadius(
+                    new Position(37, -122), Distance.FromMiles(0.3)))
+            {
+                IsShowingUser = true,
+                HeightRequest = 100,
+                WidthRequest = 960,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            //putting pins in certain locations
+            var position = new Position(37, -122); // Latitude, Longitude
+            var pin = new Pin
+            {
+                Type = PinType.Place,
+                Position = position,
+                Label = "custom pin",
+                Address = "custom detail info"
+            };
+            map.Pins.Add(pin);
+
+            Title = "BalcaoPage";
+            Icon = new FileImageSource { File = "robot.png" };
+            Content = new StackLayout
+            {
+                Children = {
                         Back,
-                        new Label {
+                        map,
+                       /* new Label {
                             Text = "BalcaoPage should have a map of Banks",
                             HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center
-                        }
+                        }*/
                     }
-                };
+            };
         }
 
         private async void BackButtonClicked(object sender, EventArgs e)

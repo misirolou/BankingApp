@@ -14,8 +14,14 @@ namespace App1.REST
 
         Task<string> CreateSession(string user, string pass);
 
-        Task<JsonValue> NewSession();
+        Task<string> NewSession();
 
         Task<JsonValue> UserInContactPage();
+
+        Task<string> GetData(string id);
+
+        Task<string> RegisterUserJsonRequest(Users user);
+
+        Task<string> RegisterUserFormRequest(Users user);
     }
 }

@@ -18,8 +18,9 @@ namespace App1.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            Xamarin.FormsMaps.Init();
             global::Xamarin.Forms.Forms.Init();
-            App.Speech = new Speech();
+            //App.Speech = new Speech();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
