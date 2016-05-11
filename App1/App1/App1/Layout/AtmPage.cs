@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
 
 namespace App1.Layout
 {
@@ -19,17 +20,39 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
+            //the map view of the area
+            var map = new Map(MapSpan.FromCenterAndRadius(
+                    new Position(37, -122), Distance.FromMiles(0.3)))
+            {
+                IsShowingUser = true,
+                HeightRequest = 100,
+                WidthRequest = 960,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            //putting pins in certain locations
+            var position = new Position(37, -122); // Latitude, Longitude
+            var pin = new Pin
+            {
+                Type = PinType.Place,
+                Position = position,
+                Label = "custom pin",
+                Address = "custom detail info"
+            };
+            map.Pins.Add(pin);
+
             Title = "AtmPage";
             Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout
             {
                 Children = {
                     Back,
-                    new Label {
+                    map
+                   /* new Label {
                         Text = "AtmPage should have a map of ATMs",
                         HorizontalOptions = LayoutOptions.Center,
                         VerticalOptions = LayoutOptions.Center
-                    }
+                    }*/
                 }
             };
         }

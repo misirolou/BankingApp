@@ -2,7 +2,11 @@
 using App1.REST;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Json;
+using System.Net;
+using System.Threading.Tasks;
+using App1.Models;
 using Xamarin.Forms;
 
 namespace App1
@@ -11,8 +15,6 @@ namespace App1
     {
         private Entry userEntry, passwordEntry;
         private Label messageLabel, privacy;
-
-        public static ManagerRESTService ManagerRest { get; private set; }
 
         //layout of the page
         public LoginPage()
@@ -202,29 +204,35 @@ namespace App1
         //what happens when we click the login button
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
+            var rest = new ManagerRESTService(new RESTService());
+
             var user = new Users
             {
                 User = userEntry.Text,
             };
-            var pass = new Users()
+            var pass = new Users
             {
                 Password = passwordEntry.Text
             };
-            if (userEntry.Text == null || passwordEntry.Text == null)
+            //checks if the user entry and password entry are empty
+            if (userEntry.Text != null || passwordEntry.Text != null)
             {
                 userEntry.Text = String.Empty;
                 passwordEntry.Text = String.Empty;
+                messageLabel.Text = String.Empty;
             }
+
             //verfication of users information should be able to connect to class that takes care of users information
             var Verification = VerifyInfo(user, pass);
             while (userEntry.Text == String.Empty && passwordEntry.Text == String.Empty)
             {
+                messageLabel.Text = "Write something asshole";
             }
             if (Verification.Equals(true))
             {
-                JsonValue json = await ManagerRest.NewSession();
-                //await ManagerRest.CreateSession(user, pass);
                 Debug.WriteLine("verifcation is true");
+                await rest.NewSession();
+                Debug.WriteLine("should get token");
                 if (!App.UserLoggedIn)
                 {
                     await Navigation.PushModalAsync(new LoginPage());
@@ -267,9 +275,9 @@ namespace App1
         //what happens when we click the contact button
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
+            var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked contact button");
-            //JsonValue json = await ManagerRest.UserInContactPage();
-            //Debug.WriteLine(json);
+            await rest.UserInContactPage();
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
         }

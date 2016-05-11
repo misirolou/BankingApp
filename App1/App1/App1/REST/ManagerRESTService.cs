@@ -13,25 +13,6 @@ namespace App1.REST
             restService = service;
         }
 
-        public ManagerRESTService()
-        {
-        }
-
-        public Task<List<AccountInfo>> GetTasksAsync()
-        {
-            return restService.RefreshDataAsync();
-        }
-
-        public Task SaveTaskAsync(AccountInfo item, bool isNewItem = false)
-        {
-            return restService.SaveInfoAsync(item, isNewItem);
-        }
-
-        public Task DeleteTaskAsync(AccountInfo item)
-        {
-            return restService.DeleteInfoAsync(item.AccountId);
-        }
-
         public Task<string> CreateSession(string user, string pass)
         {
             return restService.CreateSession(user, pass);
@@ -42,7 +23,7 @@ namespace App1.REST
             return await restService.NewSession();
         }
 
-        public async Task<JsonValue> UserInContactPage()
+        public async Task<string> UserInContactPage()
         {
             return await restService.UserInContactPage();
         }

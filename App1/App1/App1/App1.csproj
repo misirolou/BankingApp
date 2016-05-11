@@ -38,7 +38,6 @@
     <Compile Include="App.cs" />
     <Compile Include="Layout\AtmPage.cs" />
     <Compile Include="Layout\BalcaoPage.cs" />
-    <Compile Include="Layout\BaseContentPage.cs" />
     <Compile Include="Layout\cardPage.cs" />
     <Compile Include="Layout\ContactPage.cs" />
     <Compile Include="Layout\LoginPage.cs" />

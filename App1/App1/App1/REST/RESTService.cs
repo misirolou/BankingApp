@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Json;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +15,8 @@ namespace App1.REST
     {
         private HttpClient restClient;
 
+        public static string token;
+        
         public List<AccountInfo> Info { get; private set; }
 
         /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
@@ -24,95 +24,98 @@ namespace App1.REST
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //login into the API with my account Direct Login
-        public RESTService()
-        {
-            var users = new Users();
-            users.User = OAuth.Username;
-            users.Password = OAuth.Password;
-            Debug.WriteLine("in RestService");
-            //authorization header used to send information to receive token
-            var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
-            var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
+        /* public RESTService()
+         {
+             var users = new Users();
+             users.User = OAuth.Username;
+             users.Password = OAuth.Password;
+             Debug.WriteLine("in RestService");
+             //authorization header used to send information to receive token
+             var authData = string.Format("{0}:{1}:{2}", OAuth.Username, OAuth.Password, OAuth.oauth_consumer_key);
+             var authHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authData));
 
-            Debug.WriteLine("RestService authHeadrer: " + authHeaderValue);
+             Debug.WriteLine("RestService authHeadrer: " + authHeaderValue);
 
-            restClient = new HttpClient();
-            restClient.MaxResponseContentBufferSize = 256000;
-            restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DirectLogin",
-                authHeaderValue);
-        }
-
-        public async Task<string> GetData(string id)
-        {
-            using (var client = new HttpClient())
-            {
-                var result = await client.GetAsync(OAuth.OpenBankAPI);
-                return await result.Content.ReadAsStringAsync();
-            }
-        }
-
-        public async Task<string> RegisterUserJsonRequest(Users user)
-        {
-            using (var client = new HttpClient())
-            {
-                var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-
-                var result = await client.PostAsync(OAuth.OpenBankAPI, content);
-                return await result.Content.ReadAsStringAsync();
-            }
-        }
-
-        public async Task<string> RegisterUserFormRequest(Users user)
-        {
-            using (var client = new HttpClient())
-            {
-                var content = new FormUrlEncodedContent(new[]
-                {
-                 new KeyValuePair<string, string>("Username", user.User),
-                 new KeyValuePair<string, string>("Password", user.Password),
-             });
-                var result = await client.PostAsync(OAuth.OpenBankAPI, content);
-                return await result.Content.ReadAsStringAsync();
-            }
-        }
+             restClient = new HttpClient();
+             restClient.MaxResponseContentBufferSize = 256000;
+             restClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DirectLogin",
+                 authHeaderValue);
+         }*/
 
         public async Task<string> NewSession()
         {
             string responseFromServer = "";
-            using (var client = new HttpClient())
+            //pedido ao servidor pelo request token
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(OAuth.OpenBankAPI);
+            request.ContentType = "application/json";
+            request.Method = "POST";
+            var authdata =
+                string.Format(
+                    "username= \"danielfaria921@gmail.com\",password= \"Bankingdont243**\",consumer_key=\"ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd\"");
+            var model = request.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authdata;
+
+            using (Stream requestStream = await request.GetRequestStreamAsync())
             {
-                //pedido ao servidor pelo request token
-                WebRequest request = (HttpWebRequest)WebRequest.Create(OAuth.OpenBankAPI);
-                request.ContentType = "application/json";
-                request.Method = "POST";
-                var authdata =
-                    string.Format(
-                        "username= \"danielfaria921@gmail.com\",password= \"Bankingdont243**\",consumer_key=\"ewufgucqycz2lgeifodknycmgsz40t5xb1kqjtjd\"");
-                request.Headers["Authorizaton"] = "DirectLogin" + authdata;
-                using (WebResponse response = await request.GetResponseAsync())
+                using (var writer = new StreamWriter(requestStream))
                 {
-                    using (Stream dataStream = response.GetResponseStream())
+                    // Send the data to the server
+                    Debug.WriteLine(model);
+                    writer.Write(model);
+                    writer.Flush();
+                    writer.Dispose();
+                }
+            }
+
+            using (HttpWebResponse response = await request.GetResponseAsync() as HttpWebResponse)
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                    return null;
+                }
+                using (Stream dataStream = response.GetResponseStream())
+                {
+                    try
                     {
-                        try
+                        StreamReader reader = new StreamReader(dataStream);
+                        responseFromServer = reader.ReadToEnd();
+                        if (string.IsNullOrWhiteSpace(responseFromServer))
                         {
-                            JsonValue jsondoc = await Task.Run(() => JsonObject.Load(dataStream));
-                            Debug.WriteLine("Response {0}", jsondoc.ToString());
-                            responseFromServer = jsondoc;
-                            return jsondoc;
+                            Debug.WriteLine("Response contained empty body...");
                         }
-                        catch (WebException err)
+                        Debug.WriteLine("Response {0}", responseFromServer);
+                    }
+                    catch (WebException err)
+                    {
+                        Stream stream = err.Response.GetResponseStream();
+                        StreamReader reader = new StreamReader(stream);
+                        responseFromServer = reader.ReadToEnd();
+
+                        if (string.IsNullOrWhiteSpace(responseFromServer))
                         {
-                            Stream stream = err.Response.GetResponseStream();
-                            StreamReader reader = new StreamReader(stream);
-                            responseFromServer = reader.ReadToEnd();
+                            Debug.WriteLine("Response contained empty body...");
                         }
                     }
                 }
             }
+            
+            foreach (string pair in responseFromServer.Split(new char[] { '{','}' }))
+            {
+                string[] split_pair = pair.Split(new char[] { ':','"'});
+
+                switch (split_pair[0])
+                {
+                    case "oauth_token":
+                        token = split_pair[1];
+                        break;
+
+                }
+            }
+            Debug.WriteLine(token);
             return responseFromServer;
         }
 
-        public async Task<JsonValue> UserInContactPage()
+        public async Task<string> UserInContactPage()
         {
             var request2 = (HttpWebRequest)WebRequest.Create(Banks.BankUrl);
             request2.ContentType = "application/json";
@@ -121,7 +124,10 @@ namespace App1.REST
             using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
             {
                 if (response.StatusCode != HttpStatusCode.OK)
+                {
                     Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                    return null;
+                }
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
                     var content = reader.ReadToEnd();
@@ -136,19 +142,6 @@ namespace App1.REST
                     return content;
                 }
             }
-
-            /*  //pedido ao servidor pelo request token
-              WebRequest request = (HttpWebRequest) WebRequest.Create(Banks.BankUrl);
-              request.Method = "GET";
-              using (WebResponse response = await request.GetResponseAsync())
-              {
-                  using (Stream dataStream = response.GetResponseStream())
-                  {
-                      JsonValue jsondoc = await Task.Run(() => JsonValue.Load(dataStream));
-                      Debug.WriteLine("Response: {0}", jsondoc);
-                      return jsondoc;
-                  }
-              }*/
         }
 
         public Task<List<AccountInfo>> RefreshDataAsync()

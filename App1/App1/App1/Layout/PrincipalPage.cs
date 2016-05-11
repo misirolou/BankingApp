@@ -3,20 +3,15 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    internal class PrincipalPage : BaseContentPage
+    internal class PrincipalPage : ContentPage
     {
-        private Label accountid, lastaccess, owner, iban, balance, bank, currency, typeaccount;
+        private Label accountid,  owner, iban, balance, bank, currency, typeaccount;
 
         public PrincipalPage()
         {
             //specifying labels and buttons utilized
             accountid = new Label();
             //movement button should take you to the movements page
-            lastaccess = new Label()
-            {
-                Text = "last access: ",
-                HorizontalOptions = LayoutOptions.Start
-            };
             owner = new Label()
             {
                 Text = "owner: "
@@ -96,6 +91,19 @@ namespace App1.Layout
                 WinPhone: ImageSource.FromFile("menu.png")),
             };
             exit.Tapped += async (sender, args) => await Navigation.PushAsync(new LoginPage());
+
+            //Button to go back
+            Button Back = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Back.png"),
+                    Android: ImageSource.FromFile("Back.png"),
+                    WinPhone: ImageSource.FromFile("Back.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Gray
+            };
+            Back.Clicked += BackButtonClicked;
 
             //Layout of the Home page(PrincipalPage.cs)
             Title = "Home";
@@ -189,6 +197,11 @@ namespace App1.Layout
             stackLayout.Children.Add(infoGrid);
             stackLayout.Children.Add(button2grid);
             this.Content = stackLayout;
+        }
+
+        private void BackButtonClicked(object sender, EventArgs e)
+        {
+            Navigation.PopAsync();
         }
 
         //should take te user to the transaction page

@@ -11,22 +11,15 @@ namespace App1
     {
         private Dictionary<FirstPage, NavigationPage> Pages { get; set; }
 
-        public static ManagerRESTService ManagerRest { get; private set; }
-
         //the main Application and its functionalities
         public App()
         {
-            var users = new Users();
-            //ManagerRest = new ManagerRESTService(new RESTService());
             MainPage = new NavigationPage(new LoginPage());
-            //await   NavigateAsync(FirstPage.Login);
-            NavigateAsync(FirstPage.Login).GetAwaiter();
-            UserLoggedIn = false;
+            NavigateAsync(FirstPage.Login);
+            MainPage = new NavigationPage(new LoginPage());
             Debug.WriteLine("App testing userloggedIn");
             if (UserLoggedIn)
             {
-                //var Info = new AccountInfo();
-                ManagerRest.CreateSession(users.User, users.Password);
                 Debug.WriteLine("userloggedIn is true");
                 MainPage = new NavigationPage(new PrincipalPage());
             }
@@ -36,9 +29,6 @@ namespace App1
                 MainPage = new NavigationPage(new LoginPage());
             }
             Pages = new Dictionary<FirstPage, NavigationPage>();
-            //Master = new LoginPage(this);
-            //setup home page
-            //NavigateAsync(UserLoggedIn);
         }
 
         private void SetDetailIfNull(Page page)
@@ -46,8 +36,6 @@ namespace App1
             if (Detail == null && page != null)
                 Detail = page;
         }
-
-        public Page PrincipalPage { get; set; }
 
         public static bool UserLoggedIn { get; set; }
 

@@ -48,7 +48,7 @@ namespace App1.Layout
             {
                 Children = {
                         Back,
-                        map,
+                        map
                        /* new Label {
                             Text = "BalcaoPage should have a map of Banks",
                             HorizontalOptions = LayoutOptions.Center,
