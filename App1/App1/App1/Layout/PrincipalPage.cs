@@ -5,7 +5,7 @@ namespace App1.Layout
 {
     internal class PrincipalPage : ContentPage
     {
-        private Label accountid,  owner, iban, balance, bank, currency, typeaccount;
+        private Label accountid, owner, iban, balance, bank, currency, typeaccount;
 
         public PrincipalPage()
         {

@@ -16,7 +16,7 @@ namespace App1.REST
         private HttpClient restClient;
 
         public static string token;
-        
+
         public List<AccountInfo> Info { get; private set; }
 
         /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
@@ -98,17 +98,16 @@ namespace App1.REST
                     }
                 }
             }
-            
-            foreach (string pair in responseFromServer.Split(new char[] { '{','}' }))
+
+            foreach (string pair in responseFromServer.Split(new char[] { '{', '}' }))
             {
-                string[] split_pair = pair.Split(new char[] { ':','"'});
+                string[] split_pair = pair.Split(new char[] { ':', '"' });
 
                 switch (split_pair[0])
                 {
                     case "oauth_token":
                         token = split_pair[1];
                         break;
-
                 }
             }
             Debug.WriteLine(token);

@@ -2,11 +2,6 @@
 using App1.REST;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Json;
-using System.Net;
-using System.Threading.Tasks;
-using App1.Models;
 using Xamarin.Forms;
 
 namespace App1
