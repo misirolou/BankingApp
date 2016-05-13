@@ -1,20 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace App1.REST
 {
     public interface IRESTService
     {
-        Task<List<AccountInfo>> RefreshDataAsync();
+        Task<string> CreateSession(Users user, Users pass);
 
-        Task SaveInfoAsync(AccountInfo item, bool isNewItem);
+        Task<string> GetwithoutToken();
 
-        Task DeleteInfoAsync(string id);
-
-        Task<string> CreateSession(string user, string pass);
-
-        Task<string> NewSession();
-
-        Task<string> UserInContactPage();
+        Task<string> GetWithToken();
     }
 }

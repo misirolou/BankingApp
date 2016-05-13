@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using App1.Models;
 
 namespace App1.REST
 {
@@ -11,19 +12,19 @@ namespace App1.REST
             restService = service;
         }
 
-        public Task<string> CreateSession(string user, string pass)
+        public async Task<string> GetwithoutToken()
         {
-            return restService.CreateSession(user, pass);
+            return await restService.GetwithoutToken();
         }
 
-        public async Task<string> NewSession()
+        public async Task<string> CreateSession(Users user, Users pass)
         {
-            return await restService.NewSession();
+            return await restService.CreateSession(user, pass);
         }
 
-        public async Task<string> UserInContactPage()
+        public async Task<string> GetWithToken()
         {
-            return await restService.UserInContactPage();
+            return await restService.GetWithToken();
         }
     }
 }

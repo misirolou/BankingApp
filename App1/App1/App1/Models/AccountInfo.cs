@@ -2,8 +2,6 @@
 {
     public class AccountInfo
     {
-        public string AccountInfoUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/accounts";
-
         public AccountInfo token { get; set; }
 
         public string Owner { get; set; }

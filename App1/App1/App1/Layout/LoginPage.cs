@@ -2,6 +2,7 @@
 using App1.REST;
 using System;
 using System.Diagnostics;
+using System.Security.Principal;
 using Xamarin.Forms;
 
 namespace App1
@@ -36,7 +37,7 @@ namespace App1
             {
                 HorizontalOptions = LayoutOptions.End
             };
-            switcher.Toggled += switchertoggled;
+            switcher.Toggled += Switchertoggled;
             //label for private mode
             privacy = new Label()
             {
@@ -200,7 +201,7 @@ namespace App1
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
             var rest = new ManagerRESTService(new RESTService());
-
+            var rest1 = new RESTService();
             var user = new Users
             {
                 User = userEntry.Text,
@@ -210,7 +211,7 @@ namespace App1
                 Password = passwordEntry.Text
             };
             //checks if the user entry and password entry are empty
-            if (userEntry.Text != null || passwordEntry.Text != null)
+            if (userEntry.Text == null || passwordEntry.Text == null)
             {
                 userEntry.Text = String.Empty;
                 passwordEntry.Text = String.Empty;
@@ -218,42 +219,29 @@ namespace App1
             }
 
             //verfication of users information should be able to connect to class that takes care of users information
-            var Verification = VerifyInfo(user, pass);
-            while (userEntry.Text == String.Empty && passwordEntry.Text == String.Empty)
+            Debug.WriteLine("user" + user);
+            Debug.WriteLine("user.User" + user.User);
+            Debug.WriteLine("verifcation is true");
+            //Verfication of users information through OpenBanks Direct Login where the user should receive a token
+            //this token is never shown to the user, used in background functions to request authorized information for the user
+            await rest.CreateSession(user, pass);
+            Debug.WriteLine("should get token: {0}", user.token);
+
+            if (!App.UserLoggedIn)
             {
-                messageLabel.Text = "Write something asshole";
-            }
-            if (Verification.Equals(true))
-            {
-                Debug.WriteLine("verifcation is true");
-                await rest.NewSession();
-                Debug.WriteLine("should get token");
-                if (!App.UserLoggedIn)
-                {
-                    await Navigation.PushModalAsync(new LoginPage());
-                }
-                else
-                    App.UserLoggedIn = true;
-                Navigation.InsertPageBefore(new PrincipalPage(), this);
-                await Navigation.PopAsync();
+                await Navigation.PushModalAsync(new LoginPage());
             }
             else
             {
-                messageLabel.Text = "Login failed";
-                passwordEntry.Text = string.Empty;
+                App.UserLoggedIn = true;
+                Navigation.InsertPageBefore(new PrincipalPage(), this);
+                await Navigation.PopAsync();
             }
         }
 
-        //verifing info that is contained in the REST API OpenBank
-        private bool VerifyInfo(Users user, Users pass)
-        {
-            Debug.WriteLine("VerifyInfo user: " + user.User);
-            Debug.WriteLine("VerifyInfo password: " + pass.Password);
-            return user.User == userEntry.Text && pass.Password == passwordEntry.Text;
-        }
-
-        //changes the mode according to the switch to public or private verification
-        private void switchertoggled(object sender, ToggledEventArgs e)
+        //changes the mode according to the switch to public or private views of users accounts 
+        //this part may not be implemented at the moment needs some verifications beforehand may have future implications
+        private void Switchertoggled(object sender, ToggledEventArgs e)
         {
             if (e.Value.Equals(true))
             {
@@ -272,7 +260,8 @@ namespace App1
         {
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked contact button");
-            await rest.UserInContactPage();
+            //get information connected to the banks contact information localized on OpenBanks sandbox
+            await rest.GetwithoutToken();
             Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PopAsync();
         }
@@ -280,7 +269,10 @@ namespace App1
         //what happens when we click the Balcao button
         private async void OnBalcaoButtonClicked(object sender, EventArgs e)
         {
+            var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked Bank Map button");
+            //get information connected to the banks branch information localized on OpenBanks sandobox
+            await rest.GetwithoutToken();
             Navigation.InsertPageBefore(new BalcaoPage(), this);
             await Navigation.PopAsync();
         }
@@ -288,7 +280,10 @@ namespace App1
         //what happens when we click the Atm button
         private async void OnAtmButtonClicked(object sender, EventArgs e)
         {
+            var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked ATM Map button");
+            //get information connected to the banks ATM information localized on OpenBanks sandbox
+            await rest.GetwithoutToken();
             Navigation.InsertPageBefore(new AtmPage(), this);
             await Navigation.PopAsync();
         }

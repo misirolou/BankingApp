@@ -14,21 +14,18 @@ namespace App1.Services
             _httpClient = httpClient;
         }
 
-        private HttpClient _httpClient
-        {
-            get;
-            set;
-        }
+        private HttpClient _httpClient { get; set; }
 
-        private const string API_KEY = "AIzaSyAI7-OYsPcoPsLbO4thycHiv1E5mFKr47Q";
+        //android Api key
+        private const string Android_API_KEY = "AIzaSyAI7-OYsPcoPsLbO4thycHiv1E5mFKr47Q";
 
         private const string GoogleMapsUrl =
             "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={0},{1}&radius=5000&sensor=true&name=car%wash&key={2}";
 
-        /* public async Task<List<Banks>> GetCoordinatesMapAsync(Location location)
+        /* public async Task<List<Location>> GetCoordinatesMapAsync(Location latitude, Location longitude)
          {
-             var uri = string.Format(GoogleMapsUrl, location.Latitude,
-                           location.Longitude, API_KEY);
+             var uri = string.Format(GoogleMapsUrl, latitude.Latitude,
+                           longitude.Longitude, Android_API_KEY);
 
              var result = await _httpClient.GetAsync<>(uri);
 
