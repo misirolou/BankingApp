@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App1.Models;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -21,8 +22,9 @@ namespace App1.Layout
             Back.Clicked += BackButtonClicked;
 
             //the map view of the area
+            var location = new Location();
             var map = new Map(MapSpan.FromCenterAndRadius(
-                    new Position(37, -122), Distance.FromMiles(0.3)))
+                    new Position(location.Latitude, location.Longitude), Distance.FromMiles(0.3)))
             {
                 IsShowingUser = true,
                 HeightRequest = 100,
@@ -31,7 +33,7 @@ namespace App1.Layout
             };
 
             //putting pins in certain locations
-            var position = new Position(37, -122); // Latitude, Longitude
+            var position = new Position(location.Latitude, location.Longitude); // Latitude, Longitude
             var pin = new Pin
             {
                 Type = PinType.Place,
@@ -59,7 +61,6 @@ namespace App1.Layout
 
         private async void BackButtonClicked(object sender, EventArgs e)
         {
-            Navigation.InsertPageBefore(new LoginPage(), this);
             await Navigation.PopAsync();
         }
     }

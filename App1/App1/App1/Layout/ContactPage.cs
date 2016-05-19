@@ -1,18 +1,12 @@
 ﻿using App1.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Json;
-using System.Net;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace App1.Layout
 {
     internal class ContactPage : ContentPage
     {
-
         public List<Banks> banks { get; set; }
 
         private Label BankInfo;
@@ -31,6 +25,8 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
+            var banks = new Banks();
+
             BankInfo = new Label();
             //The contact page will contain the banks URLs to websites
             Title = "ContactPage";
@@ -44,19 +40,19 @@ namespace App1.Layout
                     BankInfo,
                     new Label() {
                         BackgroundColor = Color.Gray,
-                        Text = "",
+                        Text = banks.id,
                         HorizontalOptions = LayoutOptions.StartAndExpand,
                         VerticalOptions = LayoutOptions.Start
                     },
                     new Label {
                         BackgroundColor = Color.Gray,
-                        Text = "Bank 2 : OBP",
+                        Text = banks.full_name,
                         HorizontalOptions = LayoutOptions.StartAndExpand,
                         VerticalOptions = LayoutOptions.Start
                     },
                     new Label {
                         BackgroundColor = Color.Gray,
-                        Text = "Bank 3 : OBP2",
+                        Text = banks.website,
                         HorizontalOptions = LayoutOptions.StartAndExpand,
                         VerticalOptions = LayoutOptions.Start
                     }

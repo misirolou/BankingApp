@@ -15,7 +15,6 @@ namespace App1
         {
             MainPage = new NavigationPage(new LoginPage());
             NavigateAsync(FirstPage.Login);
-            MainPage = new NavigationPage(new LoginPage());
             Debug.WriteLine("App testing userloggedIn");
             if (UserLoggedIn)
             {

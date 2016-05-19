@@ -9,7 +9,7 @@ namespace App1.Models
     public class Constants
     {
         // URL of REST service
-        public static string OpenBankAPI = "https://apisandbox.openbankproject.com/my/logins/direct";
+        public const string OpenBankAPI = "https://apisandbox.openbankproject.com/my/logins/direct";
 
         // Credentials that are used to login through the REST service for Direct Login these credentials aren´t used in the code in any way 
         public static string Username = "danielfaria921@gmail.com";
@@ -27,20 +27,20 @@ namespace App1.Models
         public const string BankUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks";
 
         //Used for map locations where the user can choose the branch or ATM they want to check out  {0} = Bank ID
-        public string BranchesUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/branches";
+        public const string BranchesUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/branches";
 
-        public string ATMsUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/atms";
+        public const string ATMsUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/atms";
 
         //products available from the banks
-        public string ProductsUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/products";
+        public const string ProductsUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/products";
 
         //This account contains the id´s that will be used while the user is logged in
-        public string AccountUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/accounts";
+        public const string AccountUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/accounts";
 
         //Accounts of the user that logged in with more details {0} = Bank ID ; {1} = Account ID 
-        public string AccountDetailedUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/banks/{0}/accounts/{1}/account";
+        public const string AccountDetailedUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/banks/{0}/accounts/{1}/account";
         
         //Movements or transactions made by the logged in user {0} = Bank ID ; {1} = Account ID 
-        public string MovementUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/banks/{0}/accounts/{1}/transactions";
+        public const string MovementUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/banks/{0}/accounts/{1}/transactions";
     }
 }

@@ -1,13 +1,12 @@
 ﻿using App1.Models;
-using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Json;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace App1.REST
 {
@@ -26,72 +25,132 @@ namespace App1.REST
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //This function will be used to GET information for the user that doesn´t require any type of login
-        public async Task<string> GetwithoutToken()
+        public async Task<string> GetwithoutToken(string url, int choice)
         {
-            var request2 = (HttpWebRequest)WebRequest.Create(Constants.BankUrl);
+            string responseFromServer = "";
+            var uri = string.Format(url);
+            var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
 
-            using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
+            try
             {
-                if (response.StatusCode != HttpStatusCode.OK)
+                using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
                 {
-                    Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
-                    return null;
-                }
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                {
-                    var content = reader.ReadToEnd();
-                    if (string.IsNullOrWhiteSpace(content))
+                    if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        Debug.WriteLine("Response contained empty body...");
+                        Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                        return null;
                     }
-                    else
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
-                        //Full content received
+                        string content = reader.ReadToEnd();
+                        if (string.IsNullOrWhiteSpace(content))
+                        {
+                            Debug.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            switch (choice)
+                            {
+                                case 1:
+                                    Debug.WriteLine("Response Body: \r\n {0}", content);
+                                    //deserializing string of information received into json type to then be called
+                                    //JsonArray json = new JsonArray(content);
+                                  //  Debug.WriteLine("json array{0}",json);
+                                   var info = JsonConvert.DeserializeObject<bankstuff>(content);
+                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:", info, info.data);
+                                    break;
+
+                                case 2:
+                                    Debug.WriteLine("Response Body: \r\n {0}", content);
+                                    //deserializing string of information received into json type to then be called
+                                    var info1 = JsonConvert.DeserializeObject<List<Location>>(content);
+                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:: {2}", info1, info1.Capacity,
+                                        info1.Count);
+                                    break;
+
+                                case 3:
+                                    Debug.WriteLine("Response Body: \r\n {0}", content);
+                                    //deserializing string of information received into json type to then be called
+                                    var info2 = JsonConvert.DeserializeObject<List<Location>>(content);
+                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:: {2}", info2, info2.Capacity,
+                                        info2.Count);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
                         Debug.WriteLine("Response Body: \r\n {0}", content);
-                        //deserializing string of information received into json type to then be called
-                        var info = JsonConvert.DeserializeObject<Banks>(content);
-                        Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:: {2}", info.id, info.short_name, info.website);
+                        return content;
                     }
-                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                    return content;
                 }
+            }
+            catch (WebException err)
+            {
+                Stream stream = err.Response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                responseFromServer = reader.ReadToEnd();
+
+                if (string.IsNullOrWhiteSpace(responseFromServer))
+                {
+                    Debug.WriteLine("Response contained empty body...");
+                }
+                App.UserLoggedIn = false;
+                return responseFromServer;
             }
         }
 
         //The user should be autheticated and this GET request will be using the token from the function Createsession
-        public async Task<string> GetWithToken()
+        public async Task<string> GetWithToken(string url, int choice)
         {
-            var request2 = (HttpWebRequest)WebRequest.Create(Constants.BankUrl);
+            string responseFromServer = "";
+
+            var uri = string.Format(url);
+            var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
             request2.Headers[HttpRequestHeader.Authorization] = token;
 
-
-            using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
+            try
             {
-                if (response.StatusCode != HttpStatusCode.OK)
+                using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
                 {
-                    Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
-                    return null;
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                        return null;
+                    }
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var content = reader.ReadToEnd();
+                        if (string.IsNullOrWhiteSpace(content))
+                        {
+                            Debug.WriteLine("Response contained empty body...");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Response Body: \r\n {0}", content);
+                            //deserializing string of information received into json type to then be called
+                            var info = JsonConvert.DeserializeObject<AccountInfo>(content);
+                            Debug.WriteLine("json deserilization:  {0} ::-::", info);
+                        }
+                        return content;
+                    }
                 }
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            }
+            catch (WebException err)
+            {
+                Stream stream = err.Response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                responseFromServer = reader.ReadToEnd();
+
+                if (string.IsNullOrWhiteSpace(responseFromServer))
                 {
-                    var content = reader.ReadToEnd();
-                    if (string.IsNullOrWhiteSpace(content))
-                    {
-                        Debug.WriteLine("Response contained empty body...");
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Response Body: \r\n {0}", content);
-                        //deserializing string of information received into json type to then be called
-                        var info = JsonConvert.DeserializeObject<AccountInfo>(content);
-                        Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:: {2}", info.AccountId, info.Bank, info.Currency);
-                    }
-                    return content;
+                    Debug.WriteLine("Response contained empty body...");
                 }
+                return responseFromServer;
             }
         }
 
@@ -175,7 +234,7 @@ namespace App1.REST
                     Debug.WriteLine("Response contained empty body...");
                 }
             }
-            Debug.WriteLine("end of create session {0}",token);
+            Debug.WriteLine("end of create session {0}", token);
             return token;
         }
     }

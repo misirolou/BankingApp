@@ -45,6 +45,7 @@
     <Compile Include="Layout\PrincipalPage.cs" />
     <Compile Include="Layout\ProductPage.cs" />
     <Compile Include="Layout\transactionPage.cs" />
+    <Compile Include="Models\Accounts.cs" />
     <Compile Include="Models\Banks.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\Location.cs" />

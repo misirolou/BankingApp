@@ -6,8 +6,8 @@ namespace App1.REST
     {
         Task<string> CreateSession(Users user, Users pass);
 
-        Task<string> GetwithoutToken();
+        Task<string> GetwithoutToken(string url, int choice);
 
-        Task<string> GetWithToken();
+        Task<string> GetWithToken(string url, int choice);
     }
 }

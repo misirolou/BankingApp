@@ -12,9 +12,9 @@ namespace App1.REST
             restService = service;
         }
 
-        public async Task<string> GetwithoutToken()
+        public async Task<string> GetwithoutToken(string url, int choice)
         {
-            return await restService.GetwithoutToken();
+            return await restService.GetwithoutToken(url, choice);
         }
 
         public async Task<string> CreateSession(Users user, Users pass)
@@ -22,9 +22,9 @@ namespace App1.REST
             return await restService.CreateSession(user, pass);
         }
 
-        public async Task<string> GetWithToken()
+        public async Task<string> GetWithToken(string url, int choice)
         {
-            return await restService.GetWithToken();
+            return await restService.GetWithToken(url, choice);
         }
     }
 }

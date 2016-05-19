@@ -1,8 +1,8 @@
 ﻿using App1.Layout;
+using App1.Models;
 using App1.REST;
 using System;
 using System.Diagnostics;
-using System.Security.Principal;
 using Xamarin.Forms;
 
 namespace App1
@@ -239,7 +239,7 @@ namespace App1
             }
         }
 
-        //changes the mode according to the switch to public or private views of users accounts 
+        //changes the mode according to the switch to public or private views of users accounts
         //this part may not be implemented at the moment needs some verifications beforehand may have future implications
         private void Switchertoggled(object sender, ToggledEventArgs e)
         {
@@ -260,32 +260,37 @@ namespace App1
         {
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked contact button");
-            //get information connected to the banks contact information localized on OpenBanks sandbox
-            await rest.GetwithoutToken();
-            Navigation.InsertPageBefore(new ContactPage(), this);
-            await Navigation.PopAsync();
+            //get informatin connected to the banks contact information localized on OpenBanks sandbox
+            var uri = string.Format(Constants.BankUrl);
+            await rest.GetwithoutToken(uri, 1);
+            //Navigation.InsertPageBefore(new ContactPage(), this);
+            await Navigation.PushAsync(new ContactPage());
         }
 
         //what happens when we click the Balcao button
         private async void OnBalcaoButtonClicked(object sender, EventArgs e)
         {
+            var banks = new Banks();
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked Bank Map button");
-            //get information connected to the banks branch information localized on OpenBanks sandobox
-            await rest.GetwithoutToken();
-            Navigation.InsertPageBefore(new BalcaoPage(), this);
-            await Navigation.PopAsync();
+            //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
+            await rest.GetwithoutToken(Constants.BankUrl, 1);
+            var uri = string.Format(Constants.BranchesUrl, banks.id);
+            await rest.GetwithoutToken(uri, 2);
+            await Navigation.PushAsync(new BalcaoPage());
         }
 
         //what happens when we click the Atm button
         private async void OnAtmButtonClicked(object sender, EventArgs e)
         {
+            var banks = new Banks();
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked ATM Map button");
             //get information connected to the banks ATM information localized on OpenBanks sandbox
-            await rest.GetwithoutToken();
-            Navigation.InsertPageBefore(new AtmPage(), this);
-            await Navigation.PopAsync();
+            await rest.GetwithoutToken(Constants.BankUrl, 1);
+            var uri = string.Format(Constants.ATMsUrl, banks.id);
+            await rest.GetwithoutToken(uri, 3);
+            await Navigation.PushAsync(new AtmPage());
         }
     }
 }
