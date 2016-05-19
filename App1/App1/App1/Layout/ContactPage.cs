@@ -1,13 +1,14 @@
 ﻿using App1.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace App1.Layout
 {
     internal class ContactPage : ContentPage
     {
-        public List<Banks> banks { get; set; }
+        public List<banks> banks { get; set; }
 
         private Label BankInfo;
 
@@ -25,7 +26,11 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
-            var banks = new Banks();
+            var banks = new banks();
+            foreach (var item in banks.id)
+            {
+                Debug.WriteLine(item);
+            }
 
             BankInfo = new Label();
             //The contact page will contain the banks URLs to websites

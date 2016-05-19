@@ -263,14 +263,13 @@ namespace App1
             //get informatin connected to the banks contact information localized on OpenBanks sandbox
             var uri = string.Format(Constants.BankUrl);
             await rest.GetwithoutToken(uri, 1);
-            //Navigation.InsertPageBefore(new ContactPage(), this);
             await Navigation.PushAsync(new ContactPage());
         }
 
         //what happens when we click the Balcao button
         private async void OnBalcaoButtonClicked(object sender, EventArgs e)
         {
-            var banks = new Banks();
+            var banks = new banks();
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked Bank Map button");
             //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
@@ -283,7 +282,7 @@ namespace App1
         //what happens when we click the Atm button
         private async void OnAtmButtonClicked(object sender, EventArgs e)
         {
-            var banks = new Banks();
+            var banks = new banks();
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked ATM Map button");
             //get information connected to the banks ATM information localized on OpenBanks sandbox

@@ -56,10 +56,14 @@ namespace App1.REST
                                 case 1:
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    //JsonArray json = new JsonArray(content);
-                                  //  Debug.WriteLine("json array{0}",json);
-                                   var info = JsonConvert.DeserializeObject<bankstuff>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:", info, info.data);
+                                    var json = new JsonArray(content);
+                                    Debug.WriteLine(json);
+                                    bankslist info = JsonConvert.DeserializeObject<bankslist>(content);
+                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:", info, info.banklist);
+                                    foreach (var item in info.banklist)
+                                    {
+                                        Debug.WriteLine("id=={0} .. full_name=={1} .. website=={2}", item.id, item.full_name, item.website);
+                                    }
                                     break;
 
                                 case 2:
@@ -82,7 +86,6 @@ namespace App1.REST
                                     break;
                             }
                         }
-                        Debug.WriteLine("Response Body: \r\n {0}", content);
                         return content;
                     }
                 }

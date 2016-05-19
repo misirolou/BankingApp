@@ -5,15 +5,15 @@ namespace App1.Models
 {
     public class bankslist
     {
-        public List<Banks> banklist;
+        public List<banks> banklist { get; set; }
     }
 
     public class bankstuff
     {
-        public Banks data;
+        public banks banks;
     }
 
-    public class Banks
+    public class banks
     {
         [JsonProperty(PropertyName = "id")]
         public string id { get; set; }
