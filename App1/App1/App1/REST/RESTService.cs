@@ -1,17 +1,15 @@
 ﻿using App1.Models;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace App1.REST
 {
     public class RESTService : IRESTService
     {
-        private static string token = "";
+        public static string token = "";
 
         /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
         400 (BAD REQUEST) – the request is not understood by the server.
@@ -178,12 +176,12 @@ namespace App1.REST
         }
 
         //verifcation of the users autheticty depending on the received token
-        public bool IsAutheticated {
+        public bool IsAutheticated
+        {
             get
             {
                 Debug.WriteLine("Here in authetiacation");
-                var user = new Users();
-                return !string.IsNullOrWhiteSpace(user.token);
+                return !string.IsNullOrWhiteSpace(token);
             }
         }
 
@@ -224,7 +222,7 @@ namespace App1.REST
                         {
                             StreamReader reader = new StreamReader(dataStream);
                             token = reader.ReadToEnd();
-                            if (string.IsNullOrWhiteSpace(responseFromServer))
+                            if (string.IsNullOrWhiteSpace(token))
                             {
                                 Debug.WriteLine("Response contained empty body...");
                             }
@@ -235,10 +233,13 @@ namespace App1.REST
                             }
                             else
                             {
+                                var userstoken = new Users();
                                 //deserializing string of information received into json type to then be called
                                 var info = JsonConvert.DeserializeObject<Users>(token);
                                 Debug.WriteLine("json deserilization:  {0}", info.token);
-                                Debug.WriteLine("token {0},username {1},password {2}", user.token, user.User, pass.Password);
+                                Debug.WriteLine("username {0},password {1}", user.User, pass.Password);
+                                Debug.WriteLine("token {0}", token);
+                                Debug.WriteLine("token from users {0}", userstoken.token);
                                 return true;
                             }
                         }

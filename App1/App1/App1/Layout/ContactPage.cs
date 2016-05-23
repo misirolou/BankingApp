@@ -1,6 +1,8 @@
-﻿using App1.Models;
+﻿using App1.Cell;
+using App1.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Xamarin.Forms;
 
@@ -11,6 +13,8 @@ namespace App1.Layout
         public List<banks> banks { get; set; }
 
         private Label BankInfo;
+
+        private ListView listView;
 
         public ContactPage()
         {
@@ -26,50 +30,56 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
-            var banks = new banks();
-            foreach (var item in banks.id)
+            ObservableCollection<banks> bankList = new ObservableCollection<banks>();
+            Debug.WriteLine("banklist {0}", bankList);
+
+            var banks = new RootObject();
+            foreach (var item in banks.banks)
             {
-                Debug.WriteLine(item);
+                Debug.WriteLine("item ids {0}    length {1}   item{2}", item.id, item.id.Length, item);
             }
 
-            BankInfo = new Label();
-            //The contact page will contain the banks URLs to websites
-            Title = "ContactPage";
-            Icon = new FileImageSource { File = "Phone.png" };
-            var stackLayout = new StackLayout
+            listView = new ListView
             {
-                BackgroundColor = Color.Teal,
-                Spacing = 10,
-                Children = {
-                    Back,
-                    BankInfo,
-                    new Label() {
-                        BackgroundColor = Color.Gray,
-                        Text = banks.id,
-                        HorizontalOptions = LayoutOptions.StartAndExpand,
-                        VerticalOptions = LayoutOptions.Start
-                    },
-                    new Label {
-                        BackgroundColor = Color.Gray,
-                        Text = banks.full_name,
-                        HorizontalOptions = LayoutOptions.StartAndExpand,
-                        VerticalOptions = LayoutOptions.Start
-                    },
-                    new Label {
-                        BackgroundColor = Color.Gray,
-                        Text = banks.website,
-                        HorizontalOptions = LayoutOptions.StartAndExpand,
-                        VerticalOptions = LayoutOptions.Start
-                    }
-                }
+                ItemsSource = bankList,
+                ItemTemplate = new DataTemplate(() =>
+                    {
+                        var nativeCell = new Cells();
+                        nativeCell.SetBinding(Cells.NameProperty, "short_name");
+                        nativeCell.SetBinding(Cells.full_nameProperty, "full_name");
+                        nativeCell.SetBinding(Cells.WebsiteProperty, "website");
+                        return nativeCell;
+                    })
             };
-            stackLayout.Children.Add(BankInfo);
-            this.Content = stackLayout;
+
+            Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
+            Content = new StackLayout
+            {
+                Children = {
+                    new Label { Text = "Xamarin.Forms native cell", HorizontalTextAlignment = TextAlignment.Center },
+                    listView
+                    }
+            };
+            /* BankInfo = new Label();
+             //The contact page will contain the banks URLs to websites
+             Title = "ContactPage";
+             Icon = new FileImageSource { File = "Phone.png" };
+             var stackLayout = new StackLayout
+             {
+                 BackgroundColor = Color.Teal,
+                 Spacing = 10,
+                 Children = {
+                     Back,
+                     BankInfo
+                 }
+             };
+             stackLayout.Children.Add(BankInfo);
+             this.Content = stackLayout;*/
         }
 
         private async void BackButtonClicked(object sender, EventArgs e)
         {
-            Navigation.InsertPageBefore(new LoginPage(), this);
+            //Navigation.InsertPageBefore(new LoginPage(), this);
             await Navigation.PopAsync();
         }
     }

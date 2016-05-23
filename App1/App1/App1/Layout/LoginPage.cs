@@ -201,7 +201,6 @@ namespace App1
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
             var rest = new ManagerRESTService(new RESTService());
-            var rest1 = new RESTService();
             var user = new Users
             {
                 User = userEntry.Text,
@@ -225,6 +224,7 @@ namespace App1
             //Verfication of users information through OpenBanks Direct Login where the user should receive a token
             //this token is never shown to the user, used in background functions to request authorized information for the user
             var result = await rest.CreateSession(user, pass);
+            Debug.WriteLine("result {0}", result);
             Debug.WriteLine("should get token: {0}", user.token);
             //if the result is false it will stay on the same page and show the message stated else it will change to the next page
             try
@@ -234,14 +234,13 @@ namespace App1
                     var uri = string.Format(Constants.AccountUrl);
                     await rest.GetWithToken(uri, 1);
                     await Navigation.PushAsync(new PrincipalPage());
-
                 }
                 else
                 {
                     messageLabel.Text = "Login Failed";
                 }
             }
-            catch (NullReferenceException err)
+            catch (Exception err)
             {
                 Debug.WriteLine("Caught error: {0}.", err);
             }
@@ -273,8 +272,7 @@ namespace App1
             await rest.GetwithoutToken(uri, 1);
             try
             {
-                Navigation.InsertPageBefore(new ContactPage(), this);
-                await Navigation.PopAsync();
+                await Navigation.PushAsync(new ContactPage());
             }
             catch (NullReferenceException err)
             {
@@ -289,10 +287,17 @@ namespace App1
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked Bank Map button");
             //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
-            await rest.GetwithoutToken(Constants.BankUrl, 1);
-            var uri = string.Format(Constants.BranchesUrl, banks.id);
-            await rest.GetwithoutToken(uri, 2);
-            await Navigation.PushAsync(new BalcaoPage());
+            try
+            {
+                await rest.GetwithoutToken(Constants.BankUrl, 1);
+                var uri = string.Format(Constants.BranchesUrl, banks.id);
+                await rest.GetwithoutToken(uri, 2);
+                await Navigation.PushAsync(new BalcaoPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
         }
 
         //what happens when we click the Atm button
@@ -302,10 +307,17 @@ namespace App1
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked ATM Map button");
             //get information connected to the banks ATM information localized on OpenBanks sandbox
-            await rest.GetwithoutToken(Constants.BankUrl, 1);
-            var uri = string.Format(Constants.ATMsUrl, banks.id);
-            await rest.GetwithoutToken(uri, 3);
-            await Navigation.PushAsync(new AtmPage());
+            try
+            {
+                await rest.GetwithoutToken(Constants.BankUrl, 1);
+                var uri = string.Format(Constants.ATMsUrl, banks.id);
+                await rest.GetwithoutToken(uri, 3);
+                await Navigation.PushAsync(new AtmPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
         }
     }
 }

@@ -1,23 +1,43 @@
-﻿using Xamarin.Forms;
+﻿using App1.Menu;
+using Xamarin.Forms;
 
 namespace App1.Layout
 {
     internal class MenuPage : ContentPage
     {
+        public ListView Menu { get; set; }
+
+        //what the menu page will look like
         public MenuPage()
         {
-            /* Title = "Menu";
-             Icon = new FileImageSource { File = "robot.png" };*/
-            Content = new StackLayout
+            Title = "menu"; // The Title property must be set.
+            BackgroundColor = Color.Teal;
+            Icon = new FileImageSource { File = "robot.png" };
+
+            var Menu = new MenuListView();
+
+            Menu.SeparatorVisibility = SeparatorVisibility.Default;
+            Menu.SeparatorColor = Color.Gray;
+            Menu.RowHeight = 10;
+
+            var menuLabel = new ContentView
             {
-                Children = {
-                    new Label {
-                        Text = "Menu page that should overlay the other pages",
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
-                    }
+                Padding = new Thickness(10, 30, 0, 5),
+                Content = new Label
+                {
+                    Text = "MENU",
                 }
             };
+
+            var layout = new StackLayout
+            {
+                Spacing = 0,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+            layout.Children.Add(menuLabel);
+            layout.Children.Add(Menu);
+
+            Content = layout;
         }
     }
 }

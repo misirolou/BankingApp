@@ -1,10 +1,9 @@
-﻿using System;
-using App1.Layout;
+﻿using App1.Layout;
+using App1.REST;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Threading.Tasks;
-using App1.REST;
 using Xamarin.Forms;
 
 namespace App1
@@ -14,17 +13,19 @@ namespace App1
         private Dictionary<FirstPage, NavigationPage> Pages { get; set; }
         public static ITextSpeech Speech { get; set; }
 
-        readonly IRESTService AuthenticationService;
+        private readonly IRESTService AuthenticationService;
+
         //the main Application and its functionalities
         public App()
         {
             AuthenticationService = DependencyService.Get<IRESTService>();
+            var rest = new ManagerRESTService(new RESTService());
             MainPage = new NavigationPage(new LoginPage());
             // NavigateAsync(FirstPage.Login);
             Debug.WriteLine("App testing userloggedIn");
             try
             {
-                if (AuthenticationService.IsAutheticated)
+                if (rest.IsAutheticated())
                 {
                     Debug.WriteLine("authentication {0}", AuthenticationService.IsAutheticated);
                     Debug.WriteLine("userloggedIn is true");
@@ -37,7 +38,7 @@ namespace App1
                     MainPage = new NavigationPage(new LoginPage());
                 }
             }
-            catch (NullReferenceException err)
+            catch (Exception err)
             {
                 Debug.WriteLine("Caught error: {0}.", err);
             }

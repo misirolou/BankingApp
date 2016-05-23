@@ -1,4 +1,7 @@
-﻿using System;
+﻿using App1.Models;
+using App1.REST;
+using System;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -9,32 +12,43 @@ namespace App1.Layout
 
         public PrincipalPage()
         {
+            var AccountInfo = new AccountInfo.AccountInfoDetailed();
             //specifying labels and buttons utilized
-            accountid = new Label();
+            accountid = new Label()
+            {
+                Text = "id  ",
+                BackgroundColor = Color.Gray,
+            };
             //movement button should take you to the movements page
             owner = new Label()
             {
-                Text = "owner: "
+                Text = "Owner: ",
+                BackgroundColor = Color.Gray
             };
             iban = new Label()
             {
-                Text = "IBAN: "
+                Text = "IBAN: ",
+                BackgroundColor = Color.Gray
             };
             balance = new Label()
             {
-                Text = "Balance: "
+                Text = "Balance: ",
+                BackgroundColor = Color.Gray
             };
             bank = new Label()
             {
-                Text = "Bank: "
+                Text = "Bank: ",
+                BackgroundColor = Color.Gray
             };
             currency = new Label()
             {
-                Text = "Currency: "
+                Text = "Currency: ",
+                BackgroundColor = Color.Gray
             };
             typeaccount = new Label()
             {
-                Text = "Type: "
+                Text = "Type: ",
+                BackgroundColor = Color.Gray
             };
             var transactionButton = new Button
             {
@@ -50,18 +64,7 @@ namespace App1.Layout
                 HorizontalOptions = LayoutOptions.End
             };
             cardsbutton.Clicked += OncardsButtonClicked;
-            //image
-            /*var menu = new Image()
-            {
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start,
-            };
-            //specifying location for each platform
-            menu.Source = Device.OnPlatform(
-                iOS: ImageSource.FromFile("menu.png"),
-                Android: ImageSource.FromFile("menu.png"),
-                WinPhone: ImageSource.FromFile("menu.png"));
-            */
+
             ImageCell menu = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(
@@ -71,18 +74,6 @@ namespace App1.Layout
             };
             menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());
 
-            //Exit image to exit the application
-            /* var exit = new Image()
-             {
-                 VerticalOptions = LayoutOptions.Start,
-                 HorizontalOptions = LayoutOptions.Start,
-             };
-             //specifying location for each platform
-             exit.Source = Device.OnPlatform(
-                 iOS: ImageSource.FromFile("robot.png"),
-                 Android: ImageSource.FromFile("robot.png"),
-                 WinPhone: ImageSource.FromFile("robot.png"));*/
-            //For now the app will exit if you tap the exit image
             ImageCell exit = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(
@@ -90,7 +81,7 @@ namespace App1.Layout
                 Android: ImageSource.FromFile("menu.png"),
                 WinPhone: ImageSource.FromFile("menu.png")),
             };
-            exit.Tapped += async (sender, args) => await Navigation.PushAsync(new LoginPage());
+            exit.Tapped += async (sender, args) => await Navigation.PopToRootAsync();
 
             //Button to go back
             Button Back = new Button()
@@ -207,15 +198,39 @@ namespace App1.Layout
         //should take te user to the transaction page
         private async void OntransactionButtonClicked(object sender, EventArgs e)
         {
-            Navigation.InsertPageBefore(new transactionPage(), this);
-            await Navigation.PopAsync();
+            var rest = new ManagerRESTService(new RESTService());
+            var Accounts = new Accounts.Account();
+            Debug.WriteLine("Clicked transaction button");
+            var uri = String.Format(Constants.MovementUrl, Accounts.bank_id, Accounts.id);
+            try
+            {
+                await rest.GetWithToken(uri, 3);
+
+                await Navigation.PushAsync(new transactionPage());
+                await Navigation.PopAsync();
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
         }
 
         //should take the user to the cards page
         private async void OncardsButtonClicked(object sender, EventArgs e)
         {
-            Navigation.InsertPageBefore(new cardPage(), this);
-            await Navigation.PopAsync();
+            var rest = new ManagerRESTService(new RESTService());
+            Debug.WriteLine("Clicked cards button");
+            var uri = String.Format(Constants.BranchesUrl);
+            try
+            {
+                await rest.GetWithToken(uri, 4);
+                await Navigation.PushAsync(new cardPage());
+                await Navigation.PopAsync();
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
         }
     }
 }
