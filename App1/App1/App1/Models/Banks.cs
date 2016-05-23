@@ -3,14 +3,9 @@ using System.Collections.Generic;
 
 namespace App1.Models
 {
-    public class bankslist
+    public class RootObject
     {
-        public List<banks> banklist { get; set; }
-    }
-
-    public class bankstuff
-    {
-        public banks banks;
+        public List<banks> banks { get; set; }
     }
 
     public class banks

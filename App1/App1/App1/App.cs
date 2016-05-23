@@ -1,7 +1,10 @@
-﻿using App1.Layout;
+﻿using System;
+using App1.Layout;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Threading.Tasks;
+using App1.REST;
 using Xamarin.Forms;
 
 namespace App1
@@ -9,33 +12,44 @@ namespace App1
     public class App : Application
     {
         private Dictionary<FirstPage, NavigationPage> Pages { get; set; }
+        public static ITextSpeech Speech { get; set; }
 
+        readonly IRESTService AuthenticationService;
         //the main Application and its functionalities
         public App()
         {
+            AuthenticationService = DependencyService.Get<IRESTService>();
             MainPage = new NavigationPage(new LoginPage());
-            NavigateAsync(FirstPage.Login);
+            // NavigateAsync(FirstPage.Login);
             Debug.WriteLine("App testing userloggedIn");
-            if (UserLoggedIn)
+            try
             {
-                Debug.WriteLine("userloggedIn is true");
-                MainPage = new NavigationPage(new PrincipalPage());
+                if (AuthenticationService.IsAutheticated)
+                {
+                    Debug.WriteLine("authentication {0}", AuthenticationService.IsAutheticated);
+                    Debug.WriteLine("userloggedIn is true");
+                    MainPage = new NavigationPage(new PrincipalPage());
+                }
+                else
+                {
+                    Debug.WriteLine("authentication {0}", AuthenticationService.IsAutheticated);
+                    Debug.WriteLine("userloggedIn is false");
+                    MainPage = new NavigationPage(new LoginPage());
+                }
             }
-            else
+            catch (NullReferenceException err)
             {
-                Debug.WriteLine("userloggedIn is false");
-                MainPage = new NavigationPage(new LoginPage());
+                Debug.WriteLine("Caught error: {0}.", err);
             }
-            Pages = new Dictionary<FirstPage, NavigationPage>();
         }
+
+        //  Pages = new Dictionary<FirstPage, NavigationPage>();
 
         private void SetDetailIfNull(Page page)
         {
             if (Detail == null && page != null)
                 Detail = page;
         }
-
-        public static bool UserLoggedIn { get; set; }
 
         public async Task NavigateAsync(FirstPage id)
         {
@@ -151,7 +165,6 @@ namespace App1
         }
 
         public Page Detail { get; set; }
-        // public static ITextSpeech Speech { get; set; }
 
         protected override void OnStart()
         {

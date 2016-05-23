@@ -224,18 +224,26 @@ namespace App1
             Debug.WriteLine("verifcation is true");
             //Verfication of users information through OpenBanks Direct Login where the user should receive a token
             //this token is never shown to the user, used in background functions to request authorized information for the user
-            await rest.CreateSession(user, pass);
+            var result = await rest.CreateSession(user, pass);
             Debug.WriteLine("should get token: {0}", user.token);
+            //if the result is false it will stay on the same page and show the message stated else it will change to the next page
+            try
+            {
+                if (result)
+                {
+                    var uri = string.Format(Constants.AccountUrl);
+                    await rest.GetWithToken(uri, 1);
+                    await Navigation.PushAsync(new PrincipalPage());
 
-            if (!App.UserLoggedIn)
-            {
-                await Navigation.PushModalAsync(new LoginPage());
+                }
+                else
+                {
+                    messageLabel.Text = "Login Failed";
+                }
             }
-            else
+            catch (NullReferenceException err)
             {
-                App.UserLoggedIn = true;
-                Navigation.InsertPageBefore(new PrincipalPage(), this);
-                await Navigation.PopAsync();
+                Debug.WriteLine("Caught error: {0}.", err);
             }
         }
 
@@ -263,7 +271,15 @@ namespace App1
             //get informatin connected to the banks contact information localized on OpenBanks sandbox
             var uri = string.Format(Constants.BankUrl);
             await rest.GetwithoutToken(uri, 1);
-            await Navigation.PushAsync(new ContactPage());
+            try
+            {
+                Navigation.InsertPageBefore(new ContactPage(), this);
+                await Navigation.PopAsync();
+            }
+            catch (NullReferenceException err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
         }
 
         //what happens when we click the Balcao button

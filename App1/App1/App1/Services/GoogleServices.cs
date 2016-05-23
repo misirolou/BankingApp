@@ -1,5 +1,4 @@
 ﻿using App1.Models;
-using App1.REST;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -22,18 +21,18 @@ namespace App1.Services
         private const string GoogleMapsUrl =
             "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={0},{1}&radius=5000&sensor=true&name=car%wash&key={2}";
 
-        /* public async Task<List<Location>> GetCoordinatesMapAsync(Location latitude, Location longitude)
-         {
-             var uri = string.Format(GoogleMapsUrl, latitude.Latitude,
-                           longitude.Longitude, Android_API_KEY);
+        /*  public async Task<List<atmlist>> GetCoordinatesMapAsync(Locationatm latitude, Locationatm longitude)
+          {
+              var uri = string.Format(GoogleMapsUrl, latitude.latitude,
+                            longitude.longitude, Android_API_KEY);
 
-             var result = await _httpClient.GetAsync<>(uri);
+                  var result = await _httpClient.GetAsync<atmlist>(uri);
 
-             return result;
-         }*/
+                  return result;
+          }*/
 
         //Change Users not this
-        public Task<List<Users>> GetCoordinatesMapAsync(Location location)
+        public Task<List<atmlist>> GetCoordinatesMapAsync(Locationatm latitude, Locationatm longitude)
         {
             throw new NotImplementedException();
         }

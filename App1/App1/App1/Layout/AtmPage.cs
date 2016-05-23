@@ -22,9 +22,9 @@ namespace App1.Layout
             Back.Clicked += BackButtonClicked;
 
             //the map view of the area
-            var location = new Location();
+            var location = new Atm();
             var map = new Map(MapSpan.FromCenterAndRadius(
-                    new Position(location.Latitude, location.Longitude), Distance.FromMiles(0.3)))
+                    new Position(location.location.latitude, location.location.longitude), Distance.FromMiles(0.3)))
             {
                 IsShowingUser = true,
                 HeightRequest = 100,
@@ -33,7 +33,7 @@ namespace App1.Layout
             };
 
             //putting pins in certain locations
-            var position = new Position(location.Latitude, location.Longitude); // Latitude, Longitude
+            var position = new Position(location.location.latitude, location.location.longitude); // Latitude, Longitude
             var pin = new Pin
             {
                 Type = PinType.Place,
