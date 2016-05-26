@@ -21,6 +21,12 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
+            //to choose what bank they want
+            Picker picker = new Picker()
+            {
+                Title = "Bank id choose wisely"
+            };
+            // picker.SelectedIndex += pickerSelected;
             //the map view of the area
             var location = new Atm();
             var map = new Map(MapSpan.FromCenterAndRadius(
@@ -43,18 +49,23 @@ namespace App1.Layout
             };
             map.Pins.Add(pin);
 
+            var stacklayout = new StackLayout()
+            {
+                Orientation = StackOrientation.Horizontal,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Children =
+                {
+                    picker, Back
+                }
+            };
+
             Title = "AtmPage";
             Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout
             {
                 Children = {
-                    Back,
+                    stacklayout,
                     map
-                   /* new Label {
-                        Text = "AtmPage should have a map of ATMs",
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
-                    }*/
                 }
             };
         }

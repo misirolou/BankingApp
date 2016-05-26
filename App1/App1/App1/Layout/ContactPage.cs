@@ -31,7 +31,6 @@ namespace App1.Layout
             Back.Clicked += BackButtonClicked;
 
             ObservableCollection<banks> bankList = new ObservableCollection<banks>();
-            Debug.WriteLine("banklist {0}", bankList);
 
             var banks = new RootObject();
             foreach (var item in banks.banks)

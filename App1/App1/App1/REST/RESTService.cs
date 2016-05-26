@@ -48,28 +48,24 @@ namespace App1.REST
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
                                     var info = JsonConvert.DeserializeObject<RootObject>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:", info, info.banks);
                                     break;
 
                                 case 2: //location of the branches and their locations
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
                                     var info1 = JsonConvert.DeserializeObject<branchlist>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ", info1, info1.branches);
                                     break;
 
                                 case 3: //location of the atms and their locations
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
                                     var info2 = JsonConvert.DeserializeObject<atmlist>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1}", info2, info2.atms);
                                     break;
 
                                 case 4: //products of all the banks
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
                                     var info3 = JsonConvert.DeserializeObject<productlist>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-:: {1} ::-:: {2}", info3, info3.products);
                                     break;
 
                                 default:
@@ -103,8 +99,10 @@ namespace App1.REST
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
-            request2.Headers[HttpRequestHeader.Authorization] = token;
-            Debug.WriteLine("token:: {0}", token);
+            var token5 = new Token(); 
+            var authToken = string.Format("token=\"{0}\"", token5.token);
+            request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+            Debug.WriteLine("token:: {0}", token5);
 
             try
             {
@@ -129,29 +127,25 @@ namespace App1.REST
                                 case 1: //the login account used and the info that it contains
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    var info = JsonConvert.DeserializeObject<Accounts>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-::", info);
+                                    JsonConvert.DeserializeObject<Accounts>(content);
                                     break;
 
                                 case 2: //Account with more detailed information containg things like the account balance, IBAN, etc
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    var info1 = JsonConvert.DeserializeObject<AccountInfo>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-::", info1);
+                                    JsonConvert.DeserializeObject<AccountInfo>(content);
                                     break;
 
                                 case 3: //this will contain the users transaction information
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    var info2 = JsonConvert.DeserializeObject<AccountInfo>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-::", info2);
+                                    JsonConvert.DeserializeObject<AccountInfo>(content);
                                     break;
 
                                 case 4: //this will contain the users card information
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    var info3 = JsonConvert.DeserializeObject<AccountInfo>(content);
-                                    Debug.WriteLine("json deserilization:  {0} ::-::", info3);
+                                    JsonConvert.DeserializeObject<AccountInfo>(content);
                                     break;
 
                                 default: break;
@@ -181,7 +175,9 @@ namespace App1.REST
             get
             {
                 Debug.WriteLine("Here in authetiacation");
-                return !string.IsNullOrWhiteSpace(token);
+                var some = !string.IsNullOrWhiteSpace(token);
+                Debug.WriteLine("vaue of some {0}", some);
+                return some;
             }
         }
 
@@ -233,13 +229,11 @@ namespace App1.REST
                             }
                             else
                             {
-                                var userstoken = new Users();
+                                var userstoken = new Token();
                                 //deserializing string of information received into json type to then be called
-                                var info = JsonConvert.DeserializeObject<Users>(token);
-                                Debug.WriteLine("json deserilization:  {0}", info.token);
-                                Debug.WriteLine("username {0},password {1}", user.User, pass.Password);
+                                JsonConvert.DeserializeObject<Token>(token);
                                 Debug.WriteLine("token {0}", token);
-                                Debug.WriteLine("token from users {0}", userstoken.token);
+                                Debug.WriteLine("users token:: {0}", userstoken.token);
                                 return true;
                             }
                         }

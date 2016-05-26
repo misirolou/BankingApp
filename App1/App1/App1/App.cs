@@ -20,20 +20,18 @@ namespace App1
         {
             AuthenticationService = DependencyService.Get<IRESTService>();
             var rest = new ManagerRESTService(new RESTService());
-            MainPage = new NavigationPage(new LoginPage());
+            // MainPage = new NavigationPage(new LoginPage());
             // NavigateAsync(FirstPage.Login);
             Debug.WriteLine("App testing userloggedIn");
             try
             {
                 if (rest.IsAutheticated())
                 {
-                    Debug.WriteLine("authentication {0}", AuthenticationService.IsAutheticated);
                     Debug.WriteLine("userloggedIn is true");
                     MainPage = new NavigationPage(new PrincipalPage());
                 }
                 else
                 {
-                    Debug.WriteLine("authentication {0}", AuthenticationService.IsAutheticated);
                     Debug.WriteLine("userloggedIn is false");
                     MainPage = new NavigationPage(new LoginPage());
                 }

@@ -216,16 +216,10 @@ namespace App1
                 passwordEntry.Text = String.Empty;
                 messageLabel.Text = String.Empty;
             }
-
-            //verfication of users information should be able to connect to class that takes care of users information
-            Debug.WriteLine("user" + user);
-            Debug.WriteLine("user.User" + user.User);
-            Debug.WriteLine("verifcation is true");
             //Verfication of users information through OpenBanks Direct Login where the user should receive a token
             //this token is never shown to the user, used in background functions to request authorized information for the user
             var result = await rest.CreateSession(user, pass);
             Debug.WriteLine("result {0}", result);
-            Debug.WriteLine("should get token: {0}", user.token);
             //if the result is false it will stay on the same page and show the message stated else it will change to the next page
             try
             {

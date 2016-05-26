@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Cell\AccountCell.cs" />
     <Compile Include="Cell\Cells.cs" />
     <Compile Include="Layout\AtmPage.cs" />
     <Compile Include="Layout\BalcaoPage.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Menu\MenuItem.cs" />
     <Compile Include="Models\Products.cs" />
+    <Compile Include="Models\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\AccountInfo.cs" />
     <Compile Include="REST\IRESTService.cs" />

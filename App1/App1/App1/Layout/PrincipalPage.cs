@@ -1,6 +1,8 @@
-﻿using App1.Models;
+﻿using App1.Cell;
+using App1.Models;
 using App1.REST;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Xamarin.Forms;
 
@@ -9,6 +11,8 @@ namespace App1.Layout
     internal class PrincipalPage : ContentPage
     {
         private Label accountid, owner, iban, balance, bank, currency, typeaccount;
+
+        private ListView listView;
 
         public PrincipalPage()
         {
@@ -99,6 +103,7 @@ namespace App1.Layout
             //Layout of the Home page(PrincipalPage.cs)
             Title = "Home";
             Icon = new FileImageSource() { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
             //this is the type of layout the grids will be specified in
             var stackLayout = new StackLayout
             {
@@ -106,6 +111,26 @@ namespace App1.Layout
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
                 Padding = 1
+            };
+
+            ObservableCollection<AccountInfo> AccountInfoList = new ObservableCollection<AccountInfo>();
+            Debug.WriteLine("banklist {0}", AccountInfoList);
+
+            listView = new ListView
+            {
+                ItemsSource = AccountInfoList,
+                ItemTemplate = new DataTemplate(() =>
+                {
+                    var nativeCell = new AccountCell();
+                    nativeCell.SetBinding(AccountCell.IDProperty, "id");
+                    nativeCell.SetBinding(AccountCell.OwnerProperty, "owner");
+                    nativeCell.SetBinding(AccountCell.BalanceProperty, "balance");
+                    nativeCell.SetBinding(AccountCell.BankProperty, "bank");
+                    nativeCell.SetBinding(AccountCell.IbanProperty, "IBAN");
+                    nativeCell.SetBinding(AccountCell.CurrencyProperty, "currency");
+                    nativeCell.SetBinding(AccountCell.TypeProperty, "type");
+                    return nativeCell;
+                })
             };
 
             //adding a table view for the images of the menu and exit images
@@ -185,7 +210,8 @@ namespace App1.Layout
 
             stackLayout.Children.Add(tableview);
             stackLayout.Children.Add(menubar);
-            stackLayout.Children.Add(infoGrid);
+            stackLayout.Children.Add(listView);
+           // stackLayout.Children.Add(infoGrid);
             stackLayout.Children.Add(button2grid);
             this.Content = stackLayout;
         }
@@ -205,7 +231,6 @@ namespace App1.Layout
             try
             {
                 await rest.GetWithToken(uri, 3);
-
                 await Navigation.PushAsync(new transactionPage());
                 await Navigation.PopAsync();
             }

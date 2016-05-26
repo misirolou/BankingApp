@@ -10,7 +10,7 @@ namespace App1.Cell
     BindableProperty.Create("short_name", typeof(string), typeof(Cells), "");
 
         public string short_name
-        {
+        { 
             get { return (string)GetValue(NameProperty); }
             set { SetValue(NameProperty, value); }
         }
