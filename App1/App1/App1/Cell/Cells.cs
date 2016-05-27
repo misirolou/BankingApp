@@ -4,13 +4,22 @@ namespace App1.Cell
 {
     internal class Cells : ViewCell
     {
-        private Label nameLabel, fullLabel, webLabel;
+        private Label idLabel, nameLabel, fullLabel, LogoLabel, webLabel;
+
+        public static readonly BindableProperty IDProperty =
+    BindableProperty.Create("id", typeof(string), typeof(Cells), "");
+
+        public string id
+        {
+            get { return (string)GetValue(IDProperty); }
+            set { SetValue(IDProperty, value); }
+        }
 
         public static readonly BindableProperty NameProperty =
     BindableProperty.Create("short_name", typeof(string), typeof(Cells), "");
 
         public string short_name
-        { 
+        {
             get { return (string)GetValue(NameProperty); }
             set { SetValue(NameProperty, value); }
         }
@@ -24,6 +33,15 @@ namespace App1.Cell
             set { SetValue(full_nameProperty, value); }
         }
 
+        public static readonly BindableProperty LogoProperty =
+          BindableProperty.Create("logo", typeof(string), typeof(Cells), "");
+
+        public string Logo
+        {
+            get { return (string)GetValue(LogoProperty); }
+            set { SetValue(LogoProperty, value); }
+        }
+
         public static readonly BindableProperty WebsiteProperty =
           BindableProperty.Create("website", typeof(string), typeof(Cells), "");
 
@@ -34,7 +52,7 @@ namespace App1.Cell
         }
 
         public static readonly BindableProperty MenuTitleProperty =
-          BindableProperty.Create("website", typeof(string), typeof(Cells), "");
+          BindableProperty.Create("menu", typeof(string), typeof(Cells), "");
 
         public string MenuTitle
         {
@@ -48,8 +66,10 @@ namespace App1.Cell
 
             if (BindingContext != null)
             {
+                idLabel.Text = id;
                 nameLabel.Text = short_name;
                 fullLabel.Text = full_name;
+                LogoLabel.Text = Logo;
                 webLabel.Text = website;
             }
         }

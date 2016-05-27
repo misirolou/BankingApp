@@ -1,6 +1,7 @@
 ﻿using App1.Layout;
 using App1.Models;
 using App1.REST;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using Xamarin.Forms;
@@ -220,14 +221,21 @@ namespace App1
             //this token is never shown to the user, used in background functions to request authorized information for the user
             var result = await rest.CreateSession(user, pass);
             Debug.WriteLine("result {0}", result);
+            var token = new Token();
+            var something = JsonConvert.SerializeObject(token);
+            Debug.WriteLine("someting {0}", something);
+            Debug.WriteLine("checking token {0}", token.token);
             //if the result is false it will stay on the same page and show the message stated else it will change to the next page
             try
             {
                 if (result)
                 {
                     var uri = string.Format(Constants.AccountUrl);
-                    await rest.GetWithToken(uri, 1);
-                    await Navigation.PushAsync(new PrincipalPage());
+                    var result2 = await rest.GetWithToken(uri, 1, token.token);
+                    if (result2.Equals(true))
+                    {
+                        await Navigation.PushAsync(new PrincipalPage());
+                    }
                 }
                 else
                 {
@@ -264,6 +272,10 @@ namespace App1
             //get informatin connected to the banks contact information localized on OpenBanks sandbox
             var uri = string.Format(Constants.BankUrl);
             await rest.GetwithoutToken(uri, 1);
+            var banklist  = new banks();
+
+            Debug.WriteLine(banklist.id);
+
             try
             {
                 await Navigation.PushAsync(new ContactPage());

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace App1.Models
 {
-    public class RootObject
+    public class Banklist
     {
         public List<banks> banks { get; set; }
     }

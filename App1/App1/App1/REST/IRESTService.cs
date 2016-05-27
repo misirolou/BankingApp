@@ -6,9 +6,9 @@ namespace App1.REST
     {
         Task<bool> CreateSession(Users user, Users pass);
 
-        Task<bool> GetwithoutToken(string url, int choice);
+        Task<string> GetwithoutToken(string url, int choice);
 
-        Task<bool> GetWithToken(string url, int choice);
+        Task<bool> GetWithToken(string url, int choice, string tokenreceived);
 
         bool IsAutheticated { get; }
     }

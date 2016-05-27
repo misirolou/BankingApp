@@ -114,7 +114,6 @@ namespace App1.Layout
             };
 
             ObservableCollection<AccountInfo> AccountInfoList = new ObservableCollection<AccountInfo>();
-            Debug.WriteLine("banklist {0}", AccountInfoList);
 
             listView = new ListView
             {
@@ -211,7 +210,7 @@ namespace App1.Layout
             stackLayout.Children.Add(tableview);
             stackLayout.Children.Add(menubar);
             stackLayout.Children.Add(listView);
-           // stackLayout.Children.Add(infoGrid);
+            // stackLayout.Children.Add(infoGrid);
             stackLayout.Children.Add(button2grid);
             this.Content = stackLayout;
         }
@@ -227,10 +226,11 @@ namespace App1.Layout
             var rest = new ManagerRESTService(new RESTService());
             var Accounts = new Accounts.Account();
             Debug.WriteLine("Clicked transaction button");
+            var token = new Token();
             var uri = String.Format(Constants.MovementUrl, Accounts.bank_id, Accounts.id);
             try
             {
-                await rest.GetWithToken(uri, 3);
+                await rest.GetWithToken(uri, 3, token.token);
                 await Navigation.PushAsync(new transactionPage());
                 await Navigation.PopAsync();
             }
@@ -245,10 +245,11 @@ namespace App1.Layout
         {
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked cards button");
+            var token = new Token();
             var uri = String.Format(Constants.BranchesUrl);
             try
             {
-                await rest.GetWithToken(uri, 4);
+                await rest.GetWithToken(uri, 4, token.token);
                 await Navigation.PushAsync(new cardPage());
                 await Navigation.PopAsync();
             }
