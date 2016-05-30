@@ -122,6 +122,7 @@
     <None Include="Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\Exit.png" />
     <Content Include="Assets\Images\menu.png" />
     <Content Include="Assets\Images\robot.png" />
     <Content Include="Assets\Logo.scale-100.png" />

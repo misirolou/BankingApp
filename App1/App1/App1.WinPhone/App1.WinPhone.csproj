@@ -99,6 +99,7 @@
   <ItemGroup>
     <Content Include="Assets\Back.png" />
     <Content Include="Assets\Bank.png" />
+    <Content Include="Assets\Exit.png" />
     <Content Include="Assets\Home.png" />
     <Content Include="Assets\Location.png" />
     <Content Include="Assets\menu.png" />

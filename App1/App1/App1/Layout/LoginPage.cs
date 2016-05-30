@@ -221,10 +221,6 @@ namespace App1
             //this token is never shown to the user, used in background functions to request authorized information for the user
             var result = await rest.CreateSession(user, pass);
             Debug.WriteLine("result {0}", result);
-            var token = new Token();
-            var something = JsonConvert.SerializeObject(token);
-            Debug.WriteLine("someting {0}", something);
-            Debug.WriteLine("checking token {0}", token.token);
             //if the result is false it will stay on the same page and show the message stated else it will change to the next page
             try
             {
@@ -232,6 +228,7 @@ namespace App1
                 {
                     try
                     {
+                        //could be passing to much information may have to simplify
                         await Navigation.PushAsync(new PrincipalPage());
                     }
                     catch (Exception err)
@@ -276,9 +273,11 @@ namespace App1
             //get informatin connected to the banks contact information localized on OpenBanks sandbox
             var uri = string.Format(Constants.BankUrl);
             await rest.GetwithoutToken(uri, 1);
-            var banklist = new banks();
-
-            Debug.WriteLine(banklist.id);
+            var banklist = new Banklist();
+          /*  foreach (var item in banklist.banks)
+            {
+                Debug.WriteLine("itemid loginpage {0}",item.id);
+            }*/
 
             try
             {

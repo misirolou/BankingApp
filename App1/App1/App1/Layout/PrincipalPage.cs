@@ -14,6 +14,7 @@ namespace App1.Layout
 
         public PrincipalPage()
         {
+            //Transaction button used to change to the transaction page
             var transactionButton = new Button
             {
                 Text = "Transactions",
@@ -21,6 +22,8 @@ namespace App1.Layout
                 HorizontalOptions = LayoutOptions.Start
             };
             transactionButton.Clicked += OntransactionButtonClicked;
+
+            //bank cards button used to change to the cards page
             var cardsbutton = new Button()
             {
                 Text = "Cards",
@@ -29,6 +32,7 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
 
+            //image that when tapped will change to the menu page
             ImageCell menu = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(
@@ -38,12 +42,13 @@ namespace App1.Layout
             };
             menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());
 
+            //image that will go to the login page
             ImageCell exit = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(
-                iOS: ImageSource.FromFile("menu.png"),
-                Android: ImageSource.FromFile("menu.png"),
-                WinPhone: ImageSource.FromFile("menu.png")),
+                iOS: ImageSource.FromFile("Exit.png"),
+                Android: ImageSource.FromFile("Exit.png"),
+                WinPhone: ImageSource.FromFile("Exit.png")),
             };
             exit.Tapped += async (sender, args) => await Navigation.PopToRootAsync();
 
