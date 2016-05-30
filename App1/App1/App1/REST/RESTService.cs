@@ -1,11 +1,10 @@
 ﻿using App1.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace App1.REST
 {
@@ -18,7 +17,7 @@ namespace App1.REST
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //This function will be used to GET information for the user that doesn´t require any type of login
-        public async Task<string> GetwithoutToken(string url, int choice)
+        public async Task<bool> GetwithoutToken(string url, int choice)
         {
             string responseFromServer = "";
             var uri = string.Format(url);
@@ -33,6 +32,7 @@ namespace App1.REST
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                        return false;
                     }
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
@@ -47,19 +47,20 @@ namespace App1.REST
                             {
                                 case 1: //bank information used, using JSON to save information
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
+                                    //var json = @"{'banks':[{'id':'rbs','short_name':'The Royal Bank of Scotland','full_name':'The Royal Bank of Scotland','logo':'http://www.red-bank-shoreditch.com/logo.gif','website':'http://www.red-bank-shoreditch.com'},{'id':'test-bank','short_name':'TB','full_name':'Test Bank','logo':null,'website':null},{'id':'testowy_bank_id','short_name':'TB','full_name':'Testowy bank',    'logo':null,'website':null}]}";
                                     //deserializing string of information received into json type to then be called
-                                    Banklist info = JsonConvert.DeserializeObject<Banklist>(content);
-                                    Debug.WriteLine(info.banks);
-                                    foreach (var item in info.banks)
+                                    Banklist banklist = JsonConvert.DeserializeObject<Banklist>(content);
+                                    foreach (var item in banklist.banks)
                                     {
                                         Debug.WriteLine("itemid :{0}", item.id);
                                     }
+                                    Debug.WriteLine(banklist.banks);
                                     break;
 
                                 case 2: //location of the branches and their locations
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    branchlist info1 =  JsonConvert.DeserializeObject<branchlist>(content);
+                                    branchlist info1 = JsonConvert.DeserializeObject<branchlist>(content);
                                     Debug.WriteLine(info1.branches);
                                     foreach (var item in info1.branches)
                                     {
@@ -90,7 +91,7 @@ namespace App1.REST
                                     break;
                             }
                         }
-                        return content;
+                        return true;
                     }
                 }
             }
@@ -104,18 +105,18 @@ namespace App1.REST
                 {
                     Debug.WriteLine("Response contained empty body...");
                 }
-                return responseFromServer;
+                return false;
             }
         }
 
         //The user should be autheticated and this GET request will be using the tokenreceived from the function Createsession
-        public async Task<bool> GetWithToken(string url, int choice, string tokenreceived)
+        public async Task<bool> GetWithToken(string url, int choice)
         {
             var uri = string.Format(url);
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
-            var authToken = string.Format("tokenreceived=\"{0}\"", tokenreceived);
+            var authToken = string.Format("token= \"{0}\"", token);
             Debug.WriteLine("authtoken {0}", authToken);
             request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
 
@@ -142,8 +143,8 @@ namespace App1.REST
                                 case 1: //the login account used and the info that it contains
                                     Debug.WriteLine("Response Body: \r\n {0}", content);
                                     //deserializing string of information received into json type to then be called
-                                    Accounts info = JsonConvert.DeserializeObject<Accounts>(content);
-                                    Debug.WriteLine(info);
+                                    List<Accounts> info = JsonConvert.DeserializeObject<List<Accounts>>(content);
+                                    Debug.WriteLine(info.Count);
                                     foreach (var item in info.ToString())
                                     {
                                         Debug.WriteLine("itemid :{0}", item);
@@ -259,6 +260,7 @@ namespace App1.REST
                                 //deserializing string of information received into json type to then be called
                                 var token1 = JsonConvert.DeserializeObject<Token>(json);
                                 Debug.WriteLine(token1.token);
+                                token = token1.token;
                                 return true;
                             }
                         }

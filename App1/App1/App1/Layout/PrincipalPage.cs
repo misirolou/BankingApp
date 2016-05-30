@@ -10,50 +10,10 @@ namespace App1.Layout
 {
     internal class PrincipalPage : ContentPage
     {
-        private Label accountid, owner, iban, balance, bank, currency, typeaccount;
-
         private ListView listView;
 
         public PrincipalPage()
         {
-            var AccountInfo = new AccountInfo.AccountInfoDetailed();
-            //specifying labels and buttons utilized
-            accountid = new Label()
-            {
-                Text = "id  ",
-                BackgroundColor = Color.Gray,
-            };
-            //movement button should take you to the movements page
-            owner = new Label()
-            {
-                Text = "Owner: ",
-                BackgroundColor = Color.Gray
-            };
-            iban = new Label()
-            {
-                Text = "IBAN: ",
-                BackgroundColor = Color.Gray
-            };
-            balance = new Label()
-            {
-                Text = "Balance: ",
-                BackgroundColor = Color.Gray
-            };
-            bank = new Label()
-            {
-                Text = "Bank: ",
-                BackgroundColor = Color.Gray
-            };
-            currency = new Label()
-            {
-                Text = "Currency: ",
-                BackgroundColor = Color.Gray
-            };
-            typeaccount = new Label()
-            {
-                Text = "Type: ",
-                BackgroundColor = Color.Gray
-            };
             var transactionButton = new Button
             {
                 Text = "Transactions",
@@ -162,23 +122,6 @@ namespace App1.Layout
                             }
             };
 
-            //specification of the innergrid layout
-            var infoGrid = new Grid
-            {
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                RowDefinitions =
-                            {
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                                new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
-                            }
-            };
-
             //specfication of the button grids layout
             var button2grid = new Grid
             {
@@ -195,14 +138,6 @@ namespace App1.Layout
                             }
             };
 
-            //infogrid contining users info
-            infoGrid.Children.Add(accountid, 0, 0);
-            infoGrid.Children.Add(owner, 0, 1);
-            infoGrid.Children.Add(iban, 0, 2);
-            infoGrid.Children.Add(balance, 0, 3);
-            infoGrid.Children.Add(bank, 0, 4);
-            infoGrid.Children.Add(currency, 0, 5);
-            infoGrid.Children.Add(typeaccount, 0, 6);
             //button grid containg buttons that alocate you to another page
             button2grid.Children.Add(transactionButton, 0, 0);
             button2grid.Children.Add(cardsbutton, 1, 0);
@@ -210,7 +145,6 @@ namespace App1.Layout
             stackLayout.Children.Add(tableview);
             stackLayout.Children.Add(menubar);
             stackLayout.Children.Add(listView);
-            // stackLayout.Children.Add(infoGrid);
             stackLayout.Children.Add(button2grid);
             this.Content = stackLayout;
         }
@@ -226,11 +160,10 @@ namespace App1.Layout
             var rest = new ManagerRESTService(new RESTService());
             var Accounts = new Accounts.Account();
             Debug.WriteLine("Clicked transaction button");
-            var token = new Token();
             var uri = String.Format(Constants.MovementUrl, Accounts.bank_id, Accounts.id);
             try
             {
-                await rest.GetWithToken(uri, 3, token.token);
+                await rest.GetWithToken(uri, 3);
                 await Navigation.PushAsync(new transactionPage());
                 await Navigation.PopAsync();
             }
@@ -245,11 +178,10 @@ namespace App1.Layout
         {
             var rest = new ManagerRESTService(new RESTService());
             Debug.WriteLine("Clicked cards button");
-            var token = new Token();
             var uri = String.Format(Constants.BranchesUrl);
             try
             {
-                await rest.GetWithToken(uri, 4, token.token);
+                await rest.GetWithToken(uri, 4);
                 await Navigation.PushAsync(new cardPage());
                 await Navigation.PopAsync();
             }

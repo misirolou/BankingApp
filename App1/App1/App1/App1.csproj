@@ -46,6 +46,7 @@
     <Compile Include="Layout\MenuPage.cs" />
     <Compile Include="Layout\PrincipalPage.cs" />
     <Compile Include="Layout\ProductPage.cs" />
+    <Compile Include="Layout\SplashPage.cs" />
     <Compile Include="Layout\transactionPage.cs" />
     <Compile Include="Menu\MenuListData.cs" />
     <Compile Include="Menu\MenuListView.cs" />

@@ -6,8 +6,9 @@ namespace App1.Layout
     {
         public ProductPage()
         {
-            Title = "Products";
+            Title = "ProductsPage";
             Icon = new FileImageSource { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 Children = {

@@ -1,6 +1,7 @@
 ﻿using App1.Cell;
 using App1.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Xamarin.Forms;
@@ -9,6 +10,9 @@ namespace App1.Layout
 {
     internal class ContactPage : ContentPage
     {
+        private List<Banklist> banklist;
+        private Label resultsLabel;
+        private SearchBar searchBar;
         private ListView listView;
 
         public ContactPage()
@@ -25,8 +29,22 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
+            resultsLabel = new Label
+            {
+                Text = "Result will appear here.",
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            //searchbar to search banks contacts that are available
+            searchBar = new SearchBar
+            {
+                Placeholder = "Enter short_name of bank",
+                SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
+            };
+
             ObservableCollection<banks> bankList = new ObservableCollection<banks>();
 
+            //this will contain the list of information from the banklist individually packed each into a cell according to the layout specified
             listView = new ListView
             {
                 BackgroundColor = Color.Gray,
@@ -44,7 +62,11 @@ namespace App1.Layout
                     })
             };
 
+            //Layout of the Contact Page, containig its title, image and final layout of the page
             Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
+            Title = "ContactPage";
+            Icon = new FileImageSource { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 BackgroundColor = Color.Teal,

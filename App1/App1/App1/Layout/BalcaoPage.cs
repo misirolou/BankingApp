@@ -1,4 +1,6 @@
-﻿using System;
+﻿using App1.Models;
+using System;
+using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -6,6 +8,10 @@ namespace App1.Layout
 {
     internal class BalcaoPage : ContentPage
     {
+        private List<Banklist> banklist;
+        private Label resultsLabel;
+        private SearchBar searchBar;
+
         public BalcaoPage()
         {
             //Button to go back
@@ -21,9 +27,27 @@ namespace App1.Layout
             };
             Back.Clicked += BackButtonClicked;
 
+            resultsLabel = new Label
+            {
+                Text = "Result will appear here.",
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            //searchbar to search banks contacts that are available
+            searchBar = new SearchBar
+            {
+                Placeholder = "Enter short_name of bank",
+                SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
+            };
+
+            /* searchBar.TextChanged += (sender, e) => banklist.FilterLocations(searchBar.Text);
+             searchBar.SearchButtonPressed += (sender, e) => {
+                 banklist.FilterLocations(searchBar.Text);
+             };*/
+
             //the map view of the area
             var map = new Map(MapSpan.FromCenterAndRadius(
-                    new Position(37, -122), Distance.FromMiles(0.3)))
+                        new Position(37, -122), Distance.FromMiles(0.3)))
             {
                 IsShowingUser = true,
                 HeightRequest = 100,
@@ -42,18 +66,20 @@ namespace App1.Layout
             };
             map.Pins.Add(pin);
 
-            Title = "BalcaoPage";
+            Title = "BranchPage";
             Icon = new FileImageSource { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 Children = {
                         Back,
+                        searchBar,
+                        new ScrollView
+                    {
+                        Content = resultsLabel,
+                        VerticalOptions = LayoutOptions.FillAndExpand
+                    },
                         map
-                       /* new Label {
-                            Text = "BalcaoPage should have a map of Banks",
-                            HorizontalOptions = LayoutOptions.Center,
-                            VerticalOptions = LayoutOptions.Center
-                        }*/
                     }
             };
         }

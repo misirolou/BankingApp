@@ -11,7 +11,7 @@ namespace App1.REST
             restService = service;
         }
 
-        public async Task<string> GetwithoutToken(string url, int choice)
+        public async Task<bool> GetwithoutToken(string url, int choice)
         {
             return await restService.GetwithoutToken(url, choice);
         }
@@ -21,9 +21,9 @@ namespace App1.REST
             return await restService.CreateSession(user, pass);
         }
 
-        public async Task<bool> GetWithToken(string url, int choice, string token)
+        public async Task<bool> GetWithToken(string url, int choice)
         {
-            return await restService.GetWithToken(url, choice, token);
+            return await restService.GetWithToken(url, choice);
         }
 
         public bool IsAutheticated()

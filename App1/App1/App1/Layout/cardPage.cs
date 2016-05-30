@@ -8,11 +8,12 @@ namespace App1.Layout
         {
             Title = "CardsPage";
             Icon = new FileImageSource { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 Children = {
                     new Label {
-                        Text = "CardsPage should have most of your card information",
+                        Text = "CardsPage should have most of your card information no information on OpenBank so thats all there is to it",
                         HorizontalOptions = LayoutOptions.Center,
                         VerticalOptions = LayoutOptions.Center
                     }

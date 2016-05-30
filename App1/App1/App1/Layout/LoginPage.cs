@@ -230,12 +230,16 @@ namespace App1
             {
                 if (result)
                 {
-                    var uri = string.Format(Constants.AccountUrl);
-                    var result2 = await rest.GetWithToken(uri, 1, token.token);
-                    if (result2.Equals(true))
+                    try
                     {
                         await Navigation.PushAsync(new PrincipalPage());
                     }
+                    catch (Exception err)
+                    {
+                        Debug.WriteLine("Caught error: {0}.", err);
+                    }
+                    //  var uri = string.Format(Constants.AccountUrl);
+                    //  var result2 = await rest.GetWithToken(uri, 1);
                 }
                 else
                 {
@@ -272,7 +276,7 @@ namespace App1
             //get informatin connected to the banks contact information localized on OpenBanks sandbox
             var uri = string.Format(Constants.BankUrl);
             await rest.GetwithoutToken(uri, 1);
-            var banklist  = new banks();
+            var banklist = new banks();
 
             Debug.WriteLine(banklist.id);
 

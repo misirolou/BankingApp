@@ -1,5 +1,6 @@
 ﻿using App1.Models;
 using System;
+using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -7,6 +8,10 @@ namespace App1.Layout
 {
     internal class AtmPage : ContentPage
     {
+        private List<Banklist> banklist;
+        private Label resultsLabel;
+        private SearchBar searchBar;
+
         public AtmPage()
         {
             Button Back = new Button()
@@ -27,6 +32,20 @@ namespace App1.Layout
                 Title = "Bank id choose wisely"
             };
             // picker.SelectedIndex += pickerSelected;
+
+            resultsLabel = new Label
+            {
+                Text = "Result will appear here.",
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            //searchbar to search banks contacts that are available
+            searchBar = new SearchBar
+            {
+                Placeholder = "Enter short_name of bank",
+                SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
+            };
+
             //the map view of the area
             var location = new Atm();
             var map = new Map(MapSpan.FromCenterAndRadius(
@@ -61,10 +80,13 @@ namespace App1.Layout
 
             Title = "AtmPage";
             Icon = new FileImageSource { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 Children = {
                     stacklayout,
+                    searchBar,
+                    resultsLabel,
                     map
                 }
             };
