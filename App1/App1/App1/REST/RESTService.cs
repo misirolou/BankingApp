@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace App1.REST
@@ -17,14 +18,18 @@ namespace App1.REST
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //This function will be used to GET information for the user that doesn´t require any type of login
-        public async Task<bool> GetwithoutToken(string url, int choice)
+        
+
+
+        public async Task<T> GetwithoutToken<T>(string url)
         {
-            string responseFromServer = "";
+            
+            var responseFromServer = "";
             var uri = string.Format(url);
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
-
+           
             try
             {
                 using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
@@ -32,66 +37,24 @@ namespace App1.REST
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
-                        return false;
                     }
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         string content = reader.ReadToEnd();
+                        var JsonResult = JsonConvert.DeserializeObject<T>(content);
+                        Debug.WriteLine("Treated json {0}",JsonResult);
+                        //in case that the string is null should return nothing
                         if (string.IsNullOrWhiteSpace(content))
                         {
                             Debug.WriteLine("Response contained empty body...");
+                            return JsonResult;
                         }
                         else
                         {
-                            switch (choice)
-                            {
-                                case 1: //bank information used, using JSON to save information
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //var json = @"{'banks':[{'id':'rbs','short_name':'The Royal Bank of Scotland','full_name':'The Royal Bank of Scotland','logo':'http://www.red-bank-shoreditch.com/logo.gif','website':'http://www.red-bank-shoreditch.com'},{'id':'test-bank','short_name':'TB','full_name':'Test Bank','logo':null,'website':null},{'id':'testowy_bank_id','short_name':'TB','full_name':'Testowy bank',    'logo':null,'website':null}]}";
-                                    //deserializing string of information received into json type to then be called
-                                    Banklist banklist = JsonConvert.DeserializeObject<Banklist>(content);
-                                    foreach (var item in banklist.banks)
-                                    {
-                                        Debug.WriteLine("itemid :{0}", item.id);
-                                    }
-                                    Debug.WriteLine(banklist.banks);
-                                    break;
-
-                                case 2: //location of the branches and their locations
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    branchlist info1 = JsonConvert.DeserializeObject<branchlist>(content);
-                                    Debug.WriteLine(info1.branches);
-                                    foreach (var item in info1.branches)
-                                    {
-                                        Debug.WriteLine("itemid :{0}", item.id);
-                                    }
-                                    break;
-
-                                case 3: //location of the atms and their locations
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    atmlist info2 = JsonConvert.DeserializeObject<atmlist>(content);
-                                    Debug.WriteLine(info2.atms);
-                                    foreach (var item in info2.atms)
-                                    {
-                                        Debug.WriteLine("itemid :{0}", item.id);
-                                    }
-                                    break;
-
-                                case 4: //products of all the banks
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    productlist info3 = JsonConvert.DeserializeObject<productlist>(content);
-                                    Debug.WriteLine(info3.products);
-                                    foreach (var item in info3.products)
-                                    {
-                                        Debug.WriteLine("itemid :{0}", item.name);
-                                    }
-                                    break;
-                            }
+                            //should be the result that im looking for 
+                            Debug.WriteLine("jsonresult {0}", JsonResult);
+                            return JsonResult;
                         }
-                        return true;
                     }
                 }
             }
@@ -100,12 +63,13 @@ namespace App1.REST
                 Stream stream = err.Response.GetResponseStream();
                 StreamReader reader = new StreamReader(stream);
                 responseFromServer = reader.ReadToEnd();
+                var JsonResultException = JsonConvert.DeserializeObject<T>(responseFromServer);
 
                 if (string.IsNullOrWhiteSpace(responseFromServer))
                 {
                     Debug.WriteLine("Response contained empty body...");
                 }
-                return false;
+                return JsonResultException;
             }
         }
 
@@ -195,8 +159,47 @@ namespace App1.REST
             }
         }
 
+        public async Task<T> getResponse<T>(string url)
+        {
+            var client = new System.Net.Http.HttpClient();
+
+
+            try
+            {
+                //Definide o Header de resultado para JSON, para evitar que seja retornado um HTML ou XML
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                //Formata a Url com o metodo e o parametro enviado e inicia o acesso a Api. Como o acesso será por meio
+                //da Internet, pode demorar muito, para que o aplicativo não trave usamos um método assincrono
+                //e colocamos a keyword AWAIT, para que a Thread principal - UI - continuo sendo executada
+                //e o método so volte a ser executado quando o download das informações for finalizado
+                var response = await client.GetAsync(string.Format(url));
+
+                //Lê a string retornada
+                var JsonResult = response.Content.ReadAsStringAsync().Result;
+
+                //Converte o resultado Json para uma Classe utilizando as Libs do Newtonsoft.Json
+                var rootobject = JsonConvert.DeserializeObject<T>(JsonResult);
+
+                return rootobject;
+            }
+            catch (WebException err)
+            {
+                Stream stream = err.Response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                var responseFromServer = reader.ReadToEnd();
+                var rootobject = JsonConvert.DeserializeObject<T>(responseFromServer);
+                if (string.IsNullOrWhiteSpace(responseFromServer))
+                {
+                    Debug.WriteLine("Response contained empty body...");
+                }
+                return rootobject;
+            }
+        }
+
         //verifcation of the users autheticty depending on the received tokenreceived
-        public bool IsAutheticated
+            public
+            bool IsAutheticated
         {
             get
             {

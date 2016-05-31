@@ -268,22 +268,12 @@ namespace App1
         //what happens when we click the contact button
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
-            var rest = new ManagerRESTService(new RESTService());
-            Debug.WriteLine("Clicked contact button");
-            //get informatin connected to the banks contact information localized on OpenBanks sandbox
-            var uri = string.Format(Constants.BankUrl);
-            await rest.GetwithoutToken(uri, 1);
-            var banklist = new Banklist();
-          /*  foreach (var item in banklist.banks)
-            {
-                Debug.WriteLine("itemid loginpage {0}",item.id);
-            }*/
-
+            //go to the contact page where the information will be taken care of
             try
             {
                 await Navigation.PushAsync(new ContactPage());
             }
-            catch (NullReferenceException err)
+            catch (Exception err)
             {
                 Debug.WriteLine("Caught error: {0}.", err);
             }
@@ -298,9 +288,9 @@ namespace App1
             //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
             try
             {
-                await rest.GetwithoutToken(Constants.BankUrl, 1);
+              /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
                 var uri = string.Format(Constants.BranchesUrl, banks.id);
-                await rest.GetwithoutToken(uri, 2);
+                await rest.GetwithoutToken(uri, 2);*/
                 await Navigation.PushAsync(new BalcaoPage());
             }
             catch (Exception err)
@@ -318,9 +308,9 @@ namespace App1
             //get information connected to the banks ATM information localized on OpenBanks sandbox
             try
             {
-                await rest.GetwithoutToken(Constants.BankUrl, 1);
+              /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
                 var uri = string.Format(Constants.ATMsUrl, banks.id);
-                await rest.GetwithoutToken(uri, 3);
+                await rest.GetwithoutToken(uri, 3);*/
                 await Navigation.PushAsync(new AtmPage());
             }
             catch (Exception err)

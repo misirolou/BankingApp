@@ -33,24 +33,24 @@ namespace App1.Layout
             cardsbutton.Clicked += OncardsButtonClicked;
 
             //image that when tapped will change to the menu page
-            ImageCell menu = new ImageCell()
+           /* ImageCell menu = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(
                     iOS: ImageSource.FromFile("menu.png"),
                     Android: ImageSource.FromFile("menu.png"),
                     WinPhone: ImageSource.FromFile("menu.png"))
             };
-            menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+            menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             //image that will go to the login page
-            ImageCell exit = new ImageCell()
+          /*  ImageCell exit = new ImageCell()
             {
                 ImageSource = Device.OnPlatform(
                 iOS: ImageSource.FromFile("Exit.png"),
                 Android: ImageSource.FromFile("Exit.png"),
                 WinPhone: ImageSource.FromFile("Exit.png")),
             };
-            exit.Tapped += async (sender, args) => await Navigation.PopToRootAsync();
+            exit.Tapped += async (sender, args) => await Navigation.PopToRootAsync();*/
 
             //Button to go back
             Button Back = new Button()
@@ -105,7 +105,7 @@ namespace App1.Layout
                 {
                     new TableSection()
                     {
-                        menu, exit
+                       // Menu, exit
                     }
                 }
             };
