@@ -1,13 +1,11 @@
 ﻿using App1.Cell;
 using App1.Models;
+using App1.REST;
+using App1.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using App1.REST;
-using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -15,24 +13,14 @@ namespace App1.Layout
     internal class ContactPage : ContentPage
     {
         private List<Banklist> banklist;
-        private Label resultsLabel;
+        private Label resultsLabel, something;
         private SearchBar searchBar;
-        private ListView listView;
+        private ListView _listView;
+
+        private ContactViewModel ViewModel { get; set; }
 
         public ContactPage()
         {
-            Button Back = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                        iOS: ImageSource.FromFile("Back.png"),
-                        Android: ImageSource.FromFile("Back.png"),
-                        WinPhone: ImageSource.FromFile("Back.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            Back.Clicked += BackButtonClicked;
-
             resultsLabel = new Label
             {
                 Text = "Result will appear here.",
@@ -46,28 +34,39 @@ namespace App1.Layout
                 SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
             };
 
-            Takingcareofbussiness();
+            ActivityIndicator indicator = new ActivityIndicator()
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
+                IsRunning = true,
+                IsVisible = true
+            };
+            indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
+            indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            //ObservableCollection<banks> bankList = new ObservableCollection<banks>();
+            var x = Takingcareofbussiness();
 
-            //this will contain the list of information from the banklist individually packed each into a cell according to the layout specified
-          /*  listView = new ListView
+            Debug.WriteLine("xresult {0}", x.Result);
+
+            _listView = new ListView
             {
                 BackgroundColor = Color.Gray,
-                ItemsSource = bankList,
+                ItemsSource = x.Result,
                 ItemTemplate = new DataTemplate(() =>
-                    {
-                        var nativeCell = new Cells();
+                {
+                    Debug.WriteLine("trying to make cells");
+                    var nativeCell = new Cells();
 
-        nativeCell.SetBinding(Cells.IDProperty, "id");
-                        nativeCell.SetBinding(Cells.NameProperty, "short_name");
-                        nativeCell.SetBinding(Cells.full_nameProperty, "full_name");
-                        nativeCell.SetBinding(Cells.LogoProperty, "logo");
-                        nativeCell.SetBinding(Cells.WebsiteProperty, "website");
-                        Debug.WriteLine("nativecell:: {0}", nativeCell);
-                        return nativeCell;
-                    })
-            };*/
+                    nativeCell.SetBinding(Cells.IDProperty, "id");
+                    nativeCell.SetBinding(Cells.NameProperty, "short_name");
+                    nativeCell.SetBinding(Cells.full_nameProperty, "full_name");
+                    nativeCell.SetBinding(Cells.LogoProperty, "logo");
+                    nativeCell.SetBinding(Cells.WebsiteProperty, "website");
+                    Debug.WriteLine("nativecell:: {0}", nativeCell);
+                    return nativeCell;
+                })
+            };
+
             //Layout of the Contact Page, containig its title, image and final layout of the page
             Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
             Title = "ContactPage";
@@ -76,56 +75,58 @@ namespace App1.Layout
             Content = new StackLayout
             {
                 BackgroundColor = Color.Teal,
-                Children = {
-                    new Label { Text = "Testing contacts", HorizontalTextAlignment = TextAlignment.Center },
-                   // indicator,
-                    listView
-                    }
+                Children =
+                {
+                    new Label {Text = "Testing contacts", HorizontalTextAlignment = TextAlignment.Center},
+                    indicator,
+                    _listView
+                }
             };
         }
 
-        private async void Takingcareofbussiness()
+        private async Task<string> Takingcareofbussiness()
         {
             try
             {
+                ViewModel.IsBusy = true;
+
                 var rest = new ManagerRESTService(new RESTService());
                 var uri = string.Format(Constants.BankUrl);
                 var some = await rest.GetwithoutToken<Banklist>(uri);
-                Debug.WriteLine("done request this is the response {0}",some);
+                Debug.WriteLine("done request this is the response {0}", some);
                 //var banklist = JsonConvert.DeserializeObject<Banklist>();
                 foreach (var item in some.banks)
                 {
                     Debug.WriteLine("itemid :{0}", item.id);
                 }
+                /* _listView = new ListView
+                 {
+                     BackgroundColor = Color.Gray,
+                     ItemsSource = some.banks,
+                     ItemTemplate = new DataTemplate(() =>
+                     {
+                         Debug.WriteLine("trying to make cells");
+                         var nativeCell = new Cells();
 
-                listView = new ListView
-                {
-                    BackgroundColor = Color.Gray,
-                    ItemsSource = some.banks,
-                    ItemTemplate = new DataTemplate(() =>
-                    {
-                        Debug.WriteLine("trying to make cells");
-                        var nativeCell = new Cells();
-
-                        nativeCell.SetBinding(Cells.IDProperty, "id");
-                        nativeCell.SetBinding(Cells.NameProperty, "short_name");
-                        nativeCell.SetBinding(Cells.full_nameProperty, "full_name");
-                        nativeCell.SetBinding(Cells.LogoProperty, "logo");
-                        nativeCell.SetBinding(Cells.WebsiteProperty, "website");
-                        Debug.WriteLine("nativecell:: {0}", nativeCell);
-                        return nativeCell;
-                    })
-                };
+                         nativeCell.SetBinding(Cells.IDProperty, "id");
+                         nativeCell.SetBinding(Cells.NameProperty, "short_name");
+                         nativeCell.SetBinding(Cells.full_nameProperty, "full_name");
+                         nativeCell.SetBinding(Cells.LogoProperty, "logo");
+                         nativeCell.SetBinding(Cells.WebsiteProperty, "website");
+                         Debug.WriteLine("nativecell:: {0}", nativeCell);
+                         return nativeCell;
+                     })
+                 };*/
+                IsBusy = false;
+                Debug.WriteLine("listview {0}", _listView.Header);
+                return some.banks.ToString();
             }
             catch (Exception err)
             {
                 Debug.WriteLine("Caught error: {0}.", err);
+                IsBusy = false;
+                return err.Message;
             }
-        }
-
-        private async void BackButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
         }
     }
 }

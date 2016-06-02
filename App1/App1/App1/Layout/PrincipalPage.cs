@@ -33,37 +33,24 @@ namespace App1.Layout
             cardsbutton.Clicked += OncardsButtonClicked;
 
             //image that when tapped will change to the menu page
-           /* ImageCell menu = new ImageCell()
-            {
-                ImageSource = Device.OnPlatform(
-                    iOS: ImageSource.FromFile("menu.png"),
-                    Android: ImageSource.FromFile("menu.png"),
-                    WinPhone: ImageSource.FromFile("menu.png"))
-            };
-            menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
+            /* ImageCell menu = new ImageCell()
+             {
+                 ImageSource = Device.OnPlatform(
+                     iOS: ImageSource.FromFile("menu.png"),
+                     Android: ImageSource.FromFile("menu.png"),
+                     WinPhone: ImageSource.FromFile("menu.png"))
+             };
+             menu.Tapped += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             //image that will go to the login page
-          /*  ImageCell exit = new ImageCell()
-            {
-                ImageSource = Device.OnPlatform(
-                iOS: ImageSource.FromFile("Exit.png"),
-                Android: ImageSource.FromFile("Exit.png"),
-                WinPhone: ImageSource.FromFile("Exit.png")),
-            };
-            exit.Tapped += async (sender, args) => await Navigation.PopToRootAsync();*/
-
-            //Button to go back
-            Button Back = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("Back.png"),
-                    Android: ImageSource.FromFile("Back.png"),
-                    WinPhone: ImageSource.FromFile("Back.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            Back.Clicked += BackButtonClicked;
+            /*  ImageCell exit = new ImageCell()
+              {
+                  ImageSource = Device.OnPlatform(
+                  iOS: ImageSource.FromFile("Exit.png"),
+                  Android: ImageSource.FromFile("Exit.png"),
+                  WinPhone: ImageSource.FromFile("Exit.png")),
+              };
+              exit.Tapped += async (sender, args) => await Navigation.PopToRootAsync();*/
 
             //Layout of the Home page(PrincipalPage.cs)
             Title = "Home";

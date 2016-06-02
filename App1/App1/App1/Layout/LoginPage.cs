@@ -1,7 +1,6 @@
 ﻿using App1.Layout;
 using App1.Models;
 using App1.REST;
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using Xamarin.Forms;
@@ -288,9 +287,9 @@ namespace App1
             //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
             try
             {
-              /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
-                var uri = string.Format(Constants.BranchesUrl, banks.id);
-                await rest.GetwithoutToken(uri, 2);*/
+                /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
+                  var uri = string.Format(Constants.BranchesUrl, banks.id);
+                  await rest.GetwithoutToken(uri, 2);*/
                 await Navigation.PushAsync(new BalcaoPage());
             }
             catch (Exception err)
@@ -308,9 +307,9 @@ namespace App1
             //get information connected to the banks ATM information localized on OpenBanks sandbox
             try
             {
-              /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
-                var uri = string.Format(Constants.ATMsUrl, banks.id);
-                await rest.GetwithoutToken(uri, 3);*/
+                /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
+                  var uri = string.Format(Constants.ATMsUrl, banks.id);
+                  await rest.GetwithoutToken(uri, 3);*/
                 await Navigation.PushAsync(new AtmPage());
             }
             catch (Exception err)

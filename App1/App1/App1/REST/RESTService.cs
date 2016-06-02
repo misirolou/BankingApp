@@ -18,18 +18,15 @@ namespace App1.REST
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //This function will be used to GET information for the user that doesn´t require any type of login
-        
-
 
         public async Task<T> GetwithoutToken<T>(string url)
         {
-            
             var responseFromServer = "";
             var uri = string.Format(url);
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
-           
+
             try
             {
                 using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
@@ -42,7 +39,7 @@ namespace App1.REST
                     {
                         string content = reader.ReadToEnd();
                         var JsonResult = JsonConvert.DeserializeObject<T>(content);
-                        Debug.WriteLine("Treated json {0}",JsonResult);
+                        Debug.WriteLine("Treated json {0}", JsonResult);
                         //in case that the string is null should return nothing
                         if (string.IsNullOrWhiteSpace(content))
                         {
@@ -51,7 +48,7 @@ namespace App1.REST
                         }
                         else
                         {
-                            //should be the result that im looking for 
+                            //should be the result that im looking for
                             Debug.WriteLine("jsonresult {0}", JsonResult);
                             return JsonResult;
                         }
@@ -163,7 +160,6 @@ namespace App1.REST
         {
             var client = new System.Net.Http.HttpClient();
 
-
             try
             {
                 //Definide o Header de resultado para JSON, para evitar que seja retornado um HTML ou XML
@@ -198,8 +194,8 @@ namespace App1.REST
         }
 
         //verifcation of the users autheticty depending on the received tokenreceived
-            public
-            bool IsAutheticated
+        public
+        bool IsAutheticated
         {
             get
             {

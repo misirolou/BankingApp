@@ -165,6 +165,35 @@ namespace App1
 
         public Page Detail { get; set; }
 
+        private static Application app;
+
+        public static Application CurrentApp
+        {
+            get { return app; }
+        }
+
+        public static async Task ExecuteIfConnected(Func<Task> actionToExecuteIfConnected)
+        {
+            IsConnected = true;
+            if (IsConnected)
+            {
+                await actionToExecuteIfConnected();
+            }
+            else
+            {
+                await ShowNetworkConnectionAlert();
+            }
+        }
+
+        private static async Task ShowNetworkConnectionAlert()
+        {
+            await CurrentApp.MainPage.DisplayAlert(
+                "Alert Network issues", "Connect to internet", "OK"
+                );
+        }
+
+        public static bool IsConnected { get; set; }
+
         protected override void OnStart()
         {
             // Handle when your app starts
