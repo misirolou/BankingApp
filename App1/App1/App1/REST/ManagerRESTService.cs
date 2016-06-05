@@ -21,14 +21,9 @@ namespace App1.REST
             return await restService.CreateSession(user, pass);
         }
 
-        public async Task<bool> GetWithToken(string url, int choice)
+        public async Task<T> GetWithToken<T>(string url)
         {
-            return await restService.GetWithToken(url, choice);
-        }
-
-        public async Task<T> getResponse<T>(string url)
-        {
-            return await restService.getResponse<T>(url);
+            return await restService.GetWithToken<T>(url);
         }
 
         public bool IsAutheticated()

@@ -228,7 +228,7 @@ namespace App1
                     try
                     {
                         //could be passing to much information may have to simplify
-                        await Navigation.PushAsync(new PrincipalPage());
+                        await Navigation.PushModalAsync(new PrincipalPage());
                     }
                     catch (Exception err)
                     {

@@ -38,19 +38,19 @@ namespace App1.REST
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         string content = reader.ReadToEnd();
-                        var JsonResult = JsonConvert.DeserializeObject<T>(content);
-                        Debug.WriteLine("Treated json {0}", JsonResult);
+                        var jsonResult = JsonConvert.DeserializeObject<T>(content);
+                        Debug.WriteLine("Treated json {0}", jsonResult);
                         //in case that the string is null should return nothing
                         if (string.IsNullOrWhiteSpace(content))
                         {
                             Debug.WriteLine("Response contained empty body...");
-                            return JsonResult;
+                            return jsonResult;
                         }
                         else
                         {
                             //should be the result that im looking for
-                            Debug.WriteLine("jsonresult {0}", JsonResult);
-                            return JsonResult;
+                            Debug.WriteLine("jsonresult {0}", jsonResult);
+                            return jsonResult;
                         }
                     }
                 }
@@ -71,7 +71,7 @@ namespace App1.REST
         }
 
         //The user should be autheticated and this GET request will be using the tokenreceived from the function Createsession
-        public async Task<bool> GetWithToken(string url, int choice)
+        public async Task<T> GetWithToken<T>(string url)
         {
             var uri = string.Format(url);
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
@@ -88,57 +88,22 @@ namespace App1.REST
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
-                        return false;
                     }
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         var content = reader.ReadToEnd();
+                        var jsonResult = JsonConvert.DeserializeObject<T>(content);
                         if (string.IsNullOrWhiteSpace(content))
                         {
                             Debug.WriteLine("Response contained empty body...");
+                            return jsonResult;
                         }
                         else
                         {
-                            switch (choice)
-                            {
-                                case 1: //the login account used and the info that it contains
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    List<Accounts> info = JsonConvert.DeserializeObject<List<Accounts>>(content);
-                                    Debug.WriteLine(info.Count);
-                                    foreach (var item in info.ToString())
-                                    {
-                                        Debug.WriteLine("itemid :{0}", item);
-                                    }
-                                    break;
-
-                                case 2: //Account with more detailed information containg things like the account balance, IBAN, etc
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    AccountInfo info1 = JsonConvert.DeserializeObject<AccountInfo>(content);
-                                    Debug.WriteLine(info1);
-                                    foreach (var item in info1.ToString())
-                                    {
-                                        Debug.WriteLine("itemid :{0}", item);
-                                    }
-                                    break;
-
-                                case 3: //this will contain the users transaction information
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    JsonConvert.DeserializeObject<AccountInfo>(content);
-                                    break;
-
-                                case 4: //this will contain the users card information
-                                    Debug.WriteLine("Response Body: \r\n {0}", content);
-                                    //deserializing string of information received into json type to then be called
-                                    JsonConvert.DeserializeObject<AccountInfo>(content);
-                                    break;
-
-                                default: break;
-                            }
+                            //should be the result that im looking for
+                            Debug.WriteLine("jsonresult {0}", jsonResult);
+                            return jsonResult;
                         }
-                        return true;
                     }
                 }
             }
@@ -147,49 +112,12 @@ namespace App1.REST
                 Stream stream = err.Response.GetResponseStream();
                 StreamReader reader = new StreamReader(stream);
                 var responseFromServer = reader.ReadToEnd();
-
+                var jsonResult = JsonConvert.DeserializeObject<T>(responseFromServer);
                 if (string.IsNullOrWhiteSpace(responseFromServer))
                 {
                     Debug.WriteLine("Response contained empty body...");
                 }
-                return false;
-            }
-        }
-
-        public async Task<T> getResponse<T>(string url)
-        {
-            var client = new System.Net.Http.HttpClient();
-
-            try
-            {
-                //Definide o Header de resultado para JSON, para evitar que seja retornado um HTML ou XML
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                //Formata a Url com o metodo e o parametro enviado e inicia o acesso a Api. Como o acesso será por meio
-                //da Internet, pode demorar muito, para que o aplicativo não trave usamos um método assincrono
-                //e colocamos a keyword AWAIT, para que a Thread principal - UI - continuo sendo executada
-                //e o método so volte a ser executado quando o download das informações for finalizado
-                var response = await client.GetAsync(string.Format(url));
-
-                //Lê a string retornada
-                var JsonResult = response.Content.ReadAsStringAsync().Result;
-
-                //Converte o resultado Json para uma Classe utilizando as Libs do Newtonsoft.Json
-                var rootobject = JsonConvert.DeserializeObject<T>(JsonResult);
-
-                return rootobject;
-            }
-            catch (WebException err)
-            {
-                Stream stream = err.Response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                var responseFromServer = reader.ReadToEnd();
-                var rootobject = JsonConvert.DeserializeObject<T>(responseFromServer);
-                if (string.IsNullOrWhiteSpace(responseFromServer))
-                {
-                    Debug.WriteLine("Response contained empty body...");
-                }
-                return rootobject;
+                return jsonResult;
             }
         }
 

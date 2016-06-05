@@ -21,8 +21,7 @@ namespace App1.ViewModel
         protected void SetProperty<U>(
             ref U something, U value,
             string propertyName,
-            Action onChanged = null,
-            Action<U> onChanging = null)
+            Action onChanged = null)
         {
             if (EqualityComparer<U>.Default.Equals(something, value))
                 return;

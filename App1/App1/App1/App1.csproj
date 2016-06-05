@@ -55,6 +55,7 @@
     <Compile Include="Models\Atms.cs" />
     <Compile Include="Models\Banks.cs" />
     <Compile Include="Models\branches.cs" />
+    <Compile Include="Models\Cards.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Menu\MenuItem.cs" />
     <Compile Include="Models\Products.cs" />
@@ -71,7 +72,6 @@
     <Compile Include="Services\GoogleServices.cs" />
     <Compile Include="Services\IGoogleServices.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
-    <Compile Include="ViewModel\ContactViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />

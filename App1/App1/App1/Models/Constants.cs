@@ -36,5 +36,8 @@
 
         //Movements or transactions made by the logged in user {0} = Bank ID ; {1} = Account ID
         public const string MovementUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/my/banks/{0}/accounts/{1}/transactions";
+
+        //Movements or transactions made by the logged in user {0} = Bank ID 
+        public const string CardsUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/cards";
     }
 }

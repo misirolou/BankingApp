@@ -14,10 +14,11 @@ namespace App1.Menu
             ItemsSource = data;
             VerticalOptions = LayoutOptions.FillAndExpand;
             BackgroundColor = Color.Transparent;
-            SeparatorVisibility = SeparatorVisibility.None;
+
+
 
             var cell = new DataTemplate(typeof(Cells));
-            cell.SetBinding(Cells.MenuTitleProperty, "Title");
+           // cell.SetBinding(Cells.MenuTitleProperty, "Title");
 
             ItemTemplate = cell;
         }
