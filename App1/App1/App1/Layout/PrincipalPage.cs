@@ -2,11 +2,8 @@
 using App1.Models;
 using App1.REST;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Java.IO;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -22,8 +19,8 @@ namespace App1.Layout
             var transactionButton = new Button
             {
                 Text = "Transactions",
-                VerticalOptions = LayoutOptions.End,
-                HorizontalOptions = LayoutOptions.Start
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.StartAndExpand
             };
             transactionButton.Clicked += OntransactionButtonClicked;
 
@@ -31,14 +28,14 @@ namespace App1.Layout
             var cardsbutton = new Button()
             {
                 Text = "Cards",
-                VerticalOptions = LayoutOptions.End,
-                HorizontalOptions = LayoutOptions.End
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.EndAndExpand
             };
             cardsbutton.Clicked += OncardsButtonClicked;
 
             //button that when tapped will change to the menu page
             Button menuButton = new Button()
-            {   
+            {
                 Image = new FileImageSource() { File = "menu.png" }
             };
             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
@@ -73,22 +70,21 @@ namespace App1.Layout
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
                 Padding = 1,
-                Children = { transactionButton, cardsbutton}
+                Children = { transactionButton, cardsbutton }
             };
 
             Content = new StackLayout()
             {
-                Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
                 Padding = 1,
                 Children =
                 {
-                    new Label {Text = "Getting your account information", HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center},
-                    indicator,
-                    stackLayout
+                     new Label {Text = "Getting your account information", HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center},
+                     stackLayout,
+                    indicator
                 }
-                };
+            };
         }
 
         private async Task Takingcareofbussiness()
@@ -103,14 +99,14 @@ namespace App1.Layout
                 var uri = string.Format(Constants.AccountUrl);
 
                 //getting information from the online location
-                await rest.GetWithToken<List<Accounts>>(uri).ContinueWith(t =>
+                await rest.GetWithToken<Accounts.Detail>(uri).ContinueWith(t =>
                 {
                     //Problem occured a message is displayed to the user
                     if (t.IsFaulted)
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            DisplayAlert("Alert", "Something went wrong sorry :(", "OK");
+                            DisplayAlert("Alert", "Something went wrong sorry with your account information :(", "OK");
                         });
                     }
                     //going to next request needed to display more detailed information of the users account
@@ -118,29 +114,22 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            //Id labels identification and layout
-                            Label typeLabel = new Label()
-                            {
-                                HorizontalOptions = LayoutOptions.FillAndExpand
-                            };
-                            //Binding of the id label used to switch between different ids
-                            typeLabel.SetBinding(Label.TextProperty, "detail");
-                            Debug.WriteLine("getting href detailed {0}",typeLabel);
-                            var accountinfo = new Accounts.Detail();
-                            var uri2 = string.Format(accountinfo.href);
-                            await rest.GetWithToken<AccountInfo>(uri2).ContinueWith(task =>
+                            Debug.WriteLine("t result of Accounts {0}",t.Result);
+                            Debug.WriteLine("getting href detailed {0}", t.Result.href);
+                            await rest.GetWithToken<AccountInfo.AccountInfoDetailed>(t.Result.href).ContinueWith(task =>
                             {
                                 //Problem occured a message is displayed to the user
                                 if (task.IsFaulted)
                                 {
                                     Device.BeginInvokeOnMainThread(() =>
                                     {
-                                        DisplayAlert("Alert", "Something went wrong sorry :(", "OK");
+                                        DisplayAlert("Alert", "Something went wrong sorry with your detailed information :(", "OK");
                                     });
                                 }
                                 //everything went fine, information should be displayed
                                 else
                                 {
+                                    Debug.WriteLine("result tostring info detailed {0}", task.Result.ToString());
                                     Device.BeginInvokeOnMainThread(() =>
                                     {
                                         _listView = new ListView

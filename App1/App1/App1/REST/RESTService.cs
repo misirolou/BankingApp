@@ -1,10 +1,8 @@
 ﻿using App1.Models;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace App1.REST
@@ -77,7 +75,7 @@ namespace App1.REST
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
             request2.Method = "GET";
-            var authToken = string.Format("token= \"{0}\"", token);
+            var authToken = string.Format("token=\"{0}\"", token);
             Debug.WriteLine("authtoken {0}", authToken);
             request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
 
@@ -100,8 +98,7 @@ namespace App1.REST
                         }
                         else
                         {
-                            //should be the result that im looking for
-                            Debug.WriteLine("jsonresult {0}", jsonResult);
+                            Debug.WriteLine("jsonresult getwithToken {0}", jsonResult);
                             return jsonResult;
                         }
                     }

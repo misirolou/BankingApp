@@ -54,7 +54,6 @@ namespace App1.Cell
             //Binding of the id label used to switch between different ids
             currencyLabel.SetBinding(Label.TextProperty, "currency");
 
-            
             //Id labels identification and layout
             Label typeLabel = new Label()
             {
@@ -68,7 +67,7 @@ namespace App1.Cell
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Vertical,
-                Children = { IdLabel, ownerLabel, balanceLabel, bankLabel, ibanLabel, currencyLabel, typeLabel  }
+                Children = { IdLabel, ownerLabel, balanceLabel, bankLabel, ibanLabel, currencyLabel, typeLabel }
             };
             View = nameLayout;
         }

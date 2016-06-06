@@ -1,6 +1,4 @@
-﻿using System;
-using App1.Models;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace App1.Cell
 {
@@ -56,8 +54,11 @@ namespace App1.Cell
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Vertical,
+                Padding = 5,
+                Spacing = 40,
                 Children = { stack, webLabel }
             };
+
             View = nameLayout;
         }
 
