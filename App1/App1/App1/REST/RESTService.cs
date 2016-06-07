@@ -68,7 +68,6 @@ namespace App1.REST
             }
         }
 
-        //The user should be autheticated and this GET request will be using the tokenreceived from the function Createsession
         public async Task<T> GetWithToken<T>(string url)
         {
             var uri = string.Format(url);
@@ -98,7 +97,7 @@ namespace App1.REST
                         }
                         else
                         {
-                            Debug.WriteLine("jsonresult getwithToken {0}", jsonResult);
+                            Debug.WriteLine("jsonresult getwithToken {0}", content);
                             return jsonResult;
                         }
                     }
@@ -115,6 +114,54 @@ namespace App1.REST
                     Debug.WriteLine("Response contained empty body...");
                 }
                 return jsonResult;
+            }
+        }
+
+        //The user should be autheticated and this GET request will be using the tokenreceived from the function Createsession
+        public async Task<string> GetWithToken(string url)
+        {
+            var uri = string.Format(url);
+            var request2 = (HttpWebRequest)WebRequest.Create(uri);
+            request2.ContentType = "application/json";
+            request2.Method = "GET";
+            var authToken = string.Format("token=\"{0}\"", token);
+            Debug.WriteLine("authtoken {0}", authToken);
+            request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+
+            try
+            {
+                using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
+                {
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                    }
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        var content = reader.ReadToEnd();
+                        if (string.IsNullOrWhiteSpace(content))
+                        {
+                            Debug.WriteLine("Response contained empty body...");
+                            return content;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("jsonresult getwithToken {0}", content);
+                            return content;
+                        }
+                    }
+                }
+            }
+            catch (WebException err)
+            {
+                Stream stream = err.Response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                var responseFromServer = reader.ReadToEnd();
+                if (string.IsNullOrWhiteSpace(responseFromServer))
+                {
+                    Debug.WriteLine("Response contained empty body...");
+                }
+                return responseFromServer;
             }
         }
 

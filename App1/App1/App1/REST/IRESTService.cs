@@ -10,6 +10,8 @@ namespace App1.REST
 
         Task<T> GetWithToken<T>(string url);
 
+        Task<string> GetWithToken(string url);
+
         bool IsAutheticated { get; }
     }
 }

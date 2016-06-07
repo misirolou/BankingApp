@@ -55,11 +55,20 @@ namespace App1.Cell
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Vertical,
                 Padding = 5,
-                Spacing = 40,
+                Margin = 10,
                 Children = { stack, webLabel }
             };
 
             View = nameLayout;
+        }
+
+        public static readonly BindableProperty MenuTitleProperty =
+            BindableProperty.Create("menu", typeof(string), typeof(Cells), "");
+
+        public string MenuTitle
+        {
+            get { return (string)GetValue(MenuTitleProperty); }
+            set { SetValue(MenuTitleProperty, value); }
         }
 
         //Leaving this code here, this was supposed to be a more intuitive way of displaying information for other pages
@@ -110,15 +119,6 @@ namespace App1.Cell
            {
                get { return (string)GetValue(WebsiteProperty); }
                set { SetValue(WebsiteProperty, value); }
-           }
-
-           public static readonly BindableProperty MenuTitleProperty =
-             BindableProperty.Create("menu", typeof(string), typeof(Cells), "");
-
-           public string MenuTitle
-           {
-               get { return (string)GetValue(MenuTitleProperty); }
-               set { SetValue(MenuTitleProperty, value); }
            }
 
            protected override void OnBindingContextChanged()

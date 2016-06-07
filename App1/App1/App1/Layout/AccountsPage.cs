@@ -1,6 +1,7 @@
 ﻿using App1.Cell;
 using App1.Models;
 using App1.REST;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -8,27 +9,15 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    internal class ContactPage : ContentPage
+    public class AccountsPage : ContentPage
     {
-        private Label resultsLabel;
-        private SearchBar searchBar;
         private ListView _listView;
+        public static string href { get; private set; }
+        public static string bankid { get; private set; }
+        public static string accountid { get; private set; }
 
-        public ContactPage()
+        public AccountsPage()
         {
-            resultsLabel = new Label
-            {
-                Text = "Result will appear here.",
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
-            //searchbar to search banks contacts that are available
-            searchBar = new SearchBar
-            {
-                Placeholder = "Enter short_name of bank",
-                SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
-            };
-
             ActivityIndicator indicator = new ActivityIndicator()
             {
                 VerticalOptions = LayoutOptions.Start,
@@ -41,28 +30,28 @@ namespace App1.Layout
 
             Task.WhenAll(Takingcareofbussiness());
 
-            //Layout of the Contact Page, containig its title, image and final layout of the page
+            //layout of the accounts page
             Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
-            Title = "ContactPage";
+            Title = "Accounts";
             Icon = new FileImageSource { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 BackgroundColor = Color.Teal,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
                 Children =
                 {
-                    new Label {Text = "Getting the contact information", HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center},
-                    indicator
+                    new Label
+                    {
+                        Text = "TransactionsPage should have most of the users transactions",
+                        HorizontalTextAlignment = TextAlignment.Center
+                    }
                 }
             };
         }
 
         private async Task Takingcareofbussiness()
         {
-            //unit testing soe varibles may add this to a unique unit test in the later stages
-            //  var json = "{'banks':[{'id':'rbs','short_name':'The Royal Bank of Scotland','full_name':'The Royal Bank of Scotland','logo':'http://www.red-bank-shoreditch.com/logo.gif','website':'http://www.red-bank-shoreditch.com'},{'id':'test-bank','short_name':'TB','full_name':'Test Bank','logo':null,'website':null},{'id':'testowy_bank_id','short_name':'TB','full_name':'Testowy bank',    'logo':null,'website':null},{'id':'nordea','short_name':'Nordea','full_name':'Nordea Bank AB','logo':'http://logonoid.com/images/nordea-logo.jpg','website':'http://www.nordea.com/'},{'id':'nordeaab','short_name':'Nordea','full_name':'Nordea Bank AB','logo':'http://logonoid.com/images/nordea-logo.jpg','website':'http://www.nordea.com/'},{'id':'hsbc-test','short_name':'HSBC Test','full_name':'Hongkong and Shanghai Bank','logo':null,'website':null},{'id':'erste-test','short_name':'Erste Bank Test','full_name':'Erste Bank Test','logo':null,'website':null},{'id':'deutche-test','short_name':'Deutche Bank Test','full_name':'Deutche Bank Test','logo':null,'website':null},{'id':'obp-bankx-m','short_name':'Bank X','full_name':'The Bank of X','logo':'https://static.openbankproject.com/images/bankx/bankx_logo.png','website':'https://www.example.com'}]}";
-            //  var jsonconverting = JsonConvert.DeserializeObject<Banklist>(json);
-
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
             try
             {
@@ -70,10 +59,10 @@ namespace App1.Layout
                 IsBusy = true;
 
                 var rest = new ManagerRESTService(new RESTService());
-                var uri = string.Format(Constants.BankUrl);
+                var uri = String.Format(Constants.AccountUrl);
 
                 //getting information from the online location
-                await rest.GetwithoutToken<Banklist>(uri).ContinueWith(t =>
+                await rest.GetWithToken(uri).ContinueWith(t =>
                 {
                     //Problem occured a message is displayed to the user
                     if (t.IsFaulted)
@@ -88,15 +77,18 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
+                            Accounts.Account[] jsonObject = JsonConvert.DeserializeObject<Accounts.Account[]>(t.Result);
+
                             _listView = new ListView
                             {
                                 BackgroundColor = Color.Gray,
                                 HasUnevenRows = true,
                                 Margin = 10,
-                                SeparatorColor = Color.Teal
+                                SeparatorColor = Color.Teal,
+                                ItemsSource = jsonObject,
+                                ItemTemplate = new DataTemplate(typeof(AllAccountsCell))
                             };
-                            _listView.ItemsSource = t.Result.banks;
-                            _listView.ItemTemplate = new DataTemplate(typeof(Cells));
+                            _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Accounts.Account);
                         });
                     }
                 });
@@ -118,6 +110,28 @@ namespace App1.Layout
                 IsBusy = false;
                 await DisplayAlert("Alert", "Internet problems cant receive information", "OK");
                 Debug.WriteLine("Caught error: {0}.", err);
+            }
+        }
+
+        private async void NavigateTo(Accounts.Account account)
+        {
+            if (account == null)
+                return;
+
+            accountid = account.id;
+            Debug.WriteLine("accountid in accountpage {0}", accountid);
+            bankid = account.bank_id;
+            Debug.WriteLine("bankid in accountpage {0}", bankid);
+            href = account._links.detail.href;
+            Debug.WriteLine("href in accountpage {0}", href);
+
+            try
+            {
+                await Navigation.PushAsync(new PrincipalPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error transactionpage: {0}.", err);
             }
         }
     }

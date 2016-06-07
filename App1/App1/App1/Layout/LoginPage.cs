@@ -221,30 +221,21 @@ namespace App1
             var result = await rest.CreateSession(user, pass);
             Debug.WriteLine("result {0}", result);
             //if the result is false it will stay on the same page and show the message stated else it will change to the next page
-            try
+            if (result)
             {
-                if (result)
+                try
                 {
-                    try
-                    {
-                        //could be passing to much information may have to simplify
-                        await Navigation.PushAsync(new PrincipalPage());
-                    }
-                    catch (Exception err)
-                    {
-                        Debug.WriteLine("Caught error: {0}.", err);
-                    }
-                    //  var uri = string.Format(Constants.AccountUrl);
-                    //  var result2 = await rest.GetWithToken(uri, 1);
+                    //could be passing to much information may have to simplify
+                    await Navigation.PushAsync(new AccountsPage());
                 }
-                else
+                catch (Exception err)
                 {
-                    messageLabel.Text = "Login Failed";
+                    Debug.WriteLine("Caught error: {0}.", err);
                 }
             }
-            catch (Exception err)
+            else
             {
-                Debug.WriteLine("Caught error: {0}.", err);
+                messageLabel.Text = "Login Failed";
             }
         }
 

@@ -37,7 +37,9 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Cell\AccountCell.cs" />
+    <Compile Include="Cell\AllAccountsCell.cs" />
     <Compile Include="Cell\Cells.cs" />
+    <Compile Include="Layout\AccountsPage.cs" />
     <Compile Include="Layout\AtmPage.cs" />
     <Compile Include="Layout\BalcaoPage.cs" />
     <Compile Include="Layout\cardPage.cs" />

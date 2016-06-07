@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using App1.Cell;
+﻿using App1.Cell;
 using App1.Models;
 using App1.REST;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -19,11 +19,12 @@ namespace App1.Layout
             NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
+                BackgroundColor = Color.Teal,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
                 Children = {
                     new Label {
                         Text = "CardsPage should have most of your card information no information on OpenBank so thats all there is to it",
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center
+                        HorizontalTextAlignment = TextAlignment.Center
                     }
                 }
             };
@@ -43,7 +44,7 @@ namespace App1.Layout
                 var uri = String.Format(Constants.CardsUrl, Cards.bank_id);
 
                 //getting information from the online location
-                await rest.GetWithToken<Transactions>(uri).ContinueWith(t =>
+                await rest.GetWithToken(uri).ContinueWith(t =>
                 {
                     //Problem occured a message is displayed to the user
                     if (t.IsFaulted)

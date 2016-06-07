@@ -1,6 +1,4 @@
-﻿using App1.Cell;
-using App1.Models;
-using App1.REST;
+﻿using App1.REST;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -10,8 +8,10 @@ namespace App1.Layout
 {
     internal class PrincipalPage : ContentPage
     {
-        private ListView _listView;
-        private StackLayout stackLayout;
+        private Label numberLabel, nameLabel, ibanLabel, amountLabel, bankLabel, currencyLabel, typeLabel, swiftLabel;
+        private StackLayout ButtonLayout;
+        private StackLayout AccountLayout;
+        private static string href;
 
         public PrincipalPage()
         {
@@ -60,11 +60,11 @@ namespace App1.Layout
             Task.WhenAll(Takingcareofbussiness());
 
             //Layout of the Home page(PrincipalPage.cs)
-            Title = "Home";
+            Title = AccountsPage.accountid;
             Icon = new FileImageSource() { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
             //this is the type of layout the grids will be specified in
-            stackLayout = new StackLayout
+            ButtonLayout = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.Teal,
@@ -73,6 +73,7 @@ namespace App1.Layout
                 Children = { transactionButton, cardsbutton }
             };
 
+            //the content that will be used in the account
             Content = new StackLayout()
             {
                 BackgroundColor = Color.Teal,
@@ -81,7 +82,7 @@ namespace App1.Layout
                 Children =
                 {
                      new Label {Text = "Getting your account information", HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center},
-                     stackLayout,
+                     ButtonLayout,
                     indicator
                 }
             };
@@ -96,55 +97,76 @@ namespace App1.Layout
                 IsBusy = true;
 
                 var rest = new ManagerRESTService(new RESTService());
-                var uri = string.Format(Constants.AccountUrl);
+                var uri = string.Format(AccountsPage.href);
 
-                //getting information from the online location
-                await rest.GetWithToken<Accounts.Detail>(uri).ContinueWith(t =>
+                Debug.WriteLine("uri principalpage {0}", uri);
+
+                if (string.IsNullOrWhiteSpace(uri))
+                {
+                    Debug.WriteLine("Response contained empty body...");
+                }
+                else
+                {
+                    //getting information from the online location about the users detailed account info
+                    //in this case it can only get information from one selected account
+                    await rest.GetWithToken<AccountInfo.AccountInfoDetailed>(uri).ContinueWith(task =>
                 {
                     //Problem occured a message is displayed to the user
-                    if (t.IsFaulted)
+                    if (task.IsFaulted)
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            DisplayAlert("Alert", "Something went wrong sorry with your account information :(", "OK");
+                            DisplayAlert("Alert", "Something went wrong sorry with your detailed information :(", "OK");
                         });
                     }
-                    //going to next request needed to display more detailed information of the users account
+                    //everything went fine, information should be displayed
                     else
                     {
-                        Device.BeginInvokeOnMainThread(async () =>
+                        Device.BeginInvokeOnMainThread(() =>
                         {
-                            Debug.WriteLine("t result of Accounts {0}",t.Result);
-                            Debug.WriteLine("getting href detailed {0}", t.Result.href);
-                            await rest.GetWithToken<AccountInfo.AccountInfoDetailed>(t.Result.href).ContinueWith(task =>
+                            numberLabel = new Label()
                             {
-                                //Problem occured a message is displayed to the user
-                                if (task.IsFaulted)
-                                {
-                                    Device.BeginInvokeOnMainThread(() =>
-                                    {
-                                        DisplayAlert("Alert", "Something went wrong sorry with your detailed information :(", "OK");
-                                    });
-                                }
-                                //everything went fine, information should be displayed
-                                else
-                                {
-                                    Debug.WriteLine("result tostring info detailed {0}", task.Result.ToString());
-                                    Device.BeginInvokeOnMainThread(() =>
-                                    {
-                                        _listView = new ListView
-                                        {
-                                            BackgroundColor = Color.Gray,
-                                            HasUnevenRows = true
-                                        };
-                                        _listView.ItemsSource = task.Result.ToString();
-                                        _listView.ItemTemplate = new DataTemplate(typeof(AccountCell));
-                                    });
-                                }
-                            });
+                                Text = "id" + task.Result.number
+                            };
+                            nameLabel = new Label()
+                            {
+                                Text = "name: "
+                            };
+                            nameLabel.SetBinding(Label.TextProperty, "display_name");
+
+                            ibanLabel = new Label()
+                            {
+                                Text = "IBAN: " + task.Result.IBAN
+                            };
+                            amountLabel = new Label()
+                            {
+                                Text = "Balance amount: " + task.Result.balance.amount
+                            };
+                            bankLabel = new Label()
+                            {
+                                Text = "bank: " + task.Result.bank_id
+                            };
+                            currencyLabel = new Label()
+                            {
+                                Text = "Currency: " + task.Result.balance.currency
+                            };
+                            typeLabel = new Label()
+                            {
+                                Text = "type: " + task.Result.type
+                            };
+                            swiftLabel = new Label()
+                            {
+                                Text = "swift/bic: " + task.Result.swift_bic
+                            };
+                            AccountLayout = new StackLayout()
+                            {
+                                BackgroundColor = Color.Gray,
+                                Children = { nameLabel, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
+                            };
                         });
                     }
                 });
+                }
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
                 Content = new StackLayout
@@ -153,16 +175,16 @@ namespace App1.Layout
                     Spacing = 10,
                     Children =
                     {
-                        new Label {Text = "Contact list go up and down", HorizontalTextAlignment = TextAlignment.Center},
-                        _listView,
-                        stackLayout
+                        new Label {Text = "Account list go up and down", HorizontalTextAlignment = TextAlignment.Center},
+                        AccountLayout,
+                        ButtonLayout
                     }
                 };
             }
             catch (Exception err)
             {
                 IsBusy = false;
-                await DisplayAlert("Alert", "Internet problems cant receive information", "OK");
+                await DisplayAlert("Alert", "There was a problem sorry :(", "OK");
                 Debug.WriteLine("Caught error principalpage: {0}.", err);
             }
         }
