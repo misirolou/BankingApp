@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Android;
+using App1.Menu;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -12,12 +14,51 @@ namespace App1.Layout
     public class AccountsPage : ContentPage
     {
         private ListView _listView;
-        public static string href { get; private set; }
-        public static string bankid { get; private set; }
-        public static string accountid { get; private set; }
+        private StackLayout labelLayout;
+        private StackLayout menuLayout;
+        private Label _accountidLabel, _bankidLabel;
+        public static string Href { get; private set; }
+        public static string Bankid { get; private set; }
+        public static string Accountid { get; private set; }
 
         public AccountsPage()
         {
+            _accountidLabel = new Label()
+            {
+                Text = "Account ID",
+                HorizontalOptions = LayoutOptions.StartAndExpand
+            };
+
+            _bankidLabel = new Label()
+            {
+                Text = "Bank ID",
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+
+            Button menuButton = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("menu.png"),
+                    Android: ImageSource.FromFile("menu.png"),
+                    WinPhone: ImageSource.FromFile("menu.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                BackgroundColor = Color.Gray
+            };
+            menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+
+            Button exitButton = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Exit.png"),
+                    Android: ImageSource.FromFile("Exit.png"),
+                    WinPhone: ImageSource.FromFile("Exit.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Gray
+            };
+            exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();
+
             ActivityIndicator indicator = new ActivityIndicator()
             {
                 VerticalOptions = LayoutOptions.Start,
@@ -30,21 +71,44 @@ namespace App1.Layout
 
             Task.WhenAll(Takingcareofbussiness());
 
+            labelLayout = new StackLayout()
+            {
+                BackgroundColor = Color.Gray,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Orientation = StackOrientation.Horizontal,
+                Margin = 10,
+                Children =
+                { _accountidLabel, _bankidLabel}
+            };
+
+            menuLayout = new StackLayout()
+            {
+                BackgroundColor = Color.Gray,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Orientation = StackOrientation.Horizontal,
+                Margin = 10,
+                Children = { menuButton,
+                    new Label { Text = "All of your accounts", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
+                    exitButton
+                }
+            };
+
+
             //layout of the accounts page
             Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
             Title = "Accounts";
             Icon = new FileImageSource { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
+            BackgroundColor = Color.Teal;
             Content = new StackLayout
             {
-                BackgroundColor = Color.Teal,
+                BackgroundColor = Color.Gray,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 Children =
                 {
                     new Label
                     {
-                        Text = "TransactionsPage should have most of the users transactions",
-                        HorizontalTextAlignment = TextAlignment.Center
+                        Text = "TransactionsPage should have most of the users transactions", HorizontalTextAlignment = TextAlignment.Center,
                     }
                 }
             };
@@ -81,11 +145,11 @@ namespace App1.Layout
 
                             _listView = new ListView
                             {
-                                BackgroundColor = Color.Gray,
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal,
                                 ItemsSource = jsonObject,
+                                BackgroundColor = Color.Gray,
                                 ItemTemplate = new DataTemplate(typeof(AllAccountsCell))
                             };
                             _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Accounts.Account);
@@ -100,7 +164,8 @@ namespace App1.Layout
                     Spacing = 10,
                     Children =
                     {
-                        new Label {Text = "Contact list go up and down", HorizontalTextAlignment = TextAlignment.Center},
+                        menuLayout,
+                        labelLayout,
                         _listView
                     }
                 };
@@ -118,12 +183,12 @@ namespace App1.Layout
             if (account == null)
                 return;
 
-            accountid = account.id;
-            Debug.WriteLine("accountid in accountpage {0}", accountid);
-            bankid = account.bank_id;
-            Debug.WriteLine("bankid in accountpage {0}", bankid);
-            href = account._links.detail.href;
-            Debug.WriteLine("href in accountpage {0}", href);
+            Accountid = account.id;
+            Debug.WriteLine("accountid in accountpage {0}", Accountid);
+            Bankid = account.bank_id;
+            Debug.WriteLine("bankid in accountpage {0}", Bankid);
+            Href = account._links.detail.href;
+            Debug.WriteLine("href in accountpage {0}", Href);
 
             try
             {

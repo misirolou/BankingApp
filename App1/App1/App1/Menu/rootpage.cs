@@ -6,16 +6,16 @@ namespace App1.Menu
 {
     public class rootpage : MasterDetailPage
     {
-        private MenuPage menuPage;
+        private MenuPage _menuPage;
 
         //prepare the menu page
         public rootpage()
         {
-            menuPage = new MenuPage();
+            _menuPage = new MenuPage();
 
-            menuPage.Menu.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as MenuItem);
+            _menuPage.Menu.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as MenuItem);
 
-            Master = menuPage;
+            Master = _menuPage;
         }
 
         //Navigate to the page selected in the menu
@@ -28,7 +28,7 @@ namespace App1.Menu
 
             Detail = new NavigationPage(displayPage);
 
-            menuPage.Menu.SelectedItem = null;
+            _menuPage.Menu.SelectedItem = null;
             IsPresented = false;
         }
     }

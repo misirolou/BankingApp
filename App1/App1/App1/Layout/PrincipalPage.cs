@@ -1,7 +1,9 @@
 ﻿using App1.REST;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using App1.Menu;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -11,6 +13,7 @@ namespace App1.Layout
         private Label numberLabel, nameLabel, ibanLabel, amountLabel, bankLabel, currencyLabel, typeLabel, swiftLabel;
         private StackLayout ButtonLayout;
         private StackLayout AccountLayout;
+        private StackLayout menuLayout;
         private static string href;
 
         public PrincipalPage()
@@ -33,20 +36,6 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
 
-            //button that when tapped will change to the menu page
-            Button menuButton = new Button()
-            {
-                Image = new FileImageSource() { File = "menu.png" }
-            };
-            menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
-
-            //button that when tapped will change to the menu page may need to do some things beforehand
-            Button exitButton = new Button()
-            {
-                Image = new FileImageSource() { File = "Exit.png" }
-            };
-            exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();
-
             ActivityIndicator indicator = new ActivityIndicator()
             {
                 VerticalOptions = LayoutOptions.Start,
@@ -59,8 +48,44 @@ namespace App1.Layout
 
             Task.WhenAll(Takingcareofbussiness());
 
+            Button menuButton = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                   iOS: ImageSource.FromFile("menu.png"),
+                   Android: ImageSource.FromFile("menu.png"),
+                   WinPhone: ImageSource.FromFile("menu.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                BackgroundColor = Color.Gray
+            };
+            menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+
+            Button exitButton = new Button()
+            {
+                Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Exit.png"),
+                    Android: ImageSource.FromFile("Exit.png"),
+                    WinPhone: ImageSource.FromFile("Exit.png")),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Gray
+            };
+            exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();
+
+            menuLayout = new StackLayout()
+            {
+                BackgroundColor = Color.Gray,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Orientation = StackOrientation.Horizontal,
+                Margin = 10,
+                Children = { menuButton,
+                    new Label { Text = "your Account Information", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
+                    exitButton
+                }
+            };
+
             //Layout of the Home page(PrincipalPage.cs)
-            Title = AccountsPage.accountid;
+            Title = AccountsPage.Accountid;
             Icon = new FileImageSource() { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
             //this is the type of layout the grids will be specified in
@@ -69,7 +94,6 @@ namespace App1.Layout
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
-                Padding = 1,
                 Children = { transactionButton, cardsbutton }
             };
 
@@ -78,7 +102,6 @@ namespace App1.Layout
             {
                 BackgroundColor = Color.Teal,
                 Spacing = 10,
-                Padding = 1,
                 Children =
                 {
                      new Label {Text = "Getting your account information", HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center},
@@ -97,7 +120,7 @@ namespace App1.Layout
                 IsBusy = true;
 
                 var rest = new ManagerRESTService(new RESTService());
-                var uri = string.Format(AccountsPage.href);
+                var uri = string.Format(AccountsPage.Href);
 
                 Debug.WriteLine("uri principalpage {0}", uri);
 
@@ -109,7 +132,7 @@ namespace App1.Layout
                 {
                     //getting information from the online location about the users detailed account info
                     //in this case it can only get information from one selected account
-                    await rest.GetWithToken<AccountInfo.AccountInfoDetailed>(uri).ContinueWith(task =>
+                    await rest.GetWithToken(uri).ContinueWith(task =>
                 {
                     //Problem occured a message is displayed to the user
                     if (task.IsFaulted)
@@ -124,44 +147,72 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
+                            AccountInfo.AccountInfoDetailed Information = JsonConvert.DeserializeObject<AccountInfo.AccountInfoDetailed>(task.Result);
+
+                            //because of the array list that the owner contains this was the only way to show its data could add the other objects if i wanted to
+                            ListView _listView = new ListView
+                            {
+                                HasUnevenRows = true,
+                                SeparatorColor = Color.Teal,
+                                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                                SelectedItem = false
+                            };
+                            _listView.ItemsSource = Information.owners;
+                            _listView.ItemTemplate = new DataTemplate((typeof(TextCell)));
+                            _listView.ItemTemplate.SetBinding(TextCell.TextProperty, "display_name");
+
+                            //label for the number of this account used
                             numberLabel = new Label()
                             {
-                                Text = "id" + task.Result.number
+                                Text = "id: " + Information.id,
+                                HorizontalTextAlignment = TextAlignment.Center
                             };
-                            nameLabel = new Label()
-                            {
-                                Text = "name: "
-                            };
-                            nameLabel.SetBinding(Label.TextProperty, "display_name");
-
-                            ibanLabel = new Label()
-                            {
-                                Text = "IBAN: " + task.Result.IBAN
-                            };
+                            //this is your balances amount shown
                             amountLabel = new Label()
                             {
-                                Text = "Balance amount: " + task.Result.balance.amount
+                                Text = "Balance amount: " + Information.balance.amount,
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                BackgroundColor = Color.Black
                             };
-                            bankLabel = new Label()
-                            {
-                                Text = "bank: " + task.Result.bank_id
-                            };
+                            //this contains the currency used
                             currencyLabel = new Label()
                             {
-                                Text = "Currency: " + task.Result.balance.currency
+                                Text = "Currency: " + Information.balance.currency,
+                                HorizontalTextAlignment = TextAlignment.Center,
                             };
-                            typeLabel = new Label()
+                            //this is the specified bank id
+                            bankLabel = new Label()
                             {
-                                Text = "type: " + task.Result.type
+                                Text = "bank: " + Information.bank_id,
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                BackgroundColor = Color.Black
                             };
+                            //this is your iban may be empty in some cases
+                            ibanLabel = new Label()
+                            {
+                                Text = "IBAN: " + Information.IBAN,
+                                HorizontalTextAlignment = TextAlignment.Center
+                            };
+                            //this is your swift/bic numbers used, may be empty in some cases
                             swiftLabel = new Label()
                             {
-                                Text = "swift/bic: " + task.Result.swift_bic
+                                Text = "swift/bic: " + Information.swift_bic,
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                BackgroundColor = Color.Black
                             };
+                            //this is the type of account that you have, in some cases may be empty
+                            typeLabel = new Label()
+                            {
+                                Text = "type: " + Information.type,
+                                HorizontalTextAlignment = TextAlignment.Center
+                            };
+
+                            //Layout of the accounts detailed information
                             AccountLayout = new StackLayout()
                             {
                                 BackgroundColor = Color.Gray,
-                                Children = { nameLabel, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
+                                Margin = 10,
+                                Children = { _listView, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
                             };
                         });
                     }
@@ -175,7 +226,7 @@ namespace App1.Layout
                     Spacing = 10,
                     Children =
                     {
-                        new Label {Text = "Account list go up and down", HorizontalTextAlignment = TextAlignment.Center},
+                        menuLayout,
                         AccountLayout,
                         ButtonLayout
                     }

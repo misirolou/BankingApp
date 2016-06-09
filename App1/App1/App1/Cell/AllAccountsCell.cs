@@ -9,7 +9,8 @@ namespace App1.Cell
             //Id labels identification and layout
             Label IdLabel = new Label()
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                BackgroundColor = Color.Gray
             };
             //Binding of the id label used to switch between different ids
             IdLabel.SetBinding(Label.TextProperty, "id");
@@ -18,7 +19,8 @@ namespace App1.Cell
             Label label = new Label()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                HorizontalTextAlignment = TextAlignment.Center
+                HorizontalTextAlignment = TextAlignment.Center,
+                BackgroundColor = Color.Gray
             };
             //Binding of the id label used to switch between different ids
             label.SetBinding(Label.TextProperty, "label");
@@ -26,7 +28,8 @@ namespace App1.Cell
             //Id labels identification and layout
             Label bankLabel = new Label()
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                BackgroundColor = Color.Gray
             };
             //Binding of the id label used to switch between different ids
             bankLabel.SetBinding(Label.TextProperty, "bank_id");
@@ -66,19 +69,20 @@ namespace App1.Cell
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.Gray,
                 Children = { IdLabel, bankLabel }
             };
 
             //this is the actual layout of each of the cells
-            var nameLayout = new StackLayout()
+            var nameLayout = new StackLayout
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Vertical,
                 Padding = 5,
                 Margin = 10,
-                Children = { stack, label }
+                BackgroundColor = Color.Gray,
+                Children = {stack, label}
             };
-
             View = nameLayout;
         }
     }

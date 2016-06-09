@@ -13,20 +13,7 @@ namespace App1.Layout
         private SearchBar searchBar;
 
         public BalcaoPage()
-        {
-            //Button to go back
-            Button Back = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("Back.png"),
-                    Android: ImageSource.FromFile("Back.png"),
-                    WinPhone: ImageSource.FromFile("Back.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            Back.Clicked += BackButtonClicked;
-
+        { 
             resultsLabel = new Label
             {
                 Text = "Result will appear here.",
@@ -40,10 +27,18 @@ namespace App1.Layout
                 SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
             };
 
-            /* searchBar.TextChanged += (sender, e) => banklist.FilterLocations(searchBar.Text);
-             searchBar.SearchButtonPressed += (sender, e) => {
-                 banklist.FilterLocations(searchBar.Text);
-             };*/
+            //  searchBar.SearchButtonPressed += (sender, e) => { banklist.FilterLocations(searchBar.Text); };
+
+
+            ActivityIndicator indicator = new ActivityIndicator()
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
+                IsRunning = true,
+                IsVisible = true
+            };
+            indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
+            indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
             //the map view of the area
             var map = new Map(MapSpan.FromCenterAndRadius(
@@ -72,7 +67,6 @@ namespace App1.Layout
             Content = new StackLayout
             {
                 Children = {
-                        Back,
                         searchBar,
                         new ScrollView
                     {
@@ -82,12 +76,6 @@ namespace App1.Layout
                         map
                     }
             };
-        }
-
-        private async void BackButtonClicked(object sender, EventArgs e)
-        {
-            Navigation.InsertPageBefore(new LoginPage(), this);
-            await Navigation.PopAsync();
         }
     }
 }

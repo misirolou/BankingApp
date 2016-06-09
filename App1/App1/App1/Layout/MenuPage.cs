@@ -14,11 +14,13 @@ namespace App1.Layout
             BackgroundColor = Color.Teal;
             Icon = new FileImageSource { File = "robot.png" };
 
-            var Menu = new MenuListView();
+            Menu = new MenuListView
+            {
+                SeparatorVisibility = SeparatorVisibility.Default,
+                SeparatorColor = Color.Gray,
+                RowHeight = 10
+            };
 
-            Menu.SeparatorVisibility = SeparatorVisibility.Default;
-            Menu.SeparatorColor = Color.Gray;
-            Menu.RowHeight = 10;
 
             var menuLabel = new ContentView
             {

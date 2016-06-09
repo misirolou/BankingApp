@@ -10,8 +10,8 @@ namespace App1.Menu
             //the main page to be selected
             this.Add(new MenuItem
             {
-                Title = "Home",
-                TargetType = typeof(PrincipalPage)
+                Title = "Accounts",
+                TargetType = typeof(AccountsPage)
             });
 
             //the transaction page to be selected

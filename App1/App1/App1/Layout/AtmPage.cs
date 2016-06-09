@@ -14,24 +14,12 @@ namespace App1.Layout
 
         public AtmPage()
         {
-            Button Back = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("Back.png"),
-                    Android: ImageSource.FromFile("Back.png"),
-                    WinPhone: ImageSource.FromFile("Back.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            Back.Clicked += BackButtonClicked;
-
             //to choose what bank they want
             Picker picker = new Picker()
             {
                 Title = "Bank id choose wisely"
             };
-            // picker.SelectedIndex += pickerSelected;
+            //picker.SelectedIndex += pickerSelected;
 
             resultsLabel = new Label
             {
@@ -74,7 +62,7 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Children =
                 {
-                    picker, Back
+                    picker
                 }
             };
 
@@ -90,11 +78,6 @@ namespace App1.Layout
                     map
                 }
             };
-        }
-
-        private async void BackButtonClicked(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
         }
     }
 }

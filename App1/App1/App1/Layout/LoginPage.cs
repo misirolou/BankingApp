@@ -69,14 +69,14 @@ namespace App1
             };
             AtmButton.Clicked += OnAtmButtonClicked;
             //login image
-            var ImageRobot = new Image()
+            var imageRobot = new Image()
             {
                 Aspect = Aspect.AspectFill,
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
             //specifying location for each platform
-            ImageRobot.Source = Device.OnPlatform(
+            imageRobot.Source = Device.OnPlatform(
                 iOS: ImageSource.FromFile("robot.png"),
                 Android: ImageSource.FromFile("robot.png"),
                 WinPhone: ImageSource.FromFile("robot.png"));
@@ -166,7 +166,7 @@ namespace App1
             outergrid.Children.Add(buttongrid, 0, 3);
 
             //imagegrid contains the inicial image of the login page
-            imagegrid.Children.Add(ImageRobot, 0, 0);
+            imagegrid.Children.Add(imageRobot, 0, 0);
 
             //Switcher grid containing the switcher used to choose between public and private accounts
             Switchergrid.Children.Add(privacy, 0, 0);
@@ -272,15 +272,9 @@ namespace App1
         //what happens when we click the Balcao button
         private async void OnBalcaoButtonClicked(object sender, EventArgs e)
         {
-            var banks = new banks();
-            var rest = new ManagerRESTService(new RESTService());
-            Debug.WriteLine("Clicked Bank Map button");
             //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
             try
             {
-                /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
-                  var uri = string.Format(Constants.BranchesUrl, banks.id);
-                  await rest.GetwithoutToken(uri, 2);*/
                 await Navigation.PushAsync(new BalcaoPage());
             }
             catch (Exception err)
@@ -292,15 +286,9 @@ namespace App1
         //what happens when we click the Atm button
         private async void OnAtmButtonClicked(object sender, EventArgs e)
         {
-            var banks = new banks();
-            var rest = new ManagerRESTService(new RESTService());
-            Debug.WriteLine("Clicked ATM Map button");
             //get information connected to the banks ATM information localized on OpenBanks sandbox
             try
             {
-                /*  await rest.GetwithoutToken(Constants.BankUrl, 1);
-                  var uri = string.Format(Constants.ATMsUrl, banks.id);
-                  await rest.GetwithoutToken(uri, 3);*/
                 await Navigation.PushAsync(new AtmPage());
             }
             catch (Exception err)
