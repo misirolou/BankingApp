@@ -1,5 +1,9 @@
-﻿using App1.Menu;
+﻿using System;
+using System.Diagnostics;
+using App1.Menu;
+using App1.Models;
 using Xamarin.Forms;
+using MenuItem = App1.Menu.MenuItem;
 
 namespace App1.Layout
 {
@@ -38,8 +42,6 @@ namespace App1.Layout
             };
             layout.Children.Add(menuLabel);
             layout.Children.Add(Menu);
-
-            Content = layout;
         }
     }
 }

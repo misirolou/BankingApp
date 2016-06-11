@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="BankingApp.BankingApp" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="BankingApp.BankingApp" android:installLocation="auto" android:versionCode="1" android:versionName="1.00">
 	<uses-sdk android:minSdkVersion="15" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -8,7 +8,7 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
-	<application>
+	<application android:icon="@drawable/robot" android:label="BankingApp">
 		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAI7-OYsPcoPsLbO4thycHiv1E5mFKr47Q" />
 	</application>
 </manifest>

@@ -161,6 +161,12 @@ namespace App1.Layout
                             _listView.ItemTemplate = new DataTemplate((typeof(TextCell)));
                             _listView.ItemTemplate.SetBinding(TextCell.TextProperty, "display_name");
 
+                            nameLabel = new Label()
+                            {
+                                HorizontalTextAlignment = TextAlignment.Center
+                            };
+                            nameLabel.SetBinding(TextCell.TextProperty, "owners.display_name");
+
                             //label for the number of this account used
                             numberLabel = new Label()
                             {
@@ -212,7 +218,7 @@ namespace App1.Layout
                             {
                                 BackgroundColor = Color.Gray,
                                 Margin = 10,
-                                Children = { _listView, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
+                                Children = { _listView,nameLabel, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
                             };
                         });
                     }

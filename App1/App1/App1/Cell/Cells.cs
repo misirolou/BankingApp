@@ -9,7 +9,8 @@ namespace App1.Cell
         {
             //Id labels identification and layout
             Label IdLabel = new Label()
-            {
+            { 
+                Text = "id: ",
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
             //Binding of the id label used to switch between different ids
@@ -23,6 +24,7 @@ namespace App1.Cell
             //fullnames labels identification and layout
             Label fullLabel = new Label()
             {
+                Text = "Fullname: ",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HorizontalTextAlignment = TextAlignment.Center
             };
@@ -37,6 +39,7 @@ namespace App1.Cell
             //website labels identification and layout
             Label webLabel = new Label()
             {
+                Text ="Website: ",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HorizontalTextAlignment = TextAlignment.Center
             };
@@ -46,7 +49,7 @@ namespace App1.Cell
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Horizontal,
-                Children = { IdLabel, fullLabel }
+                Children = {IdLabel, fullLabel}
             };
 
             //this is the actual layout of each of the cells
@@ -56,83 +59,82 @@ namespace App1.Cell
                 Orientation = StackOrientation.Vertical,
                 Padding = 5,
                 Margin = 10,
-                Children = { stack, webLabel }
+                Children = {stack, webLabel}
             };
 
             View = nameLayout;
         }
 
         public static readonly BindableProperty MenuTitleProperty =
-            BindableProperty.Create("menu", typeof(string), typeof(Cells), "");
+            BindableProperty.Create("menu", typeof (string), typeof (TextCell), "");
 
         public string MenuTitle
         {
-            get { return (string)GetValue(MenuTitleProperty); }
+            get { return (string) GetValue(MenuTitleProperty); }
             set { SetValue(MenuTitleProperty, value); }
         }
-
-        //Leaving this code here, this was supposed to be a more intuitive way of displaying information for other pages
+    //Leaving this code here, this was supposed to be a more intuitive way of displaying information for other pages
         //but it seems not to work may need some help over here
         //This code is used in properties that may change according to the user doing something wont be used but i´ll leave the example
         // private Label idLabel, nameLabel, fullLabel, LogoLabel, webLabel;
 
-        /*   public static readonly BindableProperty IDProperty =
-       BindableProperty.Create("id", typeof(string), typeof(Cells), "");
+                /*   public static readonly BindableProperty IDProperty =
+               BindableProperty.Create("id", typeof(string), typeof(Cells), "");
 
-           public string id
-           {
-               get { return (string)GetValue(IDProperty); }
-               set { SetValue(IDProperty, value); }
-           }
+                   public string id
+                   {
+                       get { return (string)GetValue(IDProperty); }
+                       set { SetValue(IDProperty, value); }
+                   }
 
-           public static readonly BindableProperty NameProperty =
-       BindableProperty.Create("short_name", typeof(string), typeof(Cells), "");
+                   public static readonly BindableProperty NameProperty =
+               BindableProperty.Create("short_name", typeof(string), typeof(Cells), "");
 
-           public string short_name
-           {
-               get { return (string)GetValue(NameProperty); }
-               set { SetValue(NameProperty, value); }
-           }
+                   public string short_name
+                   {
+                       get { return (string)GetValue(NameProperty); }
+                       set { SetValue(NameProperty, value); }
+                   }
 
-           public static readonly BindableProperty full_nameProperty =
-             BindableProperty.Create("full_name", typeof(string), typeof(Cells), "");
+                   public static readonly BindableProperty full_nameProperty =
+                     BindableProperty.Create("full_name", typeof(string), typeof(Cells), "");
 
-           public string full_name
-           {
-               get { return (string)GetValue(full_nameProperty); }
-               set { SetValue(full_nameProperty, value); }
-           }
+                   public string full_name
+                   {
+                       get { return (string)GetValue(full_nameProperty); }
+                       set { SetValue(full_nameProperty, value); }
+                   }
 
-           public static readonly BindableProperty LogoProperty =
-             BindableProperty.Create("logo", typeof(string), typeof(Cells), "");
+                   public static readonly BindableProperty LogoProperty =
+                     BindableProperty.Create("logo", typeof(string), typeof(Cells), "");
 
-           public string Logo
-           {
-               get { return (string)GetValue(LogoProperty); }
-               set { SetValue(LogoProperty, value); }
-           }
+                   public string Logo
+                   {
+                       get { return (string)GetValue(LogoProperty); }
+                       set { SetValue(LogoProperty, value); }
+                   }
 
-           public static readonly BindableProperty WebsiteProperty =
-             BindableProperty.Create("website", typeof(string), typeof(Cells), "");
+                   public static readonly BindableProperty WebsiteProperty =
+                     BindableProperty.Create("website", typeof(string), typeof(Cells), "");
 
-           public string website
-           {
-               get { return (string)GetValue(WebsiteProperty); }
-               set { SetValue(WebsiteProperty, value); }
-           }
+                   public string website
+                   {
+                       get { return (string)GetValue(WebsiteProperty); }
+                       set { SetValue(WebsiteProperty, value); }
+                   }
 
-           protected override void OnBindingContextChanged()
-           {
-               base.OnBindingContextChanged();
+                   protected override void OnBindingContextChanged()
+                   {
+                       base.OnBindingContextChanged();
 
-               if (BindingContext != null)
-               {
-                   if (idLabel != null) idLabel.Text = "id" + id;
-                   if (nameLabel != null) nameLabel.Text = "shortname" + short_name;
-                   if (fullLabel != null) fullLabel.Text = "fullname" + full_name;
-                   if (LogoLabel != null) LogoLabel.Text = "logo" + Logo;
-                   if (webLabel != null) webLabel.Text = "website" + website;
-               }
-           }*/
+                       if (BindingContext != null)
+                       {
+                           if (idLabel != null) idLabel.Text = "id" + id;
+                           if (nameLabel != null) nameLabel.Text = "shortname" + short_name;
+                           if (fullLabel != null) fullLabel.Text = "fullname" + full_name;
+                           if (LogoLabel != null) LogoLabel.Text = "logo" + Logo;
+                           if (webLabel != null) webLabel.Text = "website" + website;
+                       }
+                   }*/
     }
 }

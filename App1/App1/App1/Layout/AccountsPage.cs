@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Android;
+using Android.App;
 using App1.Menu;
 using Xamarin.Forms;
 

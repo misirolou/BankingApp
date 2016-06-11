@@ -38,6 +38,7 @@
     <Compile Include="App.cs" />
     <Compile Include="Cell\AllAccountsCell.cs" />
     <Compile Include="Cell\Cells.cs" />
+    <Compile Include="Cell\TransactionCell.cs" />
     <Compile Include="Layout\AccountsPage.cs" />
     <Compile Include="Layout\AtmPage.cs" />
     <Compile Include="Layout\BalcaoPage.cs" />

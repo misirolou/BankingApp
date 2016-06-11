@@ -36,6 +36,7 @@ namespace App1.REST
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         string content = reader.ReadToEnd();
+                        Debug.WriteLine("content:  {0}",content);
                         var jsonResult = JsonConvert.DeserializeObject<T>(content);
                         Debug.WriteLine("Treated json {0}", jsonResult);
                         //in case that the string is null should return nothing
@@ -215,6 +216,7 @@ namespace App1.REST
                         {
                             StreamReader reader = new StreamReader(dataStream);
                             token = reader.ReadToEnd();
+                            Debug.WriteLine("token received {0}",token);
                             if (string.IsNullOrWhiteSpace(token))
                             {
                                 Debug.WriteLine("Response contained empty body...");
@@ -260,9 +262,8 @@ namespace App1.REST
                 {
                     Debug.WriteLine("Response contained empty body...");
                 }
-            }
-            Debug.WriteLine("end of create session {0}", token);
-            return false;
+                return false;
+            } 
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using App1.Cell;
 using System.Collections.Generic;
+using System.Diagnostics;
+using App1.Models;
 using Xamarin.Forms;
 
 namespace App1.Menu
@@ -12,8 +14,17 @@ namespace App1.Menu
             //list of all the items that will be used in the menu
             List<MenuItem> data = new MenuListData();
 
+
+
             //data that is the list already identified on top and its backgroundcolor and vertical aspect
+            HasUnevenRows = true;
+            Margin = 10;
+            BackgroundColor = Color.Gray;
             ItemsSource = data;
+            foreach (var items in data)
+            {
+                Debug.WriteLine("items: {0} ---- {1}", items.Title ,items.TargetType);
+            }
             VerticalOptions = LayoutOptions.FillAndExpand;
             BackgroundColor = Color.Transparent;
 

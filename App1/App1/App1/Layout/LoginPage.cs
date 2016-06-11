@@ -73,14 +73,13 @@ namespace App1
             {
                 Aspect = Aspect.AspectFill,
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand
             };
             //specifying location for each platform
             imageRobot.Source = Device.OnPlatform(
                 iOS: ImageSource.FromFile("robot.png"),
                 Android: ImageSource.FromFile("robot.png"),
                 WinPhone: ImageSource.FromFile("robot.png"));
-
             //Layout of the login page
             Title = "Login";
             Icon = new FileImageSource() { File = "robot.png" };

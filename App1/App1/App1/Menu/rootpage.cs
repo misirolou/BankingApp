@@ -16,6 +16,7 @@ namespace App1.Menu
             _menuPage.Menu.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as MenuItem);
 
             Master = _menuPage;
+            Detail = new NavigationPage(new AccountsPage());
         }
 
         //Navigate to the page selected in the menu

@@ -40,7 +40,7 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            //the map view of the area
+            //the map view of the area need to change the postions location
             var map = new Map(MapSpan.FromCenterAndRadius(
                         new Position(37, -122), Distance.FromMiles(0.3)))
             {

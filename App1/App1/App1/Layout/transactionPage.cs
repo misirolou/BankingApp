@@ -14,10 +14,15 @@ namespace App1.Layout
     internal class transactionPage : ContentPage
     {
         private ListView _listView;
-        private DataTemplate validDataTemplate;
+        private DataTemplate _validDataTemplate;
         private StackLayout menuLayout;
+        private StackLayout Organizetemplate;
         //private DataTemplate invalidDataTemplate;
 
+
+        //Wanted to add charts by following this link https://blog.xamarin.com/visualize-your-data-with-charts-graphs-and-xamarin-forms/
+        //problem that it costs 995$ so i didnt think it was worth it at the moment
+        //if you want you can make this  a tabbed page where this page shows the transaction information and on the other the graphical information of the users transaction
         public transactionPage()
         {
             ActivityIndicator indicator = new ActivityIndicator()
@@ -61,6 +66,27 @@ namespace App1.Layout
                 Orientation = StackOrientation.Horizontal,
                 Margin = 10,
                 Children = { menuButton,
+                    new Label { Text = "your detailed account Information", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
+                    exitButton
+                }
+            };
+
+            Button dateOrganize = new Button()
+            {
+                Text = "date",
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                BackgroundColor = Color.Gray
+            };
+           // dateOrganize.Clicked += async (sender, args) => something;
+
+            Organizetemplate = new StackLayout()
+            {
+                BackgroundColor = Color.Gray,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Orientation = StackOrientation.Horizontal,
+                Margin = 10,
+                Children = { dateOrganize,
                     new Label { Text = "your detailed account Information", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
                     exitButton
                 }
@@ -120,45 +146,10 @@ namespace App1.Layout
                             {
                                 HasUnevenRows = true,
                                 Margin = 10,
-                                SeparatorColor = Color.Teal
+                                SeparatorColor = Color.Teal,
+                                ItemsSource = jsonObject.transactions,
+                                ItemTemplate = new DataTemplate(typeof(TransactionCell))
                             };
-                            _listView.ItemsSource = jsonObject.transactions;
-                            _listView.ItemTemplate = validDataTemplate;
-                            
-                            validDataTemplate = new DataTemplate(() => {
-                                 var grid = new Grid();
-                                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.4, GridUnitType.Star) });
-                                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.3, GridUnitType.Star) });
-                                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.3, GridUnitType.Star) });
-                                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.3, GridUnitType.Star) });
-
-                                var idLabelholder = new Label { FontAttributes = FontAttributes.Bold };
-                                var dateofCompletionLabel = new Label();
-                                var amountLabel = new Label { HorizontalTextAlignment = TextAlignment.End };
-                                var balanceLabel = new Label();
-
-                                idLabelholder.SetBinding(Label.TextProperty, "account.id"); //account id of entity that did the transaction counterparty
-                                dateofCompletionLabel.SetBinding(Label.TextProperty, "details.completed"); //date that the transaction was verified and completed
-                                amountLabel.SetBinding(Label.TextProperty, "details.value.amount"); //amount that was used in the transaction
-                                balanceLabel.SetBinding(Label.TextProperty, "details.new_balance.amount"); //balance of the users account
-
-                                grid.Children.Add(idLabelholder, 0, 0);
-                                 grid.Children.Add(dateofCompletionLabel, 1, 0);
-                                 grid.Children.Add(amountLabel, 2, 0);
-                                 grid.Children.Add(balanceLabel, 3, 0);
-
-                                StackLayout stack = new StackLayout()
-                                {
-                                    HorizontalOptions = LayoutOptions.StartAndExpand,
-                                    Orientation = StackOrientation.Horizontal,
-                                    Children = { idLabelholder, dateofCompletionLabel, amountLabel, balanceLabel }
-                                };
-
-                                return new ViewCell
-                                {
-                                    View = stack
-                                };
-                            });
                         });
                     }
                 });
