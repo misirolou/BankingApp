@@ -1,12 +1,10 @@
-﻿using App1.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using App1.Cell;
+﻿using App1.Cell;
 using App1.Cell.ListViews;
+using App1.Models;
 using App1.REST;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -19,9 +17,8 @@ namespace App1.Layout
         public ListView _branchlistview;
         private BranchListView _branchlist;
 
-
         public BalcaoPage()
-        { 
+        {
             resultsLabel = new Label
             {
                 Text = "Result will appear here.",
@@ -38,10 +35,10 @@ namespace App1.Layout
             };
 
             searchBar.TextChanged += (sender, e) => _branchlist.FilterLocations(searchBar.Text);
-            searchBar.SearchButtonPressed += (sender, e) => {
+            searchBar.SearchButtonPressed += (sender, e) =>
+            {
                 _branchlist.FilterLocations(searchBar.Text);
             };
-
 
             ActivityIndicator indicator = new ActivityIndicator()
             {
@@ -55,7 +52,7 @@ namespace App1.Layout
 
             //the map view of the area need to change the postions location
             var map = new Map(MapSpan.FromCenterAndRadius(
-                        new Position(37, -122), Distance.FromMiles(0.3)))
+                        new Position(32.6672502, -16.9168688), Distance.FromMiles(0.3)))
             {
                 IsShowingUser = true,
                 HeightRequest = 100,
@@ -64,13 +61,13 @@ namespace App1.Layout
             };
 
             //putting pins in certain locations
-            var position = new Position(37, -122); // Latitude, Longitude
+            var position = new Position(32.6672502, -16.9168688); // Latitude, Longitude
             var pin = new Pin
             {
                 Type = PinType.Place,
                 Position = position,
-                Label = "custom pin",
-                Address = "custom detail info"
+                Label = "Testing pin",
+                Address = "Empresa exictos"
             };
             map.Pins.Add(pin);
 
@@ -83,11 +80,6 @@ namespace App1.Layout
             {
                 Children = {
                         searchBar,
-                        new ScrollView
-                    {
-                        Content = resultsLabel,
-                        VerticalOptions = LayoutOptions.FillAndExpand
-                    },
                         map
                     }
             };

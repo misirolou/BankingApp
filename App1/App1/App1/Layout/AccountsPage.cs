@@ -5,9 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Android;
-using Android.App;
-using App1.Menu;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -93,7 +90,6 @@ namespace App1.Layout
                     exitButton
                 }
             };
-
 
             //layout of the accounts page
             Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);

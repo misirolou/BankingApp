@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using App1.Models;
+﻿using App1.Models;
 using Xamarin.Forms;
 
 namespace App1.Cell.ListViews
 {
-    class BranchListView : ListView
+    internal class BranchListView : ListView
     {
         public static string Latitude { get; private set; }
         public static string Longitude { get; private set; }
-        
+
         public BranchListView()
         {
             var locations = new branchlist();
@@ -26,7 +21,8 @@ namespace App1.Cell.ListViews
 
             ItemsSource = locations.branches;
 
-            ItemSelected += (s, e) => {
+            ItemSelected += (s, e) =>
+            {
                 if (SelectedItem == null)
                     return;
                 var selected = (Branch)e.SelectedItem;
@@ -34,22 +30,21 @@ namespace App1.Cell.ListViews
             };
         }
 
-
         public void FilterLocations(string filter)
         {
             this.BeginRefresh();
 
-           /* if (string.IsNullOrWhiteSpace(filter))
-            {
-                this.ItemsSource = branchlist;
-            }
-            else
-            {
-                this.ItemsSource = locations
-                        .Where(x => x.Title.ToLower()
-                           .Contains(filter.ToLower()));
-            }
-            */
+            /* if (string.IsNullOrWhiteSpace(filter))
+             {
+                 this.ItemsSource = branchlist;
+             }
+             else
+             {
+                 this.ItemsSource = locations
+                         .Where(x => x.Title.ToLower()
+                            .Contains(filter.ToLower()));
+             }
+             */
             this.EndRefresh();
         }
     }

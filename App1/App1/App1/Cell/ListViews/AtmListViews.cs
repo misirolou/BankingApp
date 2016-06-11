@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using App1.Models;
+﻿using App1.Models;
 using Xamarin.Forms;
 
 namespace App1.Cell.ListViews
 {
-    class AtmListViews : ListView
+    internal class AtmListViews : ListView
     {
         public static string Latitude { get; private set; }
         public static string Longitude { get; private set; }
@@ -26,14 +21,14 @@ namespace App1.Cell.ListViews
 
             ItemsSource = locations.branches;
 
-            ItemSelected += (s, e) => {
+            ItemSelected += (s, e) =>
+            {
                 if (SelectedItem == null)
                     return;
                 var selected = (Branch)e.SelectedItem;
                 SelectedItem = null;
             };
         }
-
 
         public void FilterLocations(string filter)
         {
@@ -52,6 +47,5 @@ namespace App1.Cell.ListViews
              */
             this.EndRefresh();
         }
-
     }
 }

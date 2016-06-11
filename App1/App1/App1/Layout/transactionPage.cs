@@ -3,10 +3,8 @@ using App1.Models;
 using App1.REST;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using App1.Menu;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -17,7 +15,6 @@ namespace App1.Layout
         private DataTemplate _validDataTemplate;
         private StackLayout menuLayout;
         private DataTemplate _invalidDataTemplate;
-
 
         //Wanted to add charts by following this link https://blog.xamarin.com/visualize-your-data-with-charts-graphs-and-xamarin-forms/
         //problem that it costs 995$ so i didnt think it was worth it at the moment
@@ -36,7 +33,7 @@ namespace App1.Layout
 
             Button menuButton = new Button()
             {
-                Image = (FileImageSource) Device.OnPlatform(
+                Image = (FileImageSource)Device.OnPlatform(
                     iOS: ImageSource.FromFile("menu.png"),
                     Android: ImageSource.FromFile("menu.png"),
                     WinPhone: ImageSource.FromFile("menu.png")),
@@ -48,7 +45,7 @@ namespace App1.Layout
 
             Button exitButton = new Button()
             {
-                Image = (FileImageSource) Device.OnPlatform(
+                Image = (FileImageSource)Device.OnPlatform(
                     iOS: ImageSource.FromFile("Exit.png"),
                     Android: ImageSource.FromFile("Exit.png"),
                     WinPhone: ImageSource.FromFile("Exit.png")),
@@ -80,7 +77,7 @@ namespace App1.Layout
             Task.WhenAll(Takingcareofbussiness());
 
             Title = "TransactionsPage";
-            Icon = new FileImageSource {File = "robot.png"};
+            Icon = new FileImageSource { File = "robot.png" };
             Content = new StackLayout
             {
                 BackgroundColor = Color.Teal,
@@ -144,7 +141,6 @@ namespace App1.Layout
                                     ValidTemplate = _validDataTemplate,
                                     InvalidTemplate = _invalidDataTemplate
                                 }*/
-
                             };
                         });
                     }

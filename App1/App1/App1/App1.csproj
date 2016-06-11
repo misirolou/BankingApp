@@ -40,6 +40,7 @@
     <Compile Include="Cell\Cells.cs" />
     <Compile Include="Cell\ListViews\AtmListViews.cs" />
     <Compile Include="Cell\ListViews\BranchListView.cs" />
+    <Compile Include="Cell\productCells.cs" />
     <Compile Include="Cell\TransactionCell.cs" />
     <Compile Include="Cell\Datatemplateselector\TransactionTemplateSelector.cs" />
     <Compile Include="Layout\AccountsPage.cs" />

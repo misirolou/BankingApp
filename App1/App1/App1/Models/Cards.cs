@@ -51,6 +51,5 @@ namespace App1.Models
         {
             public List<Card> cards { get; set; }
         }
-
     }
 }

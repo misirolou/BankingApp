@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using App1.Menu;
-using App1.Models;
+﻿using App1.Menu;
 using Xamarin.Forms;
-using MenuItem = App1.Menu.MenuItem;
 
 namespace App1.Layout
 {
@@ -14,17 +10,23 @@ namespace App1.Layout
         //what the menu page will look like
         public MenuPage()
         {
+            var data = new MenuListData();
+
             Title = "menu"; // The Title property must be set.
             BackgroundColor = Color.Teal;
             Icon = new FileImageSource { File = "robot.png" };
 
-            Menu = new MenuListView
+            Menu = new ListView()
             {
                 SeparatorVisibility = SeparatorVisibility.Default,
-                SeparatorColor = Color.Gray,
-                RowHeight = 10
+                SeparatorColor = Color.Teal,
+                BackgroundColor = Color.Gray
             };
-
+            Menu.ItemsSource = data;
+            //aspect of each of the menus cells that will contain the page title
+            var cell = new DataTemplate(typeof(TextCell));
+            cell.SetBinding(TextCell.TextProperty, "Title");
+            Menu.ItemTemplate = cell;
 
             var menuLabel = new ContentView
             {

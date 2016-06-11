@@ -1,5 +1,4 @@
 ﻿using App1.Layout;
-using App1.Models;
 using App1.REST;
 using System;
 using System.Diagnostics;
@@ -75,7 +74,7 @@ namespace App1
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand
             };
-            imageRobot.BindingContext = new { userEntry, passwordEntry, switcher};
+            imageRobot.BindingContext = new { userEntry, passwordEntry, switcher };
             //a little animation when the user does something
             imageRobot.BindingContextChanged += (sender, args) =>
             {

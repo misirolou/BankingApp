@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using App1.Menu;
 using Xamarin.Forms;
 
 namespace App1.Layout

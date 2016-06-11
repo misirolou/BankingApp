@@ -1,11 +1,10 @@
-﻿using App1.Models;
+﻿using App1.Cell;
+using App1.Cell.ListViews;
+using App1.Models;
+using App1.REST;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using App1.Cell;
-using App1.Cell.ListViews;
-using App1.REST;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -13,37 +12,47 @@ namespace App1.Layout
 {
     internal class AtmPage : ContentPage
     {
-        private BranchListView atmlist;
+        private AtmListViews _atmlist;
         private Label resultsLabel;
         protected ListView ListView;
         public ListView _atmlistview;
 
         public AtmPage()
         {
-            //to choose what bank they want
-            Picker picker = new Picker()
-            {
-                Title = "Bank id choose wisely"
-            };
-            //picker.SelectedIndex += pickerSelected;
-
             resultsLabel = new Label
             {
                 Text = "Result will appear here.",
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
+            _atmlist = new AtmListViews();
+
             //searchbar to search banks contacts that are available
             var searchBar = new SearchBar
             {
-                Placeholder = "Enter short_name of bank",
+                Placeholder = "search",
                 SearchCommand = new Command(() => { resultsLabel.Text = "Result over here: "; })
             };
 
-            //the map view of the area
-            var location = new Atm();
+            searchBar.TextChanged += (sender, e) => _atmlist.FilterLocations(searchBar.Text);
+            searchBar.SearchButtonPressed += (sender, e) =>
+            {
+                _atmlist.FilterLocations(searchBar.Text);
+            };
+
+            ActivityIndicator indicator = new ActivityIndicator()
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
+                IsRunning = true,
+                IsVisible = true
+            };
+            indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
+            indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
+
+            //the map view of the area need to change the postions location32.6672502,-16.9168688,3
             var map = new Map(MapSpan.FromCenterAndRadius(
-                    new Position(location.location.latitude, location.location.longitude), Distance.FromMiles(0.3)))
+                        new Position(32.6672502, -16.9168688), Distance.FromMiles(0.3)))
             {
                 IsShowingUser = true,
                 HeightRequest = 100,
@@ -52,39 +61,27 @@ namespace App1.Layout
             };
 
             //putting pins in certain locations
-            var position = new Position(location.location.latitude, location.location.longitude); // Latitude, Longitude
+            var position = new Position(32.6672502, -16.9168688); // Latitude, Longitude
             var pin = new Pin
             {
                 Type = PinType.Place,
                 Position = position,
-                Label = "custom pin",
-                Address = "custom detail info"
+                Label = "Testing pin",
+                Address = "Empresa exictos"
             };
             map.Pins.Add(pin);
 
-            var stacklayout = new StackLayout()
-            {
-                Orientation = StackOrientation.Horizontal,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                Children =
-                {
-                    picker
-                }
-            };
-
             Task.WhenAll(Takingcareofbussiness());
 
-            Title = "AtmPage";
+            Title = "BranchPage";
             Icon = new FileImageSource { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 Children = {
-                    stacklayout,
-                    searchBar,
-                    resultsLabel,
-                    map
-                }
+                        searchBar,
+                        map
+                    }
             };
         }
 
@@ -187,6 +184,5 @@ namespace App1.Layout
                 Debug.WriteLine("Caught error: {0}.", err);
             }
         }
-
     }
 }

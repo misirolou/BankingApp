@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace App1.Cell
 {
@@ -21,11 +16,10 @@ namespace App1.Cell
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-
-            var emptylabel = new Label() { BackgroundColor = Color.Teal};
-            var idLabelholder = new Label { Text = "Counterparty: ", FontAttributes = FontAttributes.Bold , HorizontalTextAlignment = TextAlignment.Center };
+            var emptylabel = new Label() { BackgroundColor = Color.Teal };
+            var idLabelholder = new Label { Text = "Counterparty: ", FontAttributes = FontAttributes.Bold, HorizontalTextAlignment = TextAlignment.Center };
             var dateofCompletionLabel = new Label() { HorizontalTextAlignment = TextAlignment.Center };
-            var amountLabel = new Label () { HorizontalTextAlignment = TextAlignment.Center};
+            var amountLabel = new Label() { HorizontalTextAlignment = TextAlignment.Center };
             var balanceLabel = new Label() { HorizontalTextAlignment = TextAlignment.Center };
 
             //account id of entity that did the transaction counterparty
@@ -46,11 +40,10 @@ namespace App1.Cell
             grid.Children.Add(dateofCompletionLabel, 0, 2);
             grid.Children.Add(amountLabel, 1, 2);
             grid.Children.Add(balanceLabel, 2, 2);
-            grid.Children.Add(emptylabel,0,3);
+            grid.Children.Add(emptylabel, 0, 3);
             Grid.SetColumnSpan(emptylabel, 3);
 
             View = grid;
         }
-
     }
 }
