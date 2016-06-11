@@ -75,11 +75,26 @@ namespace App1
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand
             };
+            imageRobot.BindingContext = new { userEntry, passwordEntry, switcher};
+            //a little animation when the user does something
+            imageRobot.BindingContextChanged += (sender, args) =>
+            {
+                var playingaround = new Animation();
+
+                var rotation = new Animation(callback: d => imageRobot.Rotation = d,
+                    start: imageRobot.Rotation,
+                    end: imageRobot.Rotation + 360,
+                    easing: Easing.SpringOut);
+                playingaround.Add(0, 1, rotation);
+
+                playingaround.Commit(imageRobot, "Loop", length: 1400);
+            };
             //specifying location for each platform
             imageRobot.Source = Device.OnPlatform(
                 iOS: ImageSource.FromFile("robot.png"),
                 Android: ImageSource.FromFile("robot.png"),
                 WinPhone: ImageSource.FromFile("robot.png"));
+
             //Layout of the login page
             Title = "Login";
             Icon = new FileImageSource() { File = "robot.png" };

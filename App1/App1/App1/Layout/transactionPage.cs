@@ -16,8 +16,7 @@ namespace App1.Layout
         private ListView _listView;
         private DataTemplate _validDataTemplate;
         private StackLayout menuLayout;
-        private StackLayout Organizetemplate;
-        //private DataTemplate invalidDataTemplate;
+        private DataTemplate _invalidDataTemplate;
 
 
         //Wanted to add charts by following this link https://blog.xamarin.com/visualize-your-data-with-charts-graphs-and-xamarin-forms/
@@ -37,10 +36,10 @@ namespace App1.Layout
 
             Button menuButton = new Button()
             {
-                Image = (FileImageSource)Device.OnPlatform(
-                   iOS: ImageSource.FromFile("menu.png"),
-                   Android: ImageSource.FromFile("menu.png"),
-                   WinPhone: ImageSource.FromFile("menu.png")),
+                Image = (FileImageSource) Device.OnPlatform(
+                    iOS: ImageSource.FromFile("menu.png"),
+                    Android: ImageSource.FromFile("menu.png"),
+                    WinPhone: ImageSource.FromFile("menu.png")),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 BackgroundColor = Color.Gray
@@ -49,7 +48,7 @@ namespace App1.Layout
 
             Button exitButton = new Button()
             {
-                Image = (FileImageSource)Device.OnPlatform(
+                Image = (FileImageSource) Device.OnPlatform(
                     iOS: ImageSource.FromFile("Exit.png"),
                     Android: ImageSource.FromFile("Exit.png"),
                     WinPhone: ImageSource.FromFile("Exit.png")),
@@ -65,29 +64,15 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Horizontal,
                 Margin = 10,
-                Children = { menuButton,
-                    new Label { Text = "your detailed account Information", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
-                    exitButton
-                }
-            };
-
-            Button dateOrganize = new Button()
-            {
-                Text = "date",
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Gray
-            };
-           // dateOrganize.Clicked += async (sender, args) => something;
-
-            Organizetemplate = new StackLayout()
-            {
-                BackgroundColor = Color.Gray,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                Orientation = StackOrientation.Horizontal,
-                Margin = 10,
-                Children = { dateOrganize,
-                    new Label { Text = "your detailed account Information", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
+                Children =
+                {
+                    menuButton,
+                    new Label
+                    {
+                        Text = "your detailed account Information",
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        FontAttributes = FontAttributes.Bold
+                    },
                     exitButton
                 }
             };
@@ -95,7 +80,7 @@ namespace App1.Layout
             Task.WhenAll(Takingcareofbussiness());
 
             Title = "TransactionsPage";
-            Icon = new FileImageSource { File = "robot.png" };
+            Icon = new FileImageSource {File = "robot.png"};
             Content = new StackLayout
             {
                 BackgroundColor = Color.Teal,
@@ -104,7 +89,8 @@ namespace App1.Layout
                 {
                     new Label
                     {
-                        Text = "Getting your transaction information",HorizontalTextAlignment = TextAlignment.Center
+                        Text = "Getting your transaction information",
+                        HorizontalTextAlignment = TextAlignment.Center
                     }
                 }
             };
@@ -125,22 +111,25 @@ namespace App1.Layout
                 //getting information from the online location
                 await rest.GetWithToken(uri).ContinueWith(t =>
                 {
-                     //Problem occured a message is displayed to the user
-                     if (t.IsFaulted)
+                    //Problem occured a message is displayed to the user
+                    if (t.IsFaulted)
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DisplayAlert("Alert", "Something went wrong sorry :(", "OK");
                         });
                     }
-                     //everything went fine, information should be displayed
-                     else
+                    //everything went fine, information should be displayed
+                    else
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             var result = t.Result;
 
-                             Transactions.TransactionList jsonObject = JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
+                            Transactions.TransactionList jsonObject =
+                                JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
+
+                            //SetupDataTemplates();
 
                             _listView = new ListView
                             {
@@ -149,6 +138,13 @@ namespace App1.Layout
                                 SeparatorColor = Color.Teal,
                                 ItemsSource = jsonObject.transactions,
                                 ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                                //testing  a different way of showing information didnt seem to work accordingly
+                                /*  new TransactionTemplateSelector()
+                                {
+                                    ValidTemplate = _validDataTemplate,
+                                    InvalidTemplate = _invalidDataTemplate
+                                }*/
+
                             };
                         });
                     }
@@ -173,5 +169,65 @@ namespace App1.Layout
                 Debug.WriteLine("Caught error: {0}.", err);
             }
         }
+
+        /* Testing a way of changing text according to the outcome of your transaction amount
+        private void SetupDataTemplates()
+        {
+            _validDataTemplate = new DataTemplate(() =>
+            {
+                var grid = new Grid();
+                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.4, GridUnitType.Star)});
+                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
+                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
+
+                var nameLabel = new Label {FontAttributes = FontAttributes.Bold};
+                var dobLabel = new Label();
+                var locationLabel = new Label {HorizontalTextAlignment = TextAlignment.End};
+
+                nameLabel.SetBinding(Label.TextProperty, "Name");
+                dobLabel.SetBinding(Label.TextProperty, "DateOfBirth", stringFormat: "{0:d}");
+                locationLabel.SetBinding(Label.TextProperty, "Location");
+                nameLabel.TextColor = Color.Green;
+                dobLabel.TextColor = Color.Green;
+                locationLabel.TextColor = Color.Green;
+
+                grid.Children.Add(nameLabel);
+                grid.Children.Add(dobLabel, 1, 0);
+                grid.Children.Add(locationLabel, 2, 0);
+
+                return new ViewCell
+                {
+                    View = grid
+                };
+            });
+
+            _invalidDataTemplate = new DataTemplate(() =>
+            {
+                var grid = new Grid();
+                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.4, GridUnitType.Star)});
+                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
+                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
+
+                var nameLabel = new Label {FontAttributes = FontAttributes.Bold};
+                var dobLabel = new Label();
+                var locationLabel = new Label {HorizontalTextAlignment = TextAlignment.End};
+
+                nameLabel.SetBinding(Label.TextProperty, "Name");
+                dobLabel.SetBinding(Label.TextProperty, "DateOfBirth", stringFormat: "{0:d}");
+                locationLabel.SetBinding(Label.TextProperty, "Location");
+                nameLabel.TextColor = Color.Red;
+                dobLabel.TextColor = Color.Red;
+                locationLabel.TextColor = Color.Red;
+
+                grid.Children.Add(nameLabel);
+                grid.Children.Add(dobLabel, 1, 0);
+                grid.Children.Add(locationLabel, 2, 0);
+
+                return new ViewCell
+                {
+                    View = grid
+                };
+            });
+        }*/
     }
 }

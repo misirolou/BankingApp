@@ -44,25 +44,29 @@ namespace App1.Cell
                 HorizontalTextAlignment = TextAlignment.Center
             };
             webLabel.SetBinding(Label.TextProperty, "website");
+            //empty label used to create seperations between each view
+            var emptylabel = new Label() { BackgroundColor = Color.Teal };
 
-            StackLayout stack = new StackLayout()
-            {
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                Orientation = StackOrientation.Horizontal,
-                Children = {IdLabel, fullLabel}
-            };
 
-            //this is the actual layout of each of the cells
-            var nameLayout = new StackLayout()
-            {
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                Orientation = StackOrientation.Vertical,
-                Padding = 5,
-                Margin = 10,
-                Children = {stack, webLabel}
-            };
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-            View = nameLayout;
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+
+            grid.BackgroundColor = Color.Gray;
+            grid.ColumnSpacing = 2;
+            grid.RowSpacing = 5;
+            //used a grid to display information of the transactions
+            grid.Children.Add(IdLabel, 0, 0);
+            grid.Children.Add(fullLabel, 1, 0);
+            grid.Children.Add(webLabel, 0, 1);
+            Grid.SetColumnSpan(webLabel, 2);
+            grid.Children.Add(emptylabel, 0 ,2);
+            Grid.SetColumnSpan(emptylabel, 2);
+
+            View = grid;
         }
 
         public static readonly BindableProperty MenuTitleProperty =

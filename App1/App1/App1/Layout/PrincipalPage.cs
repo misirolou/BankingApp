@@ -154,23 +154,18 @@ namespace App1.Layout
                             {
                                 HasUnevenRows = true,
                                 SeparatorColor = Color.Teal,
-                                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                                SelectedItem = false
+                                HorizontalOptions = LayoutOptions.Center,
+                                SelectedItem = false,
                             };
                             _listView.ItemsSource = Information.owners;
                             _listView.ItemTemplate = new DataTemplate((typeof(TextCell)));
                             _listView.ItemTemplate.SetBinding(TextCell.TextProperty, "display_name");
 
-                            nameLabel = new Label()
-                            {
-                                HorizontalTextAlignment = TextAlignment.Center
-                            };
-                            nameLabel.SetBinding(TextCell.TextProperty, "owners.display_name");
-
                             //label for the number of this account used
                             numberLabel = new Label()
                             {
                                 Text = "id: " + Information.id,
+                                Margin = 2,
                                 HorizontalTextAlignment = TextAlignment.Center
                             };
                             //this is your balances amount shown
@@ -178,25 +173,29 @@ namespace App1.Layout
                             {
                                 Text = "Balance amount: " + Information.balance.amount,
                                 HorizontalTextAlignment = TextAlignment.Center,
-                                BackgroundColor = Color.Black
+                                BackgroundColor = Color.Black,
+                                Margin = 2,
                             };
                             //this contains the currency used
                             currencyLabel = new Label()
                             {
                                 Text = "Currency: " + Information.balance.currency,
                                 HorizontalTextAlignment = TextAlignment.Center,
+                                Margin = 2,
                             };
                             //this is the specified bank id
                             bankLabel = new Label()
                             {
                                 Text = "bank: " + Information.bank_id,
                                 HorizontalTextAlignment = TextAlignment.Center,
+                                Margin = 2,
                                 BackgroundColor = Color.Black
                             };
                             //this is your iban may be empty in some cases
                             ibanLabel = new Label()
                             {
                                 Text = "IBAN: " + Information.IBAN,
+                                Margin = 2,
                                 HorizontalTextAlignment = TextAlignment.Center
                             };
                             //this is your swift/bic numbers used, may be empty in some cases
@@ -204,12 +203,14 @@ namespace App1.Layout
                             {
                                 Text = "swift/bic: " + Information.swift_bic,
                                 HorizontalTextAlignment = TextAlignment.Center,
+                                Margin = 2,
                                 BackgroundColor = Color.Black
                             };
                             //this is the type of account that you have, in some cases may be empty
                             typeLabel = new Label()
                             {
                                 Text = "type: " + Information.type,
+                                Margin = 2,
                                 HorizontalTextAlignment = TextAlignment.Center
                             };
 
@@ -218,7 +219,7 @@ namespace App1.Layout
                             {
                                 BackgroundColor = Color.Gray,
                                 Margin = 10,
-                                Children = { _listView,nameLabel, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
+                                Children = { _listView, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
                             };
                         });
                     }
