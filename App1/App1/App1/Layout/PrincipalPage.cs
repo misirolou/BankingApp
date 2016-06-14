@@ -58,7 +58,7 @@ namespace App1.Layout
             //bank cards button used to change to the cards page
             var ProductButton = new Button()
             {
-                Text = "Cards",
+                Text = "Products",
                 VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };

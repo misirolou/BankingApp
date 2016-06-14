@@ -59,15 +59,15 @@ namespace App1
                 var playingaround = new Animation();
                 //the image exits to the right
                 var exitRight = new Animation(callback: d => imageRobot.TranslationX = d,
-                                               start: 0,
-                                               end: width,
-                                               easing: Easing.SpringIn);
+                    start: 0,
+                    end: width,
+                    easing: Easing.SpringIn);
 
                 //the image returns from the left
                 var enterLeft = new Animation(callback: d => imageRobot.TranslationX = d,
-                                               start: -width,
-                                               end: 0,
-                                               easing: Easing.BounceOut);
+                    start: -width,
+                    end: 0,
+                    easing: Easing.BounceOut);
 
                 playingaround.Add(0, 0.5, exitRight);
                 playingaround.Add(0.5, 1, enterLeft);

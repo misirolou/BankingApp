@@ -4,6 +4,7 @@ using App1.REST;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using App1.Annotations;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -13,6 +14,7 @@ namespace App1.Layout
     {
         private ListView _listView;
         public StackLayout menuLayout;
+        public Grid Labelgrid;
 
         //Layout and functionalities
         public ProductPage()
@@ -56,6 +58,19 @@ namespace App1.Layout
                     exitButton
                 }
             };
+
+            Labelgrid = new Grid();
+            Labelgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+
+            Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            Labelgrid.Children.Add(new Label() {Text = "Code", FontAttributes = FontAttributes.Bold}, 0, 0);
+            Labelgrid.Children.Add(new Label() { Text = "Name", FontAttributes = FontAttributes.Bold }, 1, 0);
+            Labelgrid.Children.Add(new Label() { Text = "Family", FontAttributes = FontAttributes.Bold }, 2, 0);
+            Labelgrid.Children.Add(new Label() { Text = "Super_family", FontAttributes = FontAttributes.Bold }, 3, 0);
 
             Task.WhenAll(Takingcareofbussiness());
 
@@ -105,7 +120,6 @@ namespace App1.Layout
                         {
                             _listView = new ListView
                             {
-                                BackgroundColor = Color.Gray,
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal
@@ -124,6 +138,7 @@ namespace App1.Layout
                     Children =
                     {
                         menuLayout,
+                        Labelgrid,
                         new Label {Text = "Product list go up and down", HorizontalTextAlignment = TextAlignment.Center},
                         _listView
                     }

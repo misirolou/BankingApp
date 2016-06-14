@@ -89,6 +89,7 @@ namespace App1.Layout
             labelLayout.Children.Add(new Label
             {
                 Text = "AMOUNT",
+                HorizontalTextAlignment = TextAlignment.End,
                 FontAttributes = FontAttributes.Bold
             }, 1, 0);
             labelLayout.Children.Add(new Label
