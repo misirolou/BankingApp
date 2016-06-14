@@ -3,6 +3,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //this page wasn´t used but it was an experiment to try out MasterDetailPages
     internal class MenuPage : ContentPage
     {
         public ListView Menu { get; set; }

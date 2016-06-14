@@ -2,6 +2,7 @@
 
 namespace App1.Layout
 {
+    //this page isnt called but was used to experiment animations and trying out an inicial splash page
     public class SplashPage : ContentPage
     {
         public SplashPage()

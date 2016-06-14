@@ -9,16 +9,19 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //This page contains all the users accounts,  determinig its layout
     public class AccountsPage : ContentPage
     {
         private ListView _listView;
         private StackLayout labelLayout;
         private StackLayout menuLayout;
         private Label _accountidLabel, _bankidLabel;
+        //Used to identify the href, bankid and accountid that was chosen from the cells
         public static string Href { get; private set; }
         public static string Bankid { get; private set; }
         public static string Accountid { get; private set; }
 
+        //Determines the layout of the page and some of its functionalities
         public AccountsPage()
         {
             _accountidLabel = new Label()
@@ -33,18 +36,7 @@ namespace App1.Layout
                 HorizontalOptions = LayoutOptions.StartAndExpand
             };
 
-            /* Button menuButton = new Button()
-             {
-                 Image = (FileImageSource)Device.OnPlatform(
-                     iOS: ImageSource.FromFile("menu.png"),
-                     Android: ImageSource.FromFile("menu.png"),
-                     WinPhone: ImageSource.FromFile("menu.png")),
-                 VerticalOptions = LayoutOptions.Start,
-                 HorizontalOptions = LayoutOptions.StartAndExpand,
-                 BackgroundColor = Color.Gray
-             };
-             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
-
+            //exitbutton used to exit the application to the loginpage
             Button exitButton = new Button()
             {
                 Image = (FileImageSource)Device.OnPlatform(
@@ -57,6 +49,7 @@ namespace App1.Layout
             };
             exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();
 
+            //This is used to indicate that their is something loading in the background
             ActivityIndicator indicator = new ActivityIndicator()
             {
                 VerticalOptions = LayoutOptions.Start,
@@ -67,8 +60,10 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
+            //Task used to receive the information that will ve presented in the page
             Task.WhenAll(Takingcareofbussiness());
 
+            //Label layout used to identify the fields used in the accounts table
             labelLayout = new StackLayout()
             {
                 BackgroundColor = Color.Gray,
@@ -79,6 +74,7 @@ namespace App1.Layout
                 { _bankidLabel , _accountidLabel }
             };
 
+            //menu layouut used to determine the layout of the menu
             menuLayout = new StackLayout()
             {
                 BackgroundColor = Color.Gray,
@@ -111,6 +107,7 @@ namespace App1.Layout
             };
         }
 
+        //This function is used to take care of bussiness, receiving the information requseted going through the REST service used to receive information
         private async Task Takingcareofbussiness()
         {
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
@@ -140,6 +137,7 @@ namespace App1.Layout
                         {
                             Accounts.Account[] jsonObject = JsonConvert.DeserializeObject<Accounts.Account[]>(t.Result);
 
+                            //List used to list information received from the REST service
                             _listView = new ListView
                             {
                                 HasUnevenRows = true,
@@ -154,6 +152,7 @@ namespace App1.Layout
                 });
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+                //Determinig the new layout containg the information received
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.Teal,
@@ -174,11 +173,13 @@ namespace App1.Layout
             }
         }
 
+        //used according to the cell that is selected to navigateTo to the new PrincipalPage used to show the detailed information of the account selected
         private async void NavigateTo(Accounts.Account account)
         {
             if (account == null)
                 return;
 
+            //Account id, bank id and HREF that will be called in other future page
             Accountid = account.id;
             Debug.WriteLine("accountid in accountpage {0}", Accountid);
             Bankid = account.bank_id;
@@ -188,6 +189,7 @@ namespace App1.Layout
 
             try
             {
+                //Navigation to the new page
                 await Navigation.PushAsync(new PrincipalPage());
             }
             catch (Exception err)

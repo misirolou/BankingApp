@@ -2,15 +2,9 @@
 
 namespace App1.Cell
 {
+    //Aspect of each of the products cells
     internal class productCells : ViewCell
     {
-        public string code { get; set; }
-        public string name { get; set; }
-        public string category { get; set; }
-        public string family { get; set; }
-        public string super_family { get; set; }
-        public string more_info_url { get; set; }
-
         public productCells()
         {
             //Id labels identification and layout

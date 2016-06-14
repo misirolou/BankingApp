@@ -6,69 +6,52 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //Payment page used to layout its aspect and what its functions are going to be
     internal class PaymentPage : ContentPage
     {
-        private Entry BankEntry, UserEntry, CurrencyEntry, amountEntry, descriptionEntry;
+        private Entry _bankEntry, _userEntry, _currencyEntry, _amountEntry, _descriptionEntry;
         private StackLayout menuLayout;
 
         public PaymentPage()
         {
-            BankEntry = new Entry
+            //the bank entity to whom the owner of the account you want to pay
+            _bankEntry = new Entry
             {
                 Placeholder = "Bank_id"
             };
 
-            UserEntry = new Entry
+            //account id used to send the payment to
+            _userEntry = new Entry
             {
                 Placeholder = "Account_id"
             };
 
-            CurrencyEntry = new Entry()
+            //currency during the payment
+            _currencyEntry = new Entry()
             {
                 Placeholder = "Currency"
             };
 
-            amountEntry = new Entry()
+            //amount the user is willing to pay
+            _amountEntry = new Entry()
             {
                 Placeholder = "amount to user"
             };
 
-            descriptionEntry = new Entry()
+            //Entry for the user to do a description of the payment
+            _descriptionEntry = new Entry()
             {
                 Placeholder = "description"
             };
 
+            //Confirmation button used to confirm payment
             Button confirmationButton = new Button
             {
                 Text = "Payment",
             };
             confirmationButton.Clicked += OnConfirmationButtonClicked;
 
-            Button exitButton = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("Exit.png"),
-                    Android: ImageSource.FromFile("Exit.png"),
-                    WinPhone: ImageSource.FromFile("Exit.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();
-
-            menuLayout = new StackLayout()
-            {
-                BackgroundColor = Color.Gray,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                Orientation = StackOrientation.Horizontal,
-                Margin = 10,
-                Children = {
-                    new Label { Text = "All of your accounts", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
-                    exitButton
-                }
-            };
-
-            //Layout of the login page
+            //Layout of the Payment Page
             Title = "PaymentsPage";
             Icon = new FileImageSource() { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
@@ -83,6 +66,7 @@ namespace App1.Layout
                 }
             };
 
+            //innergrids used to define what each of the attributes shall be
             var innerGrid = new Grid
             {
                 Margin = 5,
@@ -101,11 +85,11 @@ namespace App1.Layout
             outergrid.Children.Add(new Label() { Text = "Please add the required information", FontAttributes = FontAttributes.Bold }, 0, 0);
             outergrid.Children.Add(innerGrid, 0, 1);
 
-            innerGrid.Children.Add(BankEntry, 0, 0);
-            innerGrid.Children.Add(UserEntry, 0, 1);
-            innerGrid.Children.Add(CurrencyEntry, 0, 2);
-            innerGrid.Children.Add(amountEntry, 0, 3);
-            innerGrid.Children.Add(descriptionEntry, 0, 4);
+            innerGrid.Children.Add(_bankEntry, 0, 0);
+            innerGrid.Children.Add(_userEntry, 0, 1);
+            innerGrid.Children.Add(_currencyEntry, 0, 2);
+            innerGrid.Children.Add(_amountEntry, 0, 3);
+            innerGrid.Children.Add(_descriptionEntry, 0, 4);
             innerGrid.Children.Add(confirmationButton, 0, 5);
 
             //this is the type of layout the grids will be specified in
@@ -114,48 +98,43 @@ namespace App1.Layout
                 BackgroundColor = Color.Teal,
                 Padding = 1
             };
-
+            //Stack layout used to define the whole layout of the page
             stackLayout.Children.Add(outergrid);
             this.Content = stackLayout;
         }
 
+        //What will happen if the user clicks the confirmation button, the users entry information shall be sent and verified if correct
+        //if the result is true then a message shall be displayed afirming that statement else another message shall display that something went wrong
         private async void OnConfirmationButtonClicked(object sender, EventArgs e)
         {
             var rest = new ManagerRESTService(new RESTService());
             //account info to whom i am making the payment to
             var accountTo = new Payments.To
             {
-                account_id = UserEntry.Text
+                account_id = _userEntry.Text
             };
             //bankid thats connected to the account specified on top to whom i am making the payment to
             var bankTo = new Payments.To
             {
-                bank_id = BankEntry.Text
+                bank_id = _bankEntry.Text
             };
             //currency chosen to make the payment
             var currencyTo = new Payments.Value
             {
-                currency = CurrencyEntry.Text
+                currency = _currencyEntry.Text
             };
             //the amount that the user is willing to pay
             var amountTo = new Payments.Value
             {
-                amount = amountEntry.Text
+                amount = _amountEntry.Text
             };
             //a simple description of the transaction
             var descriptionTo = new Payments.Body
             {
-                description = descriptionEntry.Text
+                description = _descriptionEntry.Text
             };
-            //Verfication of users information through OpenBanks Direct Login where the user should receive a token
-            //this token is never shown to the user, used in background functions to request authorized information for the user
-            Debug.WriteLine("User put rubbish");
 
-            string requestBody = "{\"to\":{\"bank_id\":\"" + bankTo.bank_id + "\",\"account_id\":\"" + accountTo.account_id +
-                                 "\"},\"value\":\"{\"currency\":\"" + currencyTo.currency + "\",\"amount\":\"" + amountTo.amount +
-                                 "\"},\"description\":\"" + descriptionTo.description + "\"}";
-            Debug.WriteLine("BODY: {0}", requestBody);
-
+            //Sent to the RestService to verify the information received on this page to then be treated
             var result = await rest.MakePayment(accountTo, bankTo, currencyTo, amountTo, descriptionTo);
             Debug.WriteLine("result {0}", result);
             //if the result is false it will stay on the same page and show the message stated else it will change to the next page

@@ -9,6 +9,7 @@ using Xamarin.Forms.Maps;
 
 namespace App1.Layout
 {
+    //balcao page is used to display the branches of the bank very similar to the atmPage jsut with different coordinates
     internal class BalcaoPage : ContentPage
     {
         private Label resultsLabel;

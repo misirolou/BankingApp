@@ -20,14 +20,16 @@ namespace App1.REST
         400 (BAD REQUEST) – the request is not understood by the server.
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
-        //This function will be used to GET information for the user that doesn´t require any type of login
+        //This function will be used to GET information for the user that doesn´t require any type of login or access tokens
 
         public async Task<T> GetwithoutToken<T>(string url)
         {
             var responseFromServer = "";
+            //the url used to make the request for the information
             var uri = string.Format(url);
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
+            //method used
             request2.Method = "GET";
 
             try
@@ -40,8 +42,10 @@ namespace App1.REST
                     }
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
+                        //this is used to read the requsted information
                         string content = reader.ReadToEnd();
                         Debug.WriteLine("content:  {0}", content);
+                        //Used to deserilize the information in the determined list
                         var jsonResult = JsonConvert.DeserializeObject<T>(content);
                         Debug.WriteLine("Treated json {0}", jsonResult);
                         //in case that the string is null should return nothing
@@ -59,6 +63,7 @@ namespace App1.REST
                     }
                 }
             }
+            //used to catch any exception that may occur
             catch (WebException err)
             {
                 Stream stream = err.Response.GetResponseStream();
@@ -78,11 +83,15 @@ namespace App1.REST
         public async Task<string> GetWithToken(string url)
         {
             var uri = string.Format(url);
+            //Used to make the request
             var request2 = (HttpWebRequest)WebRequest.Create(uri);
             request2.ContentType = "application/json";
+            //Method used
             request2.Method = "GET";
+            //Access token and its format
             var authToken = string.Format("token=\"{0}\"", token);
             Debug.WriteLine("authtoken {0}", authToken);
+            //Header request used to send the token
             request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
 
             try
@@ -109,6 +118,7 @@ namespace App1.REST
                     }
                 }
             }
+            //used to catch any exception that may occur
             catch (WebException err)
             {
                 Stream stream = err.Response.GetResponseStream();
@@ -122,33 +132,32 @@ namespace App1.REST
             }
         }
 
-        //The user should be autheticated and this GET request will be using the tokenreceived from the function Createsession
+        //The user should be autheticated to make a payment all these attributes are received from the payment page
         public async Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo,
             Payments.Value amountTo, Payments.Body descriptionTo)
         {
             string responseFromServer;
+            //Url used to make the request to OpenBank
             var url = string.Format(Constants.PaymentUrl, AccountsPage.Bankid, AccountsPage.Accountid);
             var request2 = (HttpWebRequest)WebRequest.Create(url);
             request2.ContentType = "application/json";
+            //method used to make the request
             request2.Method = "POST";
+            //Access token and Body 
             var authToken = string.Format("token=\"{0}\"", token);
             var body = string.Format(" to = bank_id = \"{0}\", account_id = \"{1}\"  , value = currency = \"{2}\",  amount = \"{3}\", description = \"{4}\"", bankTo.bank_id, accountTo.account_id, currencyTo.currency, amountTo.amount, descriptionTo.description);
-            Debug.WriteLine("authtoken {0}", authToken);
-            byte[] byteArray = Encoding.UTF8.GetBytes(body);
-            request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+            var header = request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
             
+
             try
             {
                 using (Stream requestStream = await request2.GetRequestStreamAsync())
                 {
                     using (var writer = new StreamWriter(requestStream))
                     {
-                        //
-
                         // Send the data to the server
-                        Debug.WriteLine(body);
-                        writer.Write(body);
-                        // writer.Write(body);
+                        writer.Write(body + header);
+                        writer.Write(header);
                         writer.Flush();
                         writer.Dispose();
                     }
@@ -164,16 +173,13 @@ namespace App1.REST
                     {
                         try
                         {
+                            //Reader used to read information received
                             StreamReader reader = new StreamReader(dataStream);
                             token = reader.ReadToEnd();
                             Debug.WriteLine("token received {0}", Payment);
                             if (string.IsNullOrWhiteSpace(Payment))
                             {
                                 Debug.WriteLine("Response contained empty body...");
-                            }
-                            Debug.WriteLine("Response {0}", Payment);
-                            if (string.IsNullOrWhiteSpace(token))
-                            {
                                 return false;
                             }
                             else
@@ -225,14 +231,16 @@ namespace App1.REST
             }
         }
 
-        //Post of the users attributes of their login information and receiving the tokenreceived needed for future requests
+        //Post of the users attributes of their login information and receiving the Access Token needed for future requests
         public async Task<bool> CreateSession(Users user, Users pass)
         {
             string responseFromServer;
-            //pedido ao servidor pelo request tokenreceived
+            //Request to create the session of the user
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Constants.OpenBankAPI);
             request.ContentType = "application/json";
+            //method used to post information
             request.Method = "POST";
+            //Header information
             var authData = string.Format("username=\"{0}\", password=\"{1}\",consumer_key=\"{2}\"", user.User, pass.Password, Constants.oauth_consumer_key);
             var header = request.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authData;
 

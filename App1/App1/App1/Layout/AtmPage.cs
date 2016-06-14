@@ -9,15 +9,15 @@ using Xamarin.Forms.Maps;
 
 namespace App1.Layout
 {
+    //Atm Page used to show the location of all the atms using a map provided by google
     internal class AtmPage : ContentPage
     {
         private Label resultsLabel;
         protected ListView ListView;
         public ListView _atmlistview;
         protected Map Map;
-        public static double Latitude { get; private set; }
-        public static double Longitude { get; private set; }
 
+        //layout of the atmpage and its functionalities
         public AtmPage()
         {
             resultsLabel = new Label
@@ -26,6 +26,7 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
+            //indicator used to show that something is working in the background
             ActivityIndicator indicator = new ActivityIndicator()
             {
                 VerticalOptions = LayoutOptions.Start,
@@ -36,8 +37,10 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
+            //Task used to make the request needed to show the information on the map
             Task.WhenAll(Takingcareofbussiness());
 
+            //Initial layout of the page
             Title = "ATMPage";
             Icon = new FileImageSource { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
@@ -49,12 +52,9 @@ namespace App1.Layout
             };
         }
 
+        //used to take care of bussiness so it can receive the coordinate needed to show on the map
         private async Task Takingcareofbussiness()
         {
-            //unit testing soe varibles may add this to a unique unit test in the later stages
-            //  var json = "{'banks':[{'id':'rbs','short_name':'The Royal Bank of Scotland','full_name':'The Royal Bank of Scotland','logo':'http://www.red-bank-shoreditch.com/logo.gif','website':'http://www.red-bank-shoreditch.com'},{'id':'test-bank','short_name':'TB','full_name':'Test Bank','logo':null,'website':null},{'id':'testowy_bank_id','short_name':'TB','full_name':'Testowy bank',    'logo':null,'website':null},{'id':'nordea','short_name':'Nordea','full_name':'Nordea Bank AB','logo':'http://logonoid.com/images/nordea-logo.jpg','website':'http://www.nordea.com/'},{'id':'nordeaab','short_name':'Nordea','full_name':'Nordea Bank AB','logo':'http://logonoid.com/images/nordea-logo.jpg','website':'http://www.nordea.com/'},{'id':'hsbc-test','short_name':'HSBC Test','full_name':'Hongkong and Shanghai Bank','logo':null,'website':null},{'id':'erste-test','short_name':'Erste Bank Test','full_name':'Erste Bank Test','logo':null,'website':null},{'id':'deutche-test','short_name':'Deutche Bank Test','full_name':'Deutche Bank Test','logo':null,'website':null},{'id':'obp-bankx-m','short_name':'Bank X','full_name':'The Bank of X','logo':'https://static.openbankproject.com/images/bankx/bankx_logo.png','website':'https://www.example.com'}]}";
-            //  var jsonconverting = JsonConvert.DeserializeObject<Banklist>(json);
-
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
             try
             {
@@ -64,6 +64,7 @@ namespace App1.Layout
                 var rest = new ManagerRESTService(new RESTService());
                 var uri = string.Format(Constants.ATMsUrl, AccountsPage.Bankid);
 
+                //this is the request made to the REST service to receive information
                 await rest.GetwithoutToken<atmlist>(uri).ContinueWith(t =>
                 {
                     //Problem occured a message is displayed to the user
@@ -79,8 +80,10 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
+                            //Used to show the data received from the Result achieved
                             List<Atm> data = t.Result.atms;
 
+                            //If there is no data the map will show the location of a company that i am a trainee at
                             if (data.Count == 0)
                             {
                                 Map = new Map(MapSpan.FromCenterAndRadius(
@@ -101,6 +104,7 @@ namespace App1.Layout
                                     new Position(32.6672502, -16.9168688), Distance.FromMiles(2.0)));
                                 Map.Margin = 5;
                             }
+                            //it will receive all the information and add the pins necessary to the map using the coordinates received
                             else
                             {
                                 Debug.WriteLine("Latitude {0}--- Longitude{1} ---- name {2}", data[0].location.latitude, data[0].location.longitude, data[0].name);
@@ -132,6 +136,8 @@ namespace App1.Layout
 
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+
+                //Final Layout of this page
                 Content = new StackLayout
                 {
                     Children = {

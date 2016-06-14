@@ -5,6 +5,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //this page contains the detailed transaction selected from the transaction page
     internal class TransactionDetailedPage : ContentPage
     {
         private Label valueamount,

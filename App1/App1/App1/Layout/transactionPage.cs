@@ -9,6 +9,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //transaction page used to show all the transaction information
     internal class transactionPage : ContentPage
     {
         private ListView _listView;
@@ -117,6 +118,7 @@ namespace App1.Layout
             };
         }
 
+        //Taking care of bussiness, verifyifing if the information received of the transaction history is correct
         private async Task Takingcareofbussiness()
         {
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
@@ -218,65 +220,5 @@ namespace App1.Layout
                 Debug.WriteLine("Caught error transactionpage: {0}.", err);
             }
         }
-
-        /* Testing a way of changing text according to the outcome of your transaction amount
-        private void SetupDataTemplates()
-        {
-            _validDataTemplate = new DataTemplate(() =>
-            {
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.4, GridUnitType.Star)});
-                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
-                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
-
-                var nameLabel = new Label {FontAttributes = FontAttributes.Bold};
-                var dobLabel = new Label();
-                var locationLabel = new Label {HorizontalTextAlignment = TextAlignment.End};
-
-                nameLabel.SetBinding(Label.TextProperty, "Name");
-                dobLabel.SetBinding(Label.TextProperty, "DateOfBirth", stringFormat: "{0:d}");
-                locationLabel.SetBinding(Label.TextProperty, "Location");
-                nameLabel.TextColor = Color.Green;
-                dobLabel.TextColor = Color.Green;
-                locationLabel.TextColor = Color.Green;
-
-                grid.Children.Add(nameLabel);
-                grid.Children.Add(dobLabel, 1, 0);
-                grid.Children.Add(locationLabel, 2, 0);
-
-                return new ViewCell
-                {
-                    View = grid
-                };
-            });
-
-            _invalidDataTemplate = new DataTemplate(() =>
-            {
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.4, GridUnitType.Star)});
-                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
-                grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(0.3, GridUnitType.Star)});
-
-                var nameLabel = new Label {FontAttributes = FontAttributes.Bold};
-                var dobLabel = new Label();
-                var locationLabel = new Label {HorizontalTextAlignment = TextAlignment.End};
-
-                nameLabel.SetBinding(Label.TextProperty, "Name");
-                dobLabel.SetBinding(Label.TextProperty, "DateOfBirth", stringFormat: "{0:d}");
-                locationLabel.SetBinding(Label.TextProperty, "Location");
-                nameLabel.TextColor = Color.Red;
-                dobLabel.TextColor = Color.Red;
-                locationLabel.TextColor = Color.Red;
-
-                grid.Children.Add(nameLabel);
-                grid.Children.Add(dobLabel, 1, 0);
-                grid.Children.Add(locationLabel, 2, 0);
-
-                return new ViewCell
-                {
-                    View = grid
-                };
-            });
-        }*/
     }
 }

@@ -8,12 +8,25 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //the card page that show information of the users card information
     internal class cardPage : ContentPage
     {
         private ListView _listView;
 
         public cardPage()
         {
+            ActivityIndicator indicator = new ActivityIndicator()
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
+                IsRunning = true,
+                IsVisible = true
+            };
+            indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
+            indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
+
+           // Task.WhenAll(Takingcareofbussiness());
+
             Title = "CardsPage";
             Icon = new FileImageSource { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
@@ -30,6 +43,7 @@ namespace App1.Layout
             };
         }
 
+        //used to take care of bussines to receive the card information of the user// OpenBank contains no known information on this
         private async Task Takingcareofbussiness()
         {
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case

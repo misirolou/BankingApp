@@ -6,12 +6,14 @@ using Xamarin.Forms;
 
 namespace App1
 {
+    //the login page used to autheticate the user and so that the user can verify the contact information of the banks
+    //Login Information Account: danielfaria921@gmail.com   Password: Bankingdont243**  Oauth_Consumer_Key is fixed to this user change this to try out other uses
     public class LoginPage : ContentPage
     {
         private Entry userEntry, passwordEntry;
         private Label messageLabel, privacy;
 
-        //layout of the page
+        //layout of the login page and its functionalities
         public LoginPage()
         {
             //login image
@@ -78,18 +80,6 @@ namespace App1
                 Text = "Login",
             };
             loginButton.Clicked += OnLoginButtonClicked;
-            //switch button choosing if you want your information public or private
-            /*  Switch switcher = new Switch()
-              {
-                  HorizontalOptions = LayoutOptions.End
-              };
-              switcher.Toggled += Switchertoggled;*/
-            //label for private mode
-            privacy = new Label()
-            {
-                Text = "Private Mode",
-                HorizontalOptions = LayoutOptions.Start
-            };
             //contacts button should take you to the contacts page
             var ContactButton = new Button()
             {
@@ -174,7 +164,8 @@ namespace App1
             this.Content = stackLayout;
         }
 
-        //what happens when we click the login button
+        //This function is used to determine what will happen when the user clicks the loginButton
+        //The requset is made to determine whether the information is true or false, depending on this it will change to the accountPage or will display an alert
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
             var rest = new ManagerRESTService(new RESTService());
@@ -210,29 +201,14 @@ namespace App1
                     Debug.WriteLine("Caught error: {0}.", err);
                 }
             }
+            //Used to display alert if an error occurs
             else
             {
                 await DisplayAlert("Alert", "Login Failed", "OK");
             }
         }
 
-        //changes the mode according to the switch to public or private views of users accounts
-        //this part may not be implemented at the moment needs some verifications beforehand may have future implications
-        private void Switchertoggled(object sender, ToggledEventArgs e)
-        {
-            if (e.Value.Equals(true))
-            {
-                Debug.WriteLine("changed text to public");
-                privacy.Text = String.Format("{0} mode", "Public");
-            }
-            else
-            {
-                Debug.WriteLine("changed text to private");
-                privacy.Text = String.Format("{0} mode", "Private");
-            }
-        }
-
-        //what happens when we click the contact button
+        //what happens when we click the contact button, this will simply change to the contact page
         private async void OnContactButtonClicked(object sender, EventArgs e)
         {
             //go to the contact page where the information will be taken care of

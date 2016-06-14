@@ -2,6 +2,7 @@
 
 namespace App1.Cell
 {
+    //Used to allocate each list object into a cell
     internal class AllAccountsCell : ViewCell
     {
         public AllAccountsCell()
@@ -62,6 +63,7 @@ namespace App1.Cell
             //Binding of the id label used to switch between different ids
             hrefLabel.SetBinding(Label.TextProperty, "href");
 
+            //grid used to define the layout of the labels
             var grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });

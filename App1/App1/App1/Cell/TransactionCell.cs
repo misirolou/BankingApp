@@ -4,6 +4,7 @@ namespace App1.Cell
 {
     public class TransactionCell : ViewCell
     {
+        //Transactions cells used to determine the layout of each of the transaction received from the list view
         public TransactionCell()
         {
             var grid = new Grid();

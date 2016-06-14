@@ -7,6 +7,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //This page is the mainpage used to display the account detailed information that was selected 
     internal class PrincipalPage : ContentPage
     {
         private Label numberLabel, nameLabel, ibanLabel, amountLabel, bankLabel, currencyLabel, typeLabel, swiftLabel;
@@ -15,6 +16,7 @@ namespace App1.Layout
         private StackLayout menuLayout;
         private static string href;
 
+        //layout and functionalities
         public PrincipalPage()
         {
             //Transaction button used to change to the transaction page
@@ -53,6 +55,16 @@ namespace App1.Layout
             };
             cardsbutton.Clicked += OncardsButtonClicked;
 
+            //bank cards button used to change to the cards page
+            var ProductButton = new Button()
+            {
+                Text = "Cards",
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+            ProductButton.Clicked += OnProductButtonClicked;
+
+            //payment button used
             var Paymentsbutton = new Button()
             {
                 Text = "Payment",
@@ -72,18 +84,6 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
             Task.WhenAll(Takingcareofbussiness());
-
-            /* Button menuButton = new Button()
-             {
-                 Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("menu.png"),
-                    Android: ImageSource.FromFile("menu.png"),
-                    WinPhone: ImageSource.FromFile("menu.png")),
-                 VerticalOptions = LayoutOptions.Start,
-                 HorizontalOptions = LayoutOptions.StartAndExpand,
-                 BackgroundColor = Color.Gray
-             };
-             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             Button exitButton = new Button()
             {
@@ -131,6 +131,7 @@ namespace App1.Layout
             ButtonLayout.Children.Add(Paymentsbutton, 1, 0);
             ButtonLayout.Children.Add(cardsbutton, 2, 0);
             ButtonLayout.Children.Add(BalcaoButton, 0, 1);
+            ButtonLayout.Children.Add(ProductButton, 1,1);
             ButtonLayout.Children.Add(AtmButton, 2, 1);
 
             //Layout of the Home page(PrincipalPage.cs)
@@ -151,6 +152,7 @@ namespace App1.Layout
             };
         }
 
+        //Used to take care of bussiness, to show the accounts detailed information 
         private async Task Takingcareofbussiness()
         {
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
@@ -330,12 +332,27 @@ namespace App1.Layout
             }
         }
 
+        //What will happen if the user clicks the payment button, should just change pages
         private async void OnpaymentsButtonClicked(object sender, EventArgs e)
         {
             Debug.WriteLine("Clicked payment button");
             try
             {
                 await Navigation.PushAsync(new PaymentPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error cardspage: {0}.", err);
+            }
+        }
+
+
+        private async void OnProductButtonClicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Clicked payment button");
+            try
+            {
+                await Navigation.PushAsync(new ProductPage());
             }
             catch (Exception err)
             {

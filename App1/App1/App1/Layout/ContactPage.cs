@@ -8,6 +8,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
+    //Used to display all the contact information available about all the banks available at OpenBank Project
     internal class ContactPage : ContentPage
     {
         private Label resultsLabel;
@@ -59,10 +60,6 @@ namespace App1.Layout
 
         private async Task Takingcareofbussiness()
         {
-            //unit testing soe varibles may add this to a unique unit test in the later stages
-            //  var json = "{'banks':[{'id':'rbs','short_name':'The Royal Bank of Scotland','full_name':'The Royal Bank of Scotland','logo':'http://www.red-bank-shoreditch.com/logo.gif','website':'http://www.red-bank-shoreditch.com'},{'id':'test-bank','short_name':'TB','full_name':'Test Bank','logo':null,'website':null},{'id':'testowy_bank_id','short_name':'TB','full_name':'Testowy bank',    'logo':null,'website':null},{'id':'nordea','short_name':'Nordea','full_name':'Nordea Bank AB','logo':'http://logonoid.com/images/nordea-logo.jpg','website':'http://www.nordea.com/'},{'id':'nordeaab','short_name':'Nordea','full_name':'Nordea Bank AB','logo':'http://logonoid.com/images/nordea-logo.jpg','website':'http://www.nordea.com/'},{'id':'hsbc-test','short_name':'HSBC Test','full_name':'Hongkong and Shanghai Bank','logo':null,'website':null},{'id':'erste-test','short_name':'Erste Bank Test','full_name':'Erste Bank Test','logo':null,'website':null},{'id':'deutche-test','short_name':'Deutche Bank Test','full_name':'Deutche Bank Test','logo':null,'website':null},{'id':'obp-bankx-m','short_name':'Bank X','full_name':'The Bank of X','logo':'https://static.openbankproject.com/images/bankx/bankx_logo.png','website':'https://www.example.com'}]}";
-            //  var jsonconverting = JsonConvert.DeserializeObject<Banklist>(json);
-
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
             try
             {
