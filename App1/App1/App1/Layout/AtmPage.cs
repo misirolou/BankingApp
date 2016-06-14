@@ -1,8 +1,7 @@
-﻿using App1.Cell;
-using App1.Cell.ListViews;
-using App1.Models;
+﻿using App1.Models;
 using App1.REST;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -12,32 +11,19 @@ namespace App1.Layout
 {
     internal class AtmPage : ContentPage
     {
-        private AtmListViews _atmlist;
         private Label resultsLabel;
         protected ListView ListView;
         public ListView _atmlistview;
+        protected Map Map;
+        public static double Latitude { get; private set; }
+        public static double Longitude { get; private set; }
 
         public AtmPage()
         {
             resultsLabel = new Label
             {
-                Text = "Result will appear here.",
+                Text = "MAP should appear here.",
                 VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
-            _atmlist = new AtmListViews();
-
-            //searchbar to search banks contacts that are available
-            var searchBar = new SearchBar
-            {
-                Placeholder = "search",
-                SearchCommand = new Command(() => { resultsLabel.Text = "Result over here: "; })
-            };
-
-            searchBar.TextChanged += (sender, e) => _atmlist.FilterLocations(searchBar.Text);
-            searchBar.SearchButtonPressed += (sender, e) =>
-            {
-                _atmlist.FilterLocations(searchBar.Text);
             };
 
             ActivityIndicator indicator = new ActivityIndicator()
@@ -50,56 +36,17 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            //the map view of the area need to change the postions location32.6672502,-16.9168688,3
-            var map = new Map(MapSpan.FromCenterAndRadius(
-                        new Position(32.6672502, -16.9168688), Distance.FromMiles(0.3)))
-            {
-                IsShowingUser = true,
-                HeightRequest = 100,
-                WidthRequest = 960,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
-            //putting pins in certain locations
-            var position = new Position(32.6672502, -16.9168688); // Latitude, Longitude
-            var pin = new Pin
-            {
-                Type = PinType.Place,
-                Position = position,
-                Label = "Testing pin",
-                Address = "Empresa exictos"
-            };
-            map.Pins.Add(pin);
-
             Task.WhenAll(Takingcareofbussiness());
 
-            Title = "BranchPage";
+            Title = "ATMPage";
             Icon = new FileImageSource { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
             Content = new StackLayout
             {
                 Children = {
-                        searchBar,
-                        map
+                        resultsLabel
                     }
             };
-        }
-
-        public void FilterLocations(string filter)
-        {
-            /*
-            if (string.IsNullOrWhiteSpace(filter))
-            {
-                this.ItemsSource = locations;
-            }
-            else
-            {
-                this.ItemsSource = locations
-                    .Where(x => x.Title.ToLower()
-                   .Contains(filter.ToLower()));
-            }
-
-            this.EndRefresh();*/
         }
 
         private async Task Takingcareofbussiness()
@@ -115,36 +62,7 @@ namespace App1.Layout
                 IsBusy = true;
 
                 var rest = new ManagerRESTService(new RESTService());
-                var uri = string.Format(Constants.BankUrl);
-
-                //getting information from the online location of the bank list
-                await rest.GetwithoutToken<Banklist>(uri).ContinueWith(t =>
-                {
-                    //Problem occured a message is displayed to the user
-                    if (t.IsFaulted)
-                    {
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            DisplayAlert("Alert", "Something went wrong sorry :(", "OK");
-                        });
-                    }
-                    //everything went fine, information should be displayed
-                    else
-                    {
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            ListView = new ListView
-                            {
-                                BackgroundColor = Color.Gray,
-                                HasUnevenRows = true,
-                                Margin = 10,
-                                SeparatorColor = Color.Teal
-                            };
-                            ListView.ItemsSource = t.Result.banks;
-                            ListView.ItemTemplate = new DataTemplate(typeof(Cells));
-                        });
-                    }
-                });
+                var uri = string.Format(Constants.ATMsUrl, AccountsPage.Bankid);
 
                 await rest.GetwithoutToken<atmlist>(uri).ContinueWith(t =>
                 {
@@ -161,21 +79,65 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            _atmlistview = new ListView
+                            List<Atm> data = t.Result.atms;
+
+                            if (data.Count == 0)
                             {
-                                BackgroundColor = Color.Gray,
-                                HasUnevenRows = true,
-                                Margin = 10,
-                                SeparatorColor = Color.Teal
-                            };
-                            _atmlistview.ItemsSource = t.Result.atms;
-                            _atmlistview.ItemTemplate = new DataTemplate(typeof(AtmListViews));
+                                Map = new Map(MapSpan.FromCenterAndRadius(
+                                    new Position(0, 0), Distance.FromMiles(0.5)))
+                                {
+                                    IsShowingUser = true,
+                                    HeightRequest = 100,
+                                    WidthRequest = 960,
+                                    VerticalOptions = LayoutOptions.FillAndExpand
+                                };
+                                Map.Pins.Add(new Pin
+                                {
+                                    Position = new Position(32.6672502, -16.9168688),
+                                    Label = "Nothing over here ",
+                                    Address = "Top Secret Company "
+                                });
+                                Map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                                    new Position(32.6672502, -16.9168688), Distance.FromMiles(2.0)));
+                                Map.Margin = 5;
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Latitude {0}--- Longitude{1} ---- name {2}", data[0].location.latitude, data[0].location.longitude, data[0].name);
+
+                                Map = new Map(MapSpan.FromCenterAndRadius(
+                                    new Position(data[0].location.latitude, data[0].location.longitude), Distance.FromMiles(0.5)))
+                                {
+                                    IsShowingUser = true,
+                                    HeightRequest = 100,
+                                    WidthRequest = 960,
+                                    VerticalOptions = LayoutOptions.FillAndExpand
+                                };
+                                Map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                                    new Position(data[0].location.latitude, data[0].location.longitude), Distance.FromMiles(1.5)));
+                                Map.Margin = 5;
+                                for (int i = 0; i < data.Count; i++)
+                                {
+                                    Map.Pins.Add(new Pin
+                                    {
+                                        Position = new Position(data[i].location.latitude, data[i].location.longitude),
+                                        Label = "Name: " + data[i].name,
+                                        Address = "Address: " + data[i].address.line_1 + data[i].address.line_2 + data[i].address.line_3 + ";City: " + data[i].address.city + ";State: " + data[i].address.state
+                                    });
+                                }
+                            }
                         });
                     }
                 });
 
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+                Content = new StackLayout
+                {
+                    Children = {new Label() {Text = "ATMs Locations of Bank: " + AccountsPage.Bankid},
+                        Map
+                    }
+                };
             }
             catch (Exception err)
             {

@@ -24,26 +24,26 @@ namespace App1.Layout
             _accountidLabel = new Label()
             {
                 Text = "Account ID",
-                HorizontalOptions = LayoutOptions.StartAndExpand
+                HorizontalOptions = LayoutOptions.EndAndExpand
             };
 
             _bankidLabel = new Label()
             {
                 Text = "Bank ID",
-                HorizontalOptions = LayoutOptions.EndAndExpand
+                HorizontalOptions = LayoutOptions.StartAndExpand
             };
 
-            Button menuButton = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("menu.png"),
-                    Android: ImageSource.FromFile("menu.png"),
-                    WinPhone: ImageSource.FromFile("menu.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+            /* Button menuButton = new Button()
+             {
+                 Image = (FileImageSource)Device.OnPlatform(
+                     iOS: ImageSource.FromFile("menu.png"),
+                     Android: ImageSource.FromFile("menu.png"),
+                     WinPhone: ImageSource.FromFile("menu.png")),
+                 VerticalOptions = LayoutOptions.Start,
+                 HorizontalOptions = LayoutOptions.StartAndExpand,
+                 BackgroundColor = Color.Gray
+             };
+             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             Button exitButton = new Button()
             {
@@ -76,7 +76,7 @@ namespace App1.Layout
                 Orientation = StackOrientation.Horizontal,
                 Margin = 10,
                 Children =
-                { _accountidLabel, _bankidLabel}
+                { _bankidLabel , _accountidLabel }
             };
 
             menuLayout = new StackLayout()
@@ -85,7 +85,7 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Horizontal,
                 Margin = 10,
-                Children = { menuButton,
+                Children = {
                     new Label { Text = "All of your accounts", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
                     exitButton
                 }
@@ -146,7 +146,6 @@ namespace App1.Layout
                                 Margin = 10,
                                 SeparatorColor = Color.Teal,
                                 ItemsSource = jsonObject,
-                                BackgroundColor = Color.Gray,
                                 ItemTemplate = new DataTemplate(typeof(AllAccountsCell))
                             };
                             _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Accounts.Account);

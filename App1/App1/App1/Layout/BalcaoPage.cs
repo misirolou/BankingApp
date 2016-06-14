@@ -1,8 +1,8 @@
 ﻿using App1.Cell;
-using App1.Cell.ListViews;
 using App1.Models;
 using App1.REST;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -14,30 +14,14 @@ namespace App1.Layout
     {
         private Label resultsLabel;
         protected ListView ListView;
-        public ListView _branchlistview;
-        private BranchListView _branchlist;
+        protected Map Map;
 
         public BalcaoPage()
         {
             resultsLabel = new Label
             {
-                Text = "Result will appear here.",
+                Text = "Your Map will appear shortly",
                 VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
-            _branchlist = new BranchListView();
-
-            //searchbar to search banks contacts that are available
-            var searchBar = new SearchBar
-            {
-                Placeholder = "search",
-                SearchCommand = new Command(() => { resultsLabel.Text = "Result over here: "; })
-            };
-
-            searchBar.TextChanged += (sender, e) => _branchlist.FilterLocations(searchBar.Text);
-            searchBar.SearchButtonPressed += (sender, e) =>
-            {
-                _branchlist.FilterLocations(searchBar.Text);
             };
 
             ActivityIndicator indicator = new ActivityIndicator()
@@ -50,27 +34,6 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            //the map view of the area need to change the postions location
-            var map = new Map(MapSpan.FromCenterAndRadius(
-                        new Position(32.6672502, -16.9168688), Distance.FromMiles(0.3)))
-            {
-                IsShowingUser = true,
-                HeightRequest = 100,
-                WidthRequest = 960,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
-            //putting pins in certain locations
-            var position = new Position(32.6672502, -16.9168688); // Latitude, Longitude
-            var pin = new Pin
-            {
-                Type = PinType.Place,
-                Position = position,
-                Label = "Testing pin",
-                Address = "Empresa exictos"
-            };
-            map.Pins.Add(pin);
-
             Task.WhenAll(Takingcareofbussiness());
 
             Title = "BranchPage";
@@ -79,8 +42,7 @@ namespace App1.Layout
             Content = new StackLayout
             {
                 Children = {
-                        searchBar,
-                        map
+                       resultsLabel
                     }
             };
         }
@@ -161,21 +123,65 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            _branchlistview = new ListView
+                            List<Branch> data = t.Result.branches;
+
+                            if (data.Count == 0)
                             {
-                                BackgroundColor = Color.Gray,
-                                HasUnevenRows = true,
-                                Margin = 10,
-                                SeparatorColor = Color.Teal
-                            };
-                            _branchlistview.ItemsSource = t.Result.branches;
-                            _branchlistview.ItemTemplate = new DataTemplate(typeof(BranchListView));
+                                Map = new Map(MapSpan.FromCenterAndRadius(
+                                    new Position(0, 0), Distance.FromMiles(0.5)))
+                                {
+                                    IsShowingUser = true,
+                                    HeightRequest = 100,
+                                    WidthRequest = 960,
+                                    VerticalOptions = LayoutOptions.FillAndExpand
+                                };
+                                Map.Pins.Add(new Pin
+                                {
+                                    Position = new Position(32.6672502, -16.9168688),
+                                    Label = "Nothing over here ",
+                                    Address = "Top Secret Company "
+                                });
+                                Map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                                    new Position(32.6672502, -16.9168688), Distance.FromMiles(2.0)));
+                                Map.Margin = 5;
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Latitude {0}--- Longitude{1} ---- name {2}", data[0].location.latitude, data[0].location.longitude, data[0].name);
+
+                                Map = new Map(MapSpan.FromCenterAndRadius(
+                                    new Position(data[0].location.latitude, data[0].location.longitude), Distance.FromMiles(0.5)))
+                                {
+                                    IsShowingUser = true,
+                                    HeightRequest = 100,
+                                    WidthRequest = 960,
+                                    VerticalOptions = LayoutOptions.FillAndExpand
+                                };
+                                Map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                                    new Position(data[0].location.latitude, data[0].location.longitude), Distance.FromMiles(1.5)));
+                                Map.Margin = 5;
+                                for (int i = 0; i < data.Count; i++)
+                                {
+                                    Map.Pins.Add(new Pin
+                                    {
+                                        Position = new Position(data[i].location.latitude, data[i].location.longitude),
+                                        Label = "Name: " + data[i].name,
+                                        Address = "Address: " + data[i].address.line_1 + data[i].address.line_2 + data[i].address.line_3 + ";City: " + data[i].address.city + ";State: " + data[i].address.state
+                                    });
+                                }
+                            }
                         });
                     }
                 });
 
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+                Content = new StackLayout
+                {
+                    Children = {new Label() {Text = "Branches Locations of Bank: " + AccountsPage.Bankid},
+                        Map
+                    }
+                };
             }
             catch (Exception err)
             {

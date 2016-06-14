@@ -12,9 +12,19 @@ namespace App1.Layout
     internal class transactionPage : ContentPage
     {
         private ListView _listView;
-        private DataTemplate _validDataTemplate;
         private StackLayout menuLayout;
-        private DataTemplate _invalidDataTemplate;
+        private StackLayout labelLayout;
+        public static string counterid { get; private set; }
+        public static string accountid { get; private set; }
+        public static string transactionid { get; private set; }
+        public static string valueamount { get; private set; }
+        public static string description { get; private set; }
+        public static string completed { get; private set; }
+        public static string newbalanceamount { get; private set; }
+        public static string newbalancecurrency { get; private set; }
+        public static string accountbank { get; private set; }
+        public static string counterbank { get; private set; }
+        public static string typesome { get; private set; }
 
         //Wanted to add charts by following this link https://blog.xamarin.com/visualize-your-data-with-charts-graphs-and-xamarin-forms/
         //problem that it costs 995$ so i didnt think it was worth it at the moment
@@ -31,17 +41,17 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            Button menuButton = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                    iOS: ImageSource.FromFile("menu.png"),
-                    Android: ImageSource.FromFile("menu.png"),
-                    WinPhone: ImageSource.FromFile("menu.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+            /* Button menuButton = new Button()
+             {
+                 Image = (FileImageSource)Device.OnPlatform(
+                     iOS: ImageSource.FromFile("menu.png"),
+                     Android: ImageSource.FromFile("menu.png"),
+                     WinPhone: ImageSource.FromFile("menu.png")),
+                 VerticalOptions = LayoutOptions.Start,
+                 HorizontalOptions = LayoutOptions.StartAndExpand,
+                 BackgroundColor = Color.Gray
+             };
+             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             Button exitButton = new Button()
             {
@@ -63,7 +73,6 @@ namespace App1.Layout
                 Margin = 10,
                 Children =
                 {
-                    menuButton,
                     new Label
                     {
                         Text = "your detailed account Information",
@@ -71,6 +80,35 @@ namespace App1.Layout
                         FontAttributes = FontAttributes.Bold
                     },
                     exitButton
+                }
+            };
+
+            labelLayout = new StackLayout()
+            {
+                BackgroundColor = Color.Gray,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Orientation = StackOrientation.Horizontal,
+                Margin = 10,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = "DATE",
+                        HorizontalTextAlignment = TextAlignment.Start,
+                        FontAttributes = FontAttributes.Bold
+                    },
+                    new Label
+                    {
+                        Text = "AMOUNT",
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        FontAttributes = FontAttributes.Bold
+                    },
+                    new Label
+                    {
+                        Text = "BALANCE",
+                        HorizontalTextAlignment = TextAlignment.End,
+                        FontAttributes = FontAttributes.Bold
+                    }
                 }
             };
 
@@ -142,6 +180,7 @@ namespace App1.Layout
                                     InvalidTemplate = _invalidDataTemplate
                                 }*/
                             };
+                            _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Transactions.Transaction);
                         });
                     }
                 });
@@ -154,6 +193,7 @@ namespace App1.Layout
                     Children =
                     {
                         menuLayout,
+                        labelLayout,
                         _listView
                     }
                 };
@@ -163,6 +203,33 @@ namespace App1.Layout
                 IsBusy = false;
                 await DisplayAlert("Alert", "Internet problems cant receive information", "OK");
                 Debug.WriteLine("Caught error: {0}.", err);
+            }
+        }
+
+        private async void NavigateTo(Transactions.Transaction transaction)
+        {
+            if (transaction == null)
+                return;
+
+            transactionid = transaction.id;
+            accountid = transaction.account.id;
+            accountbank = transaction.account.bank.name;
+            counterid = transaction.counterparty.holder.name;
+            counterbank = transaction.counterparty.bank.name;
+            typesome = transaction.details.type;
+            description = transaction.details.description;
+            completed = transaction.details.completed;
+            newbalanceamount = transaction.details.new_balance.amount;
+            newbalancecurrency = transaction.details.new_balance.currency;
+            valueamount = transaction.details.value.amount;
+
+            try
+            {
+                await Navigation.PushAsync(new TransactionDetailedPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error transactionpage: {0}.", err);
             }
         }
 

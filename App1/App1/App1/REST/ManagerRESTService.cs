@@ -21,14 +21,11 @@ namespace App1.REST
             return await restService.CreateSession(user, pass);
         }
 
+        public async Task<bool> MakePayment() => await restService.MakePayment();
+
         public async Task<string> GetWithToken(string url)
         {
             return await restService.GetWithToken(url);
-        }
-
-        public async Task<T> GetWithToken<T>(string url)
-        {
-            return await restService.GetWithToken<T>(url);
         }
 
         public bool IsAutheticated()

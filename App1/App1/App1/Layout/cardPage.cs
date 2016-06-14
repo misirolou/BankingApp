@@ -23,7 +23,7 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 Children = {
                     new Label {
-                        Text = "CardsPage should have most of your card information no information on OpenBank so thats all there is to it",
+                        Text = "No information on this page",
                         HorizontalTextAlignment = TextAlignment.Center
                     }
                 }
@@ -39,9 +39,8 @@ namespace App1.Layout
                 IsBusy = true;
 
                 var rest = new ManagerRESTService(new RESTService());
-                var Cards = new Accounts.Account();
                 Debug.WriteLine("Clicked transaction button");
-                var uri = String.Format(Constants.CardsUrl, Cards.bank_id);
+                var uri = String.Format(Constants.CardsUrl, AccountsPage.Bankid);
 
                 //getting information from the online location
                 await rest.GetWithToken(uri).ContinueWith(t =>
@@ -65,7 +64,7 @@ namespace App1.Layout
                                 HasUnevenRows = true
                             };
                             //Must change this
-                            _listView.ItemsSource = t.Result.ToString();
+                            _listView.ItemsSource = t.Result;
                             _listView.ItemTemplate = new DataTemplate(typeof(Cells));
                         });
                     }
@@ -78,7 +77,7 @@ namespace App1.Layout
                     Spacing = 10,
                     Children =
                     {
-                        new Label {Text = "Contact list go up and down", HorizontalTextAlignment = TextAlignment.Center},
+                        new Label {Text = "Card list go up and down", HorizontalTextAlignment = TextAlignment.Center},
                         _listView
                     }
                 };

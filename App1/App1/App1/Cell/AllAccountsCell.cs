@@ -74,8 +74,8 @@ namespace App1.Cell
             grid.ColumnSpacing = 2;
             grid.RowSpacing = 5;
             //used a grid to display information of the transactions
-            grid.Children.Add(IdLabel, 0, 0);
-            grid.Children.Add(bankLabel, 1, 0);
+            grid.Children.Add(bankLabel, 0, 0);
+            grid.Children.Add(IdLabel, 1, 0);
             grid.Children.Add(emptylabel, 0, 1);
             Grid.SetColumnSpan(emptylabel, 2);
 

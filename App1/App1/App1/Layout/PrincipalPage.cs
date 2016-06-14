@@ -10,7 +10,7 @@ namespace App1.Layout
     internal class PrincipalPage : ContentPage
     {
         private Label numberLabel, nameLabel, ibanLabel, amountLabel, bankLabel, currencyLabel, typeLabel, swiftLabel;
-        private StackLayout ButtonLayout;
+        private Grid ButtonLayout;
         private StackLayout AccountLayout;
         private StackLayout menuLayout;
         private static string href;
@@ -20,11 +20,29 @@ namespace App1.Layout
             //Transaction button used to change to the transaction page
             var transactionButton = new Button
             {
-                Text = "Transactions",
+                Text = "Transaction",
                 VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.StartAndExpand
             };
             transactionButton.Clicked += OntransactionButtonClicked;
+
+            //Balcao button should take you to the banks location page
+            var BalcaoButton = new Button()
+            {
+                Text = "Bank Map",
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand
+            };
+            BalcaoButton.Clicked += OnBalcaoButtonClicked;
+
+            //Atm button should take you to the ATM location page
+            var AtmButton = new Button()
+            {
+                Text = "ATM Map",
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+            AtmButton.Clicked += OnAtmButtonClicked;
 
             //bank cards button used to change to the cards page
             var cardsbutton = new Button()
@@ -34,6 +52,14 @@ namespace App1.Layout
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
             cardsbutton.Clicked += OncardsButtonClicked;
+
+            var Paymentsbutton = new Button()
+            {
+                Text = "Payment",
+                VerticalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+            Paymentsbutton.Clicked += OnpaymentsButtonClicked;
 
             ActivityIndicator indicator = new ActivityIndicator()
             {
@@ -47,17 +73,17 @@ namespace App1.Layout
 
             Task.WhenAll(Takingcareofbussiness());
 
-            Button menuButton = new Button()
-            {
-                Image = (FileImageSource)Device.OnPlatform(
-                   iOS: ImageSource.FromFile("menu.png"),
-                   Android: ImageSource.FromFile("menu.png"),
-                   WinPhone: ImageSource.FromFile("menu.png")),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Gray
-            };
-            menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());
+            /* Button menuButton = new Button()
+             {
+                 Image = (FileImageSource)Device.OnPlatform(
+                    iOS: ImageSource.FromFile("menu.png"),
+                    Android: ImageSource.FromFile("menu.png"),
+                    WinPhone: ImageSource.FromFile("menu.png")),
+                 VerticalOptions = LayoutOptions.Start,
+                 HorizontalOptions = LayoutOptions.StartAndExpand,
+                 BackgroundColor = Color.Gray
+             };
+             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             Button exitButton = new Button()
             {
@@ -77,25 +103,40 @@ namespace App1.Layout
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Horizontal,
                 Margin = 10,
-                Children = { menuButton,
+                Children = {
                     new Label { Text = "your Account Information", HorizontalTextAlignment = TextAlignment.Center, FontAttributes = FontAttributes.Bold },
                     exitButton
                 }
             };
 
+            //this is the type of layout the grids will be specified in
+            ButtonLayout = new Grid()
+            {
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                RowSpacing = 5,
+                ColumnSpacing = 5,
+                RowDefinitions =
+                {
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)}
+                }
+            };
+            ButtonLayout.Children.Add(transactionButton, 0, 0);
+            ButtonLayout.Children.Add(Paymentsbutton, 1, 0);
+            ButtonLayout.Children.Add(cardsbutton, 2, 0);
+            ButtonLayout.Children.Add(BalcaoButton, 0, 1);
+            ButtonLayout.Children.Add(AtmButton, 2, 1);
+
             //Layout of the Home page(PrincipalPage.cs)
             Title = AccountsPage.Accountid;
             Icon = new FileImageSource() { File = "robot.png" };
             NavigationPage.SetBackButtonTitle(this, "go back");
-            //this is the type of layout the grids will be specified in
-            ButtonLayout = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.Teal,
-                Spacing = 10,
-                Children = { transactionButton, cardsbutton }
-            };
-
             //the content that will be used in the account
             Content = new StackLayout()
             {
@@ -105,7 +146,7 @@ namespace App1.Layout
                 {
                      new Label {Text = "Getting your account information", HorizontalTextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center},
                      ButtonLayout,
-                    indicator
+                     indicator
                 }
             };
         }
@@ -147,18 +188,6 @@ namespace App1.Layout
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             AccountInfo.AccountInfoDetailed Information = JsonConvert.DeserializeObject<AccountInfo.AccountInfoDetailed>(task.Result);
-
-                            //because of the array list that the owner contains this was the only way to show its data could add the other objects if i wanted to
-                            ListView _listView = new ListView
-                            {
-                                HasUnevenRows = true,
-                                SeparatorColor = Color.Teal,
-                                HorizontalOptions = LayoutOptions.Center,
-                                SelectedItem = false,
-                            };
-                            _listView.ItemsSource = Information.owners;
-                            _listView.ItemTemplate = new DataTemplate((typeof(TextCell)));
-                            _listView.ItemTemplate.SetBinding(TextCell.TextProperty, "display_name");
 
                             //label for the number of this account used
                             numberLabel = new Label()
@@ -218,7 +247,7 @@ namespace App1.Layout
                             {
                                 BackgroundColor = Color.Gray,
                                 Margin = 10,
-                                Children = { _listView, numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
+                                Children = { numberLabel, amountLabel, currencyLabel, bankLabel, ibanLabel, swiftLabel, typeLabel }
                             };
                         });
                     }
@@ -259,6 +288,34 @@ namespace App1.Layout
             }
         }
 
+        //what happens when we click the Balcao button
+        private async void OnBalcaoButtonClicked(object sender, EventArgs e)
+        {
+            //get information connected to the banks branch information localized on OpenBanks sandobox this needs a bankid
+            try
+            {
+                await Navigation.PushAsync(new BalcaoPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
+        }
+
+        //what happens when we click the Atm button
+        private async void OnAtmButtonClicked(object sender, EventArgs e)
+        {
+            //get information connected to the banks ATM information localized on OpenBanks sandbox
+            try
+            {
+                await Navigation.PushAsync(new AtmPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error: {0}.", err);
+            }
+        }
+
         //should take the user to the cards page
         private async void OncardsButtonClicked(object sender, EventArgs e)
         {
@@ -266,6 +323,19 @@ namespace App1.Layout
             try
             {
                 await Navigation.PushAsync(new cardPage());
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine("Caught error cardspage: {0}.", err);
+            }
+        }
+
+        private async void OnpaymentsButtonClicked(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Clicked payment button");
+            try
+            {
+                await Navigation.PushAsync(new PaymentPage());
             }
             catch (Exception err)
             {

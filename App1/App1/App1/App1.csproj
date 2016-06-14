@@ -38,8 +38,6 @@
     <Compile Include="App.cs" />
     <Compile Include="Cell\AllAccountsCell.cs" />
     <Compile Include="Cell\Cells.cs" />
-    <Compile Include="Cell\ListViews\AtmListViews.cs" />
-    <Compile Include="Cell\ListViews\BranchListView.cs" />
     <Compile Include="Cell\productCells.cs" />
     <Compile Include="Cell\TransactionCell.cs" />
     <Compile Include="Cell\Datatemplateselector\TransactionTemplateSelector.cs" />
@@ -50,9 +48,11 @@
     <Compile Include="Layout\ContactPage.cs" />
     <Compile Include="Layout\LoginPage.cs" />
     <Compile Include="Layout\MenuPage.cs" />
+    <Compile Include="Layout\PaymentPage.cs" />
     <Compile Include="Layout\PrincipalPage.cs" />
     <Compile Include="Layout\ProductPage.cs" />
     <Compile Include="Layout\SplashPage.cs" />
+    <Compile Include="Layout\TransactionDetailedPage.cs" />
     <Compile Include="Layout\transactionPage.cs" />
     <Compile Include="Menu\MenuListData.cs" />
     <Compile Include="Menu\MenuListView.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="Models\Cards.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Menu\MenuItem.cs" />
+    <Compile Include="Models\Payments.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\Transactions.cs" />

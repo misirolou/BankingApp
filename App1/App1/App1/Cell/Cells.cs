@@ -56,7 +56,7 @@ namespace App1.Cell
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             grid.BackgroundColor = Color.Gray;
-            grid.ColumnSpacing = 2;
+            grid.ColumnSpacing = 3;
             grid.RowSpacing = 5;
             //used a grid to display information of the transactions
             grid.Children.Add(IdLabel, 0, 0);

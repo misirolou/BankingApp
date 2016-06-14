@@ -93,7 +93,7 @@ namespace App1.Layout
                     Spacing = 10,
                     Children =
                     {
-                        new Label {Text = "Contact list go up and down", HorizontalTextAlignment = TextAlignment.Center},
+                        new Label {Text = "Product list go up and down", HorizontalTextAlignment = TextAlignment.Center},
                         _listView
                     }
                 };
@@ -101,7 +101,7 @@ namespace App1.Layout
             catch (Exception err)
             {
                 IsBusy = false;
-                await DisplayAlert("Alert", "Internet problems cant receive information", "OK");
+                await DisplayAlert("Alert", "Internet problems ", "OK");
                 Debug.WriteLine("Caught error: {0}.", err);
             }
         }

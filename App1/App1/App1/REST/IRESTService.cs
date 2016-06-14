@@ -6,9 +6,9 @@ namespace App1.REST
     {
         Task<bool> CreateSession(Users user, Users pass);
 
-        Task<T> GetwithoutToken<T>(string url);
+        Task<bool> MakePayment();
 
-        Task<T> GetWithToken<T>(string url);
+        Task<T> GetwithoutToken<T>(string url);
 
         Task<string> GetWithToken(string url);
 
