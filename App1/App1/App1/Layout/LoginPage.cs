@@ -93,9 +93,7 @@ namespace App1
             //contacts button should take you to the contacts page
             var ContactButton = new Button()
             {
-                Text = "Contacts",
-                VerticalOptions = LayoutOptions.EndAndExpand,
-                HorizontalOptions = LayoutOptions.StartAndExpand
+                Text = "Contacts"
             };
             ContactButton.Clicked += OnContactButtonClicked;
 
@@ -131,21 +129,6 @@ namespace App1
                 }
             };
 
-            //switcher grid choosing if you want your public or private accounts
-            /* var Switchergrid = new Grid
-             {
-                 VerticalOptions = LayoutOptions.CenterAndExpand,
-                 RowDefinitions =
-                 {
-                     new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)}
-                 },
-                 ColumnDefinitions =
-                 {
-                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)},
-                     new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)}
-                 }
-             };*/
-
             //specification of the innergrid layout
             var innerGrid = new Grid
             {
@@ -169,10 +152,6 @@ namespace App1
 
             //imagegrid contains the inicial image of the login page
             imagegrid.Children.Add(imageRobot, 0, 0);
-
-            //Switcher grid containing the switcher used to choose between public and private accounts
-            //Switchergrid.Children.Add(privacy, 0, 0);
-            // Switchergrid.Children.Add(switcher, 1, 0);
 
             //innergrid contaning login for user to provide ´the necessary login information
             innerGrid.Children.Add(new Label()

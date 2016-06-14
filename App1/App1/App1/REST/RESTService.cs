@@ -1,9 +1,11 @@
 ﻿using App1.Layout;
 using App1.Models;
 using Newtonsoft.Json;
+using Portable.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace App1.REST
@@ -11,6 +13,8 @@ namespace App1.REST
     public class RESTService : IRESTService
     {
         public static string token = "";
+        public static string Payment = "";
+        private HttpClient client;
 
         /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
         400 (BAD REQUEST) – the request is not understood by the server.
@@ -119,7 +123,8 @@ namespace App1.REST
         }
 
         //The user should be autheticated and this GET request will be using the tokenreceived from the function Createsession
-        public async Task<bool> MakePayment()
+        public async Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo,
+            Payments.Value amountTo, Payments.Body descriptionTo)
         {
             string responseFromServer;
             var url = string.Format(Constants.PaymentUrl, AccountsPage.Bankid, AccountsPage.Accountid);
@@ -127,18 +132,23 @@ namespace App1.REST
             request2.ContentType = "application/json";
             request2.Method = "POST";
             var authToken = string.Format("token=\"{0}\"", token);
+            var body = string.Format(" to = bank_id = \"{0}\", account_id = \"{1}\"  , value = currency = \"{2}\",  amount = \"{3}\", description = \"{4}\"", bankTo.bank_id, accountTo.account_id, currencyTo.currency, amountTo.amount, descriptionTo.description);
             Debug.WriteLine("authtoken {0}", authToken);
-            var header = request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
-
+            byte[] byteArray = Encoding.UTF8.GetBytes(body);
+            request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+            
             try
             {
                 using (Stream requestStream = await request2.GetRequestStreamAsync())
                 {
                     using (var writer = new StreamWriter(requestStream))
                     {
+                        //
+
                         // Send the data to the server
-                        Debug.WriteLine(header);
-                        writer.Write(header);
+                        Debug.WriteLine(body);
+                        writer.Write(body);
+                        // writer.Write(body);
                         writer.Flush();
                         writer.Dispose();
                     }
@@ -156,24 +166,20 @@ namespace App1.REST
                         {
                             StreamReader reader = new StreamReader(dataStream);
                             token = reader.ReadToEnd();
-                            Debug.WriteLine("token received {0}", token);
-                            if (string.IsNullOrWhiteSpace(token))
+                            Debug.WriteLine("token received {0}", Payment);
+                            if (string.IsNullOrWhiteSpace(Payment))
                             {
                                 Debug.WriteLine("Response contained empty body...");
                             }
-                            Debug.WriteLine("Response {0}", token);
+                            Debug.WriteLine("Response {0}", Payment);
                             if (string.IsNullOrWhiteSpace(token))
                             {
                                 return false;
                             }
                             else
                             {
-                                var json = token;
+                                var json = Payment;
                                 Debug.WriteLine("json token {0}", json);
-                                //deserializing string of information received into json type to then be called
-                                var token1 = JsonConvert.DeserializeObject<Token>(json);
-                                Debug.WriteLine(token1.token);
-                                token = token1.token;
                                 return true;
                             }
                         }

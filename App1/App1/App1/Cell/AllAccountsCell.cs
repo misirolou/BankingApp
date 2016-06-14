@@ -9,7 +9,7 @@ namespace App1.Cell
             //Id labels identification and layout
             Label IdLabel = new Label()
             {
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.Gray
             };
             //Binding of the id label used to switch between different ids
@@ -25,7 +25,7 @@ namespace App1.Cell
             //Id labels identification and layout
             Label bankLabel = new Label()
             {
-                HorizontalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
                 BackgroundColor = Color.Gray
             };
             //Binding of the id label used to switch between different ids

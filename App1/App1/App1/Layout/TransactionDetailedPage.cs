@@ -36,8 +36,6 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            
-
             Button exitButton = new Button()
             {
                 Image = (FileImageSource)Device.OnPlatform(
@@ -106,18 +104,12 @@ namespace App1.Layout
                 Margin = 2,
                 HorizontalTextAlignment = TextAlignment.Center
             };
-            //this is the type of account that you have, in some cases may be empty
-            typeLabel = new Label()
-            {
-                Text = "type: " + transactionPage.typesome,
-                Margin = 2,
-                HorizontalTextAlignment = TextAlignment.Center
-            };
 
             description = new Label()
             {
                 Text = "description: " + transactionPage.description,
                 Margin = 2,
+                BackgroundColor = Color.Black,
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
@@ -139,6 +131,7 @@ namespace App1.Layout
             {
                 Text = "Currency " + transactionPage.newbalancecurrency,
                 Margin = 2,
+                BackgroundColor = Color.Black,
                 HorizontalTextAlignment = TextAlignment.Center
             };
 
@@ -146,6 +139,7 @@ namespace App1.Layout
             {
                 Text = "Amount: " + transactionPage.valueamount,
                 Margin = 2,
+                BackgroundColor = Color.Black,
                 HorizontalTextAlignment = TextAlignment.Center
             };
             IsBusy = false;
@@ -166,8 +160,7 @@ namespace App1.Layout
                         newbalanceamount,
                         newbalancecurrency,
                         completed,
-                        description,
-                        typeLabel,
+                        description
                     }
             };
 
@@ -196,7 +189,7 @@ namespace App1.Layout
             {
                 //indicates the activity indicator to start
                 IsBusy = true;
-                
+
                 //label for the number of this account used
                 idTransLabel = new Label()
                 {

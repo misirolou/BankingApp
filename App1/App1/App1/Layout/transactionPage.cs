@@ -13,7 +13,7 @@ namespace App1.Layout
     {
         private ListView _listView;
         private StackLayout menuLayout;
-        private StackLayout labelLayout;
+        private Grid labelLayout;
         public static string counterid { get; private set; }
         public static string accountid { get; private set; }
         public static string transactionid { get; private set; }
@@ -40,18 +40,6 @@ namespace App1.Layout
             };
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
-
-            /* Button menuButton = new Button()
-             {
-                 Image = (FileImageSource)Device.OnPlatform(
-                     iOS: ImageSource.FromFile("menu.png"),
-                     Android: ImageSource.FromFile("menu.png"),
-                     WinPhone: ImageSource.FromFile("menu.png")),
-                 VerticalOptions = LayoutOptions.Start,
-                 HorizontalOptions = LayoutOptions.StartAndExpand,
-                 BackgroundColor = Color.Gray
-             };
-             menuButton.Clicked += async (sender, args) => await Navigation.PushAsync(new MenuPage());*/
 
             Button exitButton = new Button()
             {
@@ -83,39 +71,37 @@ namespace App1.Layout
                 }
             };
 
-            labelLayout = new StackLayout()
+            labelLayout = new Grid();
+            labelLayout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+
+            labelLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            labelLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            labelLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            labelLayout.Children.Add(new Label
             {
-                BackgroundColor = Color.Gray,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                Orientation = StackOrientation.Horizontal,
-                Margin = 10,
-                Children =
-                {
-                    new Label
-                    {
-                        Text = "DATE",
-                        HorizontalTextAlignment = TextAlignment.Start,
-                        FontAttributes = FontAttributes.Bold
-                    },
-                    new Label
-                    {
-                        Text = "AMOUNT",
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        FontAttributes = FontAttributes.Bold
-                    },
-                    new Label
-                    {
-                        Text = "BALANCE",
-                        HorizontalTextAlignment = TextAlignment.End,
-                        FontAttributes = FontAttributes.Bold
-                    }
-                }
-            };
+                Text = "DATE",
+                HorizontalTextAlignment = TextAlignment.Start,
+                FontAttributes = FontAttributes.Bold
+            }, 0, 0);
+
+            labelLayout.Children.Add(new Label
+            {
+                Text = "AMOUNT",
+                FontAttributes = FontAttributes.Bold
+            }, 1, 0);
+            labelLayout.Children.Add(new Label
+            {
+                Text = "BALANCE",
+                HorizontalTextAlignment = TextAlignment.End,
+                FontAttributes = FontAttributes.Bold
+            }, 2, 0);
 
             Task.WhenAll(Takingcareofbussiness());
 
             Title = "TransactionsPage";
             Icon = new FileImageSource { File = "robot.png" };
+
             Content = new StackLayout
             {
                 BackgroundColor = Color.Teal,
@@ -146,16 +132,16 @@ namespace App1.Layout
                 //getting information from the online location
                 await rest.GetWithToken(uri).ContinueWith(t =>
                 {
-                    //Problem occured a message is displayed to the user
-                    if (t.IsFaulted)
+            //Problem occured a message is displayed to the user
+            if (t.IsFaulted)
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DisplayAlert("Alert", "Something went wrong sorry :(", "OK");
                         });
                     }
-                    //everything went fine, information should be displayed
-                    else
+            //everything went fine, information should be displayed
+            else
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
@@ -164,21 +150,21 @@ namespace App1.Layout
                             Transactions.TransactionList jsonObject =
                                 JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
 
-                            //SetupDataTemplates();
+                    //SetupDataTemplates();
 
-                            _listView = new ListView
+                    _listView = new ListView
                             {
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal,
                                 ItemsSource = jsonObject.transactions,
                                 ItemTemplate = new DataTemplate(typeof(TransactionCell))
-                                //testing  a different way of showing information didnt seem to work accordingly
-                                /*  new TransactionTemplateSelector()
-                                {
-                                    ValidTemplate = _validDataTemplate,
-                                    InvalidTemplate = _invalidDataTemplate
-                                }*/
+                        //testing  a different way of showing information didnt seem to work accordingly
+                        /*  new TransactionTemplateSelector()
+                        {
+                            ValidTemplate = _validDataTemplate,
+                            InvalidTemplate = _invalidDataTemplate
+                        }*/
                             };
                             _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Transactions.Transaction);
                         });

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using App1.Models;
+using System.Threading.Tasks;
 
 namespace App1.REST
 {
@@ -21,7 +22,11 @@ namespace App1.REST
             return await restService.CreateSession(user, pass);
         }
 
-        public async Task<bool> MakePayment() => await restService.MakePayment();
+        public async Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo,
+            Payments.Value amountTo, Payments.Body descriptionTo)
+        {
+            return await restService.MakePayment(accountTo, bankTo, currencyTo, amountTo, descriptionTo);
+        }
 
         public async Task<string> GetWithToken(string url)
         {

@@ -1,6 +1,6 @@
 ﻿namespace App1.Models
 {
-    internal class Payments
+    public class Payments
     {
         public class From
         {

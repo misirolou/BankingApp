@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using App1.Models;
+using System.Threading.Tasks;
 
 namespace App1.REST
 {
@@ -6,7 +7,8 @@ namespace App1.REST
     {
         Task<bool> CreateSession(Users user, Users pass);
 
-        Task<bool> MakePayment();
+        Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo,
+            Payments.Value amountTo, Payments.Body descriptionTo);
 
         Task<T> GetwithoutToken<T>(string url);
 

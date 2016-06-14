@@ -134,7 +134,8 @@ namespace App1.Layout
                 IsBusy = false;
                 Content = new StackLayout
                 {
-                    Children = {new Label() {Text = "ATMs Locations of Bank: " + AccountsPage.Bankid},
+                    Children = {
+                        new Label() {Text = "ATMs Locations of Bank: " + AccountsPage.Bankid},
                         Map
                     }
                 };
