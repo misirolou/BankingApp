@@ -21,7 +21,6 @@ namespace App1.REST
         404 (NOT FOUND) – the requested resource does not exist on the server.*/
 
         //This function will be used to GET information for the user that doesn´t require any type of login or access tokens
-
         public async Task<T> GetwithoutToken<T>(string url)
         {
             var responseFromServer = "";
@@ -133,8 +132,7 @@ namespace App1.REST
         }
 
         //The user should be autheticated to make a payment all these attributes are received from the payment page
-        public async Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo,
-            Payments.Value amountTo, Payments.Body descriptionTo)
+        public async Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo, Payments.Value amountTo, Payments.Body descriptionTo)
         {
             string responseFromServer;
             //Url used to make the request to OpenBank
@@ -143,65 +141,66 @@ namespace App1.REST
             request2.ContentType = "application/json";
             //method used to make the request
             request2.Method = "POST";
-            //Access token and Body 
+            //Access token and Body
             var authToken = string.Format("token=\"{0}\"", token);
-            var body = string.Format(" to = bank_id = \"{0}\", account_id = \"{1}\"  , value = currency = \"{2}\",  amount = \"{3}\", description = \"{4}\"", bankTo.bank_id, accountTo.account_id, currencyTo.currency, amountTo.amount, descriptionTo.description);
-            var header = request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
-            
+            //var body = string.Format(" to = bank_id = \"{0}\", account_id = \"{1}\"  , value = currency = \"{2}\",  amount = \"{3}\", description = \"{4}\"", bankTo.bank_id, accountTo.account_id, currencyTo.currency, amountTo.amount, descriptionTo.description);
+            var body = "{ \"to\" :{\"bank_id\":\"" + bankTo.bank_id + "\",\"account_id\":\"" + accountTo.account_id + "\" },  \"value\":{ \"currency\": \"" + currencyTo.currency + "\",   \"amount\":\"" + amountTo.amount + "\" },  \"description\":\"" + descriptionTo.description + "\"}";
+            request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+
+            byte[] buffer = Encoding.ASCII.GetBytes(body);
 
             try
             {
                 using (Stream requestStream = await request2.GetRequestStreamAsync())
                 {
-                    using (var writer = new StreamWriter(requestStream))
-                    {
-                        // Send the data to the server
-                        writer.Write(body + header);
-                        writer.Write(header);
-                        writer.Flush();
-                        writer.Dispose();
-                    }
+                    requestStream.Write(buffer, 0, buffer.Length);
+                    requestStream.Flush();
+                    requestStream.Dispose();
                 }
                 using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
                 {
-                    if (response.StatusCode != HttpStatusCode.OK)
+                    Debug.WriteLine("response http ::{0}", response);
+                    if (response != null && response.StatusCode != HttpStatusCode.OK)
                     {
                         Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
+                        Debug.WriteLine("Something wrong ::{0}", response);
                         return false;
                     }
-                    using (Stream dataStream = response.GetResponseStream())
-                    {
-                        try
+                    if (response != null)
+                        using (Stream dataStream = response.GetResponseStream())
                         {
-                            //Reader used to read information received
-                            StreamReader reader = new StreamReader(dataStream);
-                            token = reader.ReadToEnd();
-                            Debug.WriteLine("token received {0}", Payment);
-                            if (string.IsNullOrWhiteSpace(Payment))
+                            try
                             {
-                                Debug.WriteLine("Response contained empty body...");
+                                //Reader used to read information received
+                                StreamReader reader = new StreamReader(dataStream);
+                                Payment = reader.ReadToEnd();
+                                Debug.WriteLine("token received {0}", Payment);
+                                if (string.IsNullOrWhiteSpace(Payment))
+                                {
+                                    Debug.WriteLine("Response contained empty body...");
+                                    return false;
+                                }
+                                else
+                                {
+                                    var json = Payment;
+                                    Debug.WriteLine("json token {0}", json);
+                                    return true;
+                                }
+                            }
+                            catch (WebException err)
+                            {
+                                Stream stream = err.Response.GetResponseStream();
+                                StreamReader reader = new StreamReader(stream);
+                                responseFromServer = reader.ReadToEnd();
+
+                                if (string.IsNullOrWhiteSpace(responseFromServer))
+                                {
+                                    Debug.WriteLine("Response contained empty body...{0}", err.Response);
+                                }
                                 return false;
                             }
-                            else
-                            {
-                                var json = Payment;
-                                Debug.WriteLine("json token {0}", json);
-                                return true;
-                            }
                         }
-                        catch (WebException err)
-                        {
-                            Stream stream = err.Response.GetResponseStream();
-                            StreamReader reader = new StreamReader(stream);
-                            responseFromServer = reader.ReadToEnd();
-
-                            if (string.IsNullOrWhiteSpace(responseFromServer))
-                            {
-                                Debug.WriteLine("Response contained empty body...");
-                            }
-                            return false;
-                        }
-                    }
+                    return false;
                 }
             }
             catch (WebException err)
@@ -212,7 +211,7 @@ namespace App1.REST
 
                 if (string.IsNullOrWhiteSpace(responseFromServer))
                 {
-                    Debug.WriteLine("Response contained empty body...");
+                    Debug.WriteLine("Response contained empty body..., {0}", err.Response);
                 }
                 return false;
             }
@@ -242,7 +241,7 @@ namespace App1.REST
             request.Method = "POST";
             //Header information
             var authData = string.Format("username=\"{0}\", password=\"{1}\",consumer_key=\"{2}\"", user.User, pass.Password, Constants.oauth_consumer_key);
-            var header = request.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authData;
+            request.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authData;
 
             try
             {
@@ -251,8 +250,7 @@ namespace App1.REST
                     using (var writer = new StreamWriter(requestStream))
                     {
                         // Send the data to the server
-                        Debug.WriteLine(header);
-                        writer.Write(header);
+                        // writer.Write(header);
                         writer.Flush();
                         writer.Dispose();
                     }
@@ -299,7 +297,7 @@ namespace App1.REST
 
                             if (string.IsNullOrWhiteSpace(responseFromServer))
                             {
-                                Debug.WriteLine("Response contained empty body...");
+                                Debug.WriteLine("Response contained empty body... {0}", err.Response);
                             }
                             return false;
                         }
@@ -314,7 +312,7 @@ namespace App1.REST
 
                 if (string.IsNullOrWhiteSpace(responseFromServer))
                 {
-                    Debug.WriteLine("Response contained empty body...");
+                    Debug.WriteLine("Response contained empty body...{0}", err.Response);
                 }
                 return false;
             }

@@ -1,6 +1,8 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Syncfusion.SfChart.XForms.Droid;
+
 
 namespace App1.Droid
 {
@@ -13,7 +15,7 @@ namespace App1.Droid
 
             Xamarin.FormsMaps.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
-
+            new SfChartRenderer();
             //App.Speech = new Speech();
             LoadApplication(new App());
         }

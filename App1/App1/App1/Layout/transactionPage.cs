@@ -64,7 +64,7 @@ namespace App1.Layout
                 {
                     new Label
                     {
-                        Text = "your detailed account Information",
+                        Text = "your transaction Information",
                         HorizontalTextAlignment = TextAlignment.Center,
                         FontAttributes = FontAttributes.Bold
                     },
@@ -103,6 +103,7 @@ namespace App1.Layout
 
             Title = "TransactionsPage";
             Icon = new FileImageSource { File = "robot.png" };
+            NavigationPage.SetBackButtonTitle(this, "go back");
 
             Content = new StackLayout
             {
@@ -135,16 +136,16 @@ namespace App1.Layout
                 //getting information from the online location
                 await rest.GetWithToken(uri).ContinueWith(t =>
                 {
-            //Problem occured a message is displayed to the user
-            if (t.IsFaulted)
+                    //Problem occured a message is displayed to the user
+                    if (t.IsFaulted)
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DisplayAlert("Alert", "Something went wrong sorry :(", "OK");
                         });
                     }
-            //everything went fine, information should be displayed
-            else
+                    //everything went fine, information should be displayed
+                    else
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
@@ -153,21 +154,15 @@ namespace App1.Layout
                             Transactions.TransactionList jsonObject =
                                 JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
 
-                    //SetupDataTemplates();
+                            //SetupDataTemplates();
 
-                    _listView = new ListView
+                            _listView = new ListView
                             {
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal,
                                 ItemsSource = jsonObject.transactions,
                                 ItemTemplate = new DataTemplate(typeof(TransactionCell))
-                        //testing  a different way of showing information didnt seem to work accordingly
-                        /*  new TransactionTemplateSelector()
-                        {
-                            ValidTemplate = _validDataTemplate,
-                            InvalidTemplate = _invalidDataTemplate
-                        }*/
                             };
                             _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Transactions.Transaction);
                         });
@@ -175,6 +170,12 @@ namespace App1.Layout
                 });
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+
+                Button Graph = new Button()
+                {
+                    Text = "Graphs"
+                };
+                Graph.Clicked += async (sender, args) => await Navigation.PushAsync(new ChartsPage());
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.Teal,
@@ -183,7 +184,8 @@ namespace App1.Layout
                     {
                         menuLayout,
                         labelLayout,
-                        _listView
+                        _listView,
+                        Graph
                     }
                 };
             }

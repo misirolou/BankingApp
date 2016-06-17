@@ -1,4 +1,5 @@
 ﻿using Windows.UI.Xaml.Navigation;
+using Syncfusion.SfChart.XForms.WinPhone;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -12,9 +13,8 @@ namespace App1.WinPhone
         public MainPage()
         {
             this.InitializeComponent();
-
             this.NavigationCacheMode = NavigationCacheMode.Required;
-
+            //new SfChartRenderer();
             LoadApplication(new App1.App());
         }
 

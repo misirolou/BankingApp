@@ -78,6 +78,11 @@ namespace App1.Layout
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
+                    new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)},
                     new RowDefinition {Height =  new GridLength(1, GridUnitType.Auto)}
                 }
             };
@@ -85,12 +90,17 @@ namespace App1.Layout
             outergrid.Children.Add(new Label() { Text = "Please add the required information", FontAttributes = FontAttributes.Bold }, 0, 0);
             outergrid.Children.Add(innerGrid, 0, 1);
 
-            innerGrid.Children.Add(_bankEntry, 0, 0);
-            innerGrid.Children.Add(_userEntry, 0, 1);
-            innerGrid.Children.Add(_currencyEntry, 0, 2);
-            innerGrid.Children.Add(_amountEntry, 0, 3);
-            innerGrid.Children.Add(_descriptionEntry, 0, 4);
-            innerGrid.Children.Add(confirmationButton, 0, 5);
+            innerGrid.Children.Add(new Label() { Text = "To bank_id" }, 0, 0);
+            innerGrid.Children.Add(_bankEntry, 0, 1);
+            innerGrid.Children.Add(new Label() { Text = "To Account_id" }, 0, 2);
+            innerGrid.Children.Add(_userEntry, 0, 3);
+            innerGrid.Children.Add(new Label() { Text = "currenct add EUR" }, 0, 4);
+            innerGrid.Children.Add(_currencyEntry, 0, 5);
+            innerGrid.Children.Add(new Label() { Text = "Amount" }, 0, 6);
+            innerGrid.Children.Add(_amountEntry, 0, 7);
+            innerGrid.Children.Add(new Label() { Text = "Description" }, 0, 8);
+            innerGrid.Children.Add(_descriptionEntry, 0, 9);
+            innerGrid.Children.Add(confirmationButton, 0, 10);
 
             //this is the type of layout the grids will be specified in
             var stackLayout = new StackLayout
