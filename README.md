@@ -10,11 +10,10 @@ Utilizing the functionalities of Xamarin, the app should be compatible with Andr
 
 Depending on my available time, I may try to accompany the finanacial position of the user with graphical reperesentations to facilitate the understanding of their transactional history.
 
-OpenBank Project 
-The Open Bank Project is an open source API for banks that enables account holders to interact with their bank using a wider range of applications and services.
-The API uses OAuth 1.0 authentication.
+## OpenBank Project 
+The Open Bank Project is an open source API for banks that enables account holders to interact with their bank using a wider range of applications and services. If you want to use this application you would need to create an account on this site, all the steps shall be shown in the wiki
 
-Xamarin.Forms
+## Xamarin.Forms
 Xamarin.Forms now comes with Visual Studio. Use the Xamarin.Forms API to quickly build native apps for iOS, Android and Windows completely in C#. 
 
 
