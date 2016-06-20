@@ -55,7 +55,6 @@
     <Compile Include="Layout\SplashPage.cs" />
     <Compile Include="Layout\TransactionDetailedPage.cs" />
     <Compile Include="Layout\transactionPage.cs" />
-    <Compile Include="Layout\TransactionsPage.cs" />
     <Compile Include="Menu\MenuListData.cs" />
     <Compile Include="Menu\MenuListView.cs" />
     <Compile Include="Menu\rootpage.cs" />

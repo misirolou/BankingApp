@@ -171,11 +171,11 @@ namespace App1.Layout
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
 
-                Button Graph = new Button()
+                Button graphbutton = new Button()
                 {
                     Text = "Graphs"
                 };
-                Graph.Clicked += async (sender, args) => await Navigation.PushAsync(new ChartsPage());
+                graphbutton.Clicked += async (sender, args) => await Navigation.PushAsync(new ChartsPage());
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.Teal,
@@ -185,7 +185,7 @@ namespace App1.Layout
                         menuLayout,
                         labelLayout,
                         _listView,
-                        Graph
+                        graphbutton
                     }
                 };
             }

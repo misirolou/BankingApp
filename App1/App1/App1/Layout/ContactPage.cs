@@ -2,7 +2,9 @@
 using App1.Models;
 using App1.REST;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -113,7 +115,7 @@ namespace App1.Layout
             catch (Exception err)
             {
                 IsBusy = false;
-                await DisplayAlert("Alert", "Internet problems cant receive information", "OK");
+                await DisplayAlert("Alert", "Cant receive information", "OK");
                 Debug.WriteLine("Caught error: {0}.", err);
             }
         }

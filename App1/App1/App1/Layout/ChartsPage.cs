@@ -120,22 +120,6 @@ namespace App1.Layout
                             Debug.WriteLine("chartsvalue::{0}", chartsvalue.Count);
                             Debug.WriteLine("chartsnewbalance :: {0}", chartsnewbalance.Count);
 
-                            //Test made to verify if the charts will work
-                          /*  ObservableCollection<ChartDataPoint> hightemp = new ObservableCollection<ChartDataPoint>();
-
-                            hightemp.Add(new ChartDataPoint("Jan", -42));
-                            hightemp.Add(new ChartDataPoint("Feb", 44));
-                            hightemp.Add(new ChartDataPoint("Mar", 53));
-                            hightemp.Add(new ChartDataPoint("Apr", -64));
-                            hightemp.Add(new ChartDataPoint("May", 75));
-                            hightemp.Add(new ChartDataPoint("Jun", 83));
-                            hightemp.Add(new ChartDataPoint("Jul", 87));
-                            hightemp.Add(new ChartDataPoint("Aug", 84));
-                            hightemp.Add(new ChartDataPoint("Sep", 78));
-                            hightemp.Add(new ChartDataPoint("Oct", 67));
-                            hightemp.Add(new ChartDataPoint("Nov", -55));
-                            hightemp.Add(new ChartDataPoint("Dec", 45));*/
-
                             //creates a column series allowing for some animation and for the user to select and see inforamtion
                             chart.Series.Add(new ColumnSeries()
                             {
