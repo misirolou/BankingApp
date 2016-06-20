@@ -1,5 +1,6 @@
 ﻿using Foundation;
 using Syncfusion.SfChart.XForms.iOS.Renderers;
+using Syncfusion.SfDataGrid.XForms.iOS;
 using UIKit;
 
 namespace App1.iOS
@@ -22,6 +23,7 @@ namespace App1.iOS
             Xamarin.FormsMaps.Init();
             global::Xamarin.Forms.Forms.Init();
             new SfChartRenderer();
+            SfDataGridRenderer.Init();
             //App.Speech = new Speech();
             LoadApplication(new App());
 

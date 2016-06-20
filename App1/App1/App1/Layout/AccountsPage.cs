@@ -101,7 +101,7 @@ namespace App1.Layout
                 {
                     new Label
                     {
-                        Text = "TransactionsPage should have most of the users transactions", HorizontalTextAlignment = TextAlignment.Center,
+                        Text = "AccountPage should have most of the your accounts", HorizontalTextAlignment = TextAlignment.Center,
                     }
                 }
             };

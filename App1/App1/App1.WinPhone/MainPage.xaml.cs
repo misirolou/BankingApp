@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Navigation;
 using Syncfusion.SfChart.XForms.WinPhone;
+using Syncfusion.SfDataGrid.XForms.WinPhone;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -15,6 +16,7 @@ namespace App1.WinPhone
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
             //new SfChartRenderer();
+            SfDataGridRenderer.Init();
             LoadApplication(new App1.App());
         }
 
