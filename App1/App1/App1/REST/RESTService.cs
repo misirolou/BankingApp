@@ -12,9 +12,9 @@ namespace App1.REST
 {
     public class RESTService : IRESTService
     {
-        public static string token = "";
+        public static string Token = "";
         public static string Payment = "";
-        private HttpClient client;
+        private HttpClient _client;
 
         /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
         400 (BAD REQUEST) – the request is not understood by the server.
@@ -88,7 +88,7 @@ namespace App1.REST
             //Method used
             request2.Method = "GET";
             //Access token and its format
-            var authToken = string.Format("token=\"{0}\"", token);
+            var authToken = string.Format("token=\"{0}\"", Token);
             Debug.WriteLine("authtoken {0}", authToken);
             //Header request used to send the token
             request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
@@ -142,7 +142,7 @@ namespace App1.REST
             //method used to make the request
             request2.Method = "POST";
             //Access token and Body
-            var authToken = string.Format("token=\"{0}\"", token);
+            var authToken = string.Format("token=\"{0}\"", Token);
             //var body = string.Format(" to = bank_id = \"{0}\", account_id = \"{1}\"  , value = currency = \"{2}\",  amount = \"{3}\", description = \"{4}\"", bankTo.bank_id, accountTo.account_id, currencyTo.currency, amountTo.amount, descriptionTo.description);
             var body = "{ \"to\" :{\"bank_id\":\"" + bankTo.bank_id + "\",\"account_id\":\"" + accountTo.account_id + "\" },  \"value\":{ \"currency\": \"" + currencyTo.currency + "\",   \"amount\":\"" + amountTo.amount + "\" },  \"description\":\"" + descriptionTo.description + "\"}";
             request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
@@ -224,7 +224,7 @@ namespace App1.REST
             get
             {
                 Debug.WriteLine("Here in authetiacation");
-                var some = !string.IsNullOrWhiteSpace(token);
+                var some = !string.IsNullOrWhiteSpace(Token);
                 Debug.WriteLine("vaue of some {0}", some);
                 return some;
             }
@@ -267,25 +267,25 @@ namespace App1.REST
                         try
                         {
                             StreamReader reader = new StreamReader(dataStream);
-                            token = reader.ReadToEnd();
-                            Debug.WriteLine("token received {0}", token);
-                            if (string.IsNullOrWhiteSpace(token))
+                            Token = reader.ReadToEnd();
+                            Debug.WriteLine("token received {0}", Token);
+                            if (string.IsNullOrWhiteSpace(Token))
                             {
                                 Debug.WriteLine("Response contained empty body...");
                             }
-                            Debug.WriteLine("Response {0}", token);
-                            if (string.IsNullOrWhiteSpace(token))
+                            Debug.WriteLine("Response {0}", Token);
+                            if (string.IsNullOrWhiteSpace(Token))
                             {
                                 return false;
                             }
                             else
                             {
-                                var json = token;
+                                var json = Token;
                                 Debug.WriteLine("json token {0}", json);
                                 //deserializing string of information received into json type to then be called
                                 var token1 = JsonConvert.DeserializeObject<Token>(json);
-                                Debug.WriteLine(token1.token);
-                                token = token1.token;
+                                Debug.WriteLine("token.token {0}",token1.token);
+                                Token = token1.token;
                                 return true;
                             }
                         }

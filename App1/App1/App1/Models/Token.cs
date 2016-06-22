@@ -6,5 +6,11 @@ namespace App1.Models
     {
         [JsonProperty(PropertyName = "token")]
         public string token { get; set; }
+
+        public Token(string token)
+        {
+            this.token = token;
+        }
     }
+
 }

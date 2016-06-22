@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 
-
 #if DEBUG
 [assembly: Application(Debuggable = true)]
 #else

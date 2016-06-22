@@ -3,6 +3,7 @@ using App1.Models;
 using App1.REST;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -153,8 +154,6 @@ namespace App1.Layout
 
                             Transactions.TransactionList jsonObject =
                                 JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
-
-                            //SetupDataTemplates();
 
                             _listView = new ListView
                             {
