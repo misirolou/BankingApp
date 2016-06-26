@@ -155,6 +155,8 @@ namespace App1.Layout
                             Transactions.TransactionList jsonObject =
                                 JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
 
+
+
                             _listView = new ListView
                             {
                                 HasUnevenRows = true,

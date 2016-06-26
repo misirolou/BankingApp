@@ -16,6 +16,7 @@ namespace App1.Layout
         private Label resultsLabel;
         private SearchBar searchBar;
         private ListView _listView;
+        protected Banklist test;
 
         public ContactPage()
         {
@@ -28,7 +29,7 @@ namespace App1.Layout
             //searchbar to search banks contacts that are available
             searchBar = new SearchBar
             {
-                Placeholder = "Enter short_name of bank",
+                Placeholder = "Enter full_name of bank",
                 SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchBar.Text + " here you go"; })
             };
 
@@ -87,20 +88,28 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
+                            test = t.Result;
+                            
+
                             _listView = new ListView
                             {
-                                BackgroundColor = Color.Gray,
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal
                             };
-                            _listView.ItemsSource = t.Result.banks;
+                            _listView.ItemsSource = test.banks;
                             _listView.ItemTemplate = new DataTemplate(typeof(Cells));
                         });
                     }
                 });
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+
+                searchBar.TextChanged += (sender, e) => FilterContacts(searchBar.Text);
+                searchBar.SearchButtonPressed += (sender, e) => {
+                    FilterContacts(searchBar.Text);
+                };
+
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.Teal,
@@ -108,6 +117,7 @@ namespace App1.Layout
                     Children =
                     {
                         new Label {Text = "Contact list go up and down", HorizontalTextAlignment = TextAlignment.Center},
+                        searchBar,
                         _listView
                     }
                 };
@@ -118,6 +128,25 @@ namespace App1.Layout
                 await DisplayAlert("Alert", "Cant receive information", "OK");
                 Debug.WriteLine("Caught error: {0}.", err);
             }
+        }
+
+        public void FilterContacts(string filter)
+        {
+            _listView.BeginRefresh();
+
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                _listView.ItemsSource = test.banks;
+            }
+            else
+            {
+                Debug.WriteLine("test first bank {0}",test.banks[0].full_name);
+                _listView.ItemsSource = test.banks
+                    .Where(x => x.short_name.ToLower()
+                   .Contains(filter.ToLower()));
+            }
+
+            _listView.EndRefresh();
         }
     }
 }

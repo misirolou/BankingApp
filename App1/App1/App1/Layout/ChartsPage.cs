@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Java.Sql;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -56,7 +55,7 @@ namespace App1.Layout
             };
 
             //defining each of the axis used for the graphical representations.
-            chart.PrimaryAxis = primaryAxis;    
+            chart.PrimaryAxis = primaryAxis;
             chart.SecondaryAxis = secondaryAxis;
 
             chart.Title = new ChartTitle()
@@ -129,10 +128,10 @@ namespace App1.Layout
                                 EnableAnimation = true,
                                 AnimationDuration = 0.8,
                                 EnableTooltip = true
-                        });
+                            });
 
                             //Creates a line series allowing for some animation and for the user to select and see inforamtion
-                            chart.Series.Add(new SplineSeries()
+                            chart.Series.Add(new ColumnSeries()
                             {
                                 ItemsSource = chartsvalue,
                                 Label = "Value",

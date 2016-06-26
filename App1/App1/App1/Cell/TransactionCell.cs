@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System.Diagnostics;
+using Xamarin.Forms;
 
 namespace App1.Cell
 {
@@ -16,7 +17,7 @@ namespace App1.Cell
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             var emptylabel = new Label() { BackgroundColor = Color.Teal };
-            var idLabelholder = new Label { Text = "Counterparty: ", FontAttributes = FontAttributes.Bold, HorizontalTextAlignment = TextAlignment.Center };
+            var idLabelholder = new Label { FontAttributes = FontAttributes.Bold, HorizontalTextAlignment = TextAlignment.Center };
             var dateofCompletionLabel = new Label() { HorizontalTextAlignment = TextAlignment.Center };
             var amountLabel = new Label() { HorizontalTextAlignment = TextAlignment.Center };
             var balanceLabel = new Label() { HorizontalTextAlignment = TextAlignment.Center };
@@ -29,6 +30,8 @@ namespace App1.Cell
             amountLabel.SetBinding(Label.TextProperty, "details.value.amount");
             //balance of the users account
             balanceLabel.SetBinding(Label.TextProperty, "details.new_balance.amount");
+
+            Debug.WriteLine("Should have added to the Transaction page");
 
             grid.BackgroundColor = Color.Gray;
             grid.ColumnSpacing = 5;

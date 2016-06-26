@@ -1,11 +1,12 @@
 ﻿using App1.Layout;
 using App1.Models;
 using Newtonsoft.Json;
-using Portable.Text;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace App1.REST
@@ -14,6 +15,7 @@ namespace App1.REST
     {
         public static string Token = "";
         public static string Payment = "";
+        public static string body = "";
         private HttpClient _client;
 
         /*  204 (NO CONTENT) – the request has been successfully processed and the response is intentionally blank.
@@ -143,21 +145,22 @@ namespace App1.REST
             request2.Method = "POST";
             //Access token and Body
             var authToken = string.Format("token=\"{0}\"", Token);
-            //var body = string.Format(" to = bank_id = \"{0}\", account_id = \"{1}\"  , value = currency = \"{2}\",  amount = \"{3}\", description = \"{4}\"", bankTo.bank_id, accountTo.account_id, currencyTo.currency, amountTo.amount, descriptionTo.description);
-            var body = "{ \"to\" :{\"bank_id\":\"" + bankTo.bank_id + "\",\"account_id\":\"" + accountTo.account_id + "\" },  \"value\":{ \"currency\": \"" + currencyTo.currency + "\",   \"amount\":\"" + amountTo.amount + "\" },  \"description\":\"" + descriptionTo.description + "\"}";
             request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+            body = "{ \"to\" :{\"bank_id\":\"" + bankTo.bank_id + "\",\"account_id\":\"" + accountTo.account_id + "\" },  \"value\":{ \"currency\": \"" + currencyTo.currency + "\",   \"amount\":\"" + amountTo.amount + "\" },  \"description\":\"" + descriptionTo.description + "\"}";
 
-            byte[] buffer = Encoding.ASCII.GetBytes(body);
-
+            byte[] buffer = Encoding.UTF8.GetBytes(body);
+            Debug.WriteLine("buuferlength {0}", buffer.Length);
+            //request2.BeginGetRequestStream(new AsyncCallback(GetRequestStreamCallback), request2);
             try
             {
-                using (Stream requestStream = await request2.GetRequestStreamAsync())
+                using (var requestStream = await request2.GetRequestStreamAsync())
                 {
                     requestStream.Write(buffer, 0, buffer.Length);
                     requestStream.Flush();
                     requestStream.Dispose();
                 }
-                using (HttpWebResponse response = await request2.GetResponseAsync() as HttpWebResponse)
+
+                using (var response = await request2.GetResponseAsync() as HttpWebResponse)
                 {
                     Debug.WriteLine("response http ::{0}", response);
                     if (response != null && response.StatusCode != HttpStatusCode.OK)
@@ -202,6 +205,7 @@ namespace App1.REST
                         }
                     return false;
                 }
+                return false;
             }
             catch (WebException err)
             {
@@ -214,6 +218,36 @@ namespace App1.REST
                     Debug.WriteLine("Response contained empty body..., {0}", err.Response);
                 }
                 return false;
+            }
+            return false;
+        }
+
+        private void GetRequestStreamCallback(IAsyncResult asynchronousResult)
+        {
+            HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
+            // End the stream request operation
+
+            Stream postStream = request.EndGetRequestStream(asynchronousResult);
+
+            // Create the post data
+            byte[] byteArray = Encoding.UTF8.GetBytes(body);
+
+            postStream.Write(byteArray, 0, byteArray.Length);
+            postStream.Flush();
+            postStream.Dispose();
+
+            //Start the web request
+            request.BeginGetResponse(new AsyncCallback(GetResponceStreamCallback), request);
+        }
+
+        private void GetResponceStreamCallback(IAsyncResult callbackResult)
+        {
+            HttpWebRequest request = (HttpWebRequest)callbackResult.AsyncState;
+            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(callbackResult);
+            using (StreamReader httpWebStreamReader = new StreamReader(response.GetResponseStream()))
+            {
+                string result = httpWebStreamReader.ReadToEnd();
+                Debug.WriteLine("result {0}", result);
             }
         }
 
@@ -250,7 +284,6 @@ namespace App1.REST
                     using (var writer = new StreamWriter(requestStream))
                     {
                         // Send the data to the server
-                        // writer.Write(header);
                         writer.Flush();
                         writer.Dispose();
                     }
@@ -284,7 +317,7 @@ namespace App1.REST
                                 Debug.WriteLine("json token {0}", json);
                                 //deserializing string of information received into json type to then be called
                                 var token1 = JsonConvert.DeserializeObject<Token>(json);
-                                Debug.WriteLine("token.token {0}",token1.token);
+                                Debug.WriteLine("token.token {0}", token1.token);
                                 Token = token1.token;
                                 return true;
                             }

@@ -12,7 +12,7 @@ namespace App1.Cell
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
             int i = 0;
-            return int.Parse(((Transactions.Details)item).value.amount) >= i ? ValidTemplate : InvalidTemplate;
+            return double.Parse(((Transactions.Details)item).value.amount) >= i ? ValidTemplate : InvalidTemplate;
         }
     }
 }
