@@ -4,6 +4,7 @@ using App1.REST;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -15,9 +16,13 @@ namespace App1.Layout
         private ListView _listView;
         private StackLayout labelLayout;
         private StackLayout menuLayout;
+        private SearchBar searchBar;
+        private Accounts.Account[] ListAccounts;
         private Label _accountidLabel, _bankidLabel;
+
         //Used to identify the href, bankid and accountid that was chosen from the cells
         public static string Href { get; private set; }
+
         public static string Bankid { get; private set; }
         public static string Accountid { get; private set; }
 
@@ -34,6 +39,11 @@ namespace App1.Layout
             {
                 Text = "Bank ID",
                 HorizontalOptions = LayoutOptions.StartAndExpand
+            };
+
+            searchBar = new SearchBar
+            {
+                Placeholder = "Enter id of bank",
             };
 
             //exitbutton used to exit the application to the loginpage
@@ -135,7 +145,7 @@ namespace App1.Layout
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            Accounts.Account[] jsonObject = JsonConvert.DeserializeObject<Accounts.Account[]>(t.Result);
+                            ListAccounts = JsonConvert.DeserializeObject<Accounts.Account[]>(t.Result);
 
                             //List used to list information received from the REST service
                             _listView = new ListView
@@ -143,7 +153,7 @@ namespace App1.Layout
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal,
-                                ItemsSource = jsonObject,
+                                ItemsSource = ListAccounts,
                                 ItemTemplate = new DataTemplate(typeof(AllAccountsCell))
                             };
                             _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Accounts.Account);
@@ -152,6 +162,13 @@ namespace App1.Layout
                 });
                 //indicates the activity indicator that all the information is loaded and ready
                 IsBusy = false;
+
+                searchBar.TextChanged += (sender, e) => FilterBanks(searchBar.Text);
+                searchBar.SearchButtonPressed += (sender, e) =>
+                {
+                    FilterBanks(searchBar.Text);
+                };
+
                 //Determinig the new layout containg the information received
                 Content = new StackLayout
                 {
@@ -160,6 +177,7 @@ namespace App1.Layout
                     Children =
                     {
                         menuLayout,
+                        searchBar,
                         labelLayout,
                         _listView
                     }
@@ -171,6 +189,25 @@ namespace App1.Layout
                 await DisplayAlert("Alert", "Internet problems cant receive information", "OK");
                 Debug.WriteLine("Caught error: {0}.", err);
             }
+        }
+
+        //Filter bank ids
+        private void FilterBanks(string filter)
+        {
+            _listView.BeginRefresh();
+
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                _listView.ItemsSource = ListAccounts;
+            }
+            else
+            {
+                _listView.ItemsSource = ListAccounts
+                    .Where(x => x.bank_id.ToLower()
+                   .Contains(filter.ToLower()));
+            }
+
+            _listView.EndRefresh();
         }
 
         //used according to the cell that is selected to navigateTo to the new PrincipalPage used to show the detailed information of the account selected

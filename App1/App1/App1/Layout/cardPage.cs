@@ -25,7 +25,7 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-           // Task.WhenAll(Takingcareofbussiness());
+            // Task.WhenAll(Takingcareofbussiness());
 
             Title = "CardsPage";
             Icon = new FileImageSource { File = "robot.png" };

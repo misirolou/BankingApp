@@ -2,11 +2,14 @@
 using App1.Models;
 using App1.REST;
 using Newtonsoft.Json;
+using Syncfusion.Data.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using static App1.Models.Transactions;
 
 namespace App1.Layout
 {
@@ -16,6 +19,9 @@ namespace App1.Layout
         private ListView _listView;
         private StackLayout menuLayout;
         private Grid labelLayout;
+        private SearchBar searchBar;
+        protected TransactionList transactionList;
+
         public static string counterid { get; private set; }
         public static string accountid { get; private set; }
         public static string transactionid { get; private set; }
@@ -27,6 +33,10 @@ namespace App1.Layout
         public static string accountbank { get; private set; }
         public static string counterbank { get; private set; }
         public static string typesome { get; private set; }
+
+        private bool dateAscending;
+        private bool amountAscending;
+        private bool valueAscending;
 
         //Wanted to add charts by following this link https://blog.xamarin.com/visualize-your-data-with-charts-graphs-and-xamarin-forms/
         //problem that it costs 995$ so i didnt think it was worth it at the moment
@@ -73,6 +83,27 @@ namespace App1.Layout
                 }
             };
 
+            Button dateButton = new Button
+            {
+                Text = "DATE",
+                FontAttributes = FontAttributes.Bold
+            };
+            //dateButton.Clicked += OnDateButton_Clicked;
+
+            Button amountButton = new Button
+            {
+                Text = "AMOUNT",
+                FontAttributes = FontAttributes.Bold
+            };
+            //amountButton.Clicked += OnAmountButton_Clicked;
+
+            Button balanceButton = new Button
+            {
+                Text = "BALANCE",
+                FontAttributes = FontAttributes.Bold
+            };
+            //balanceButton.Clicked += OnBalanceButton_Clicked;
+
             labelLayout = new Grid();
             labelLayout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
@@ -80,25 +111,9 @@ namespace App1.Layout
             labelLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             labelLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            labelLayout.Children.Add(new Label
-            {
-                Text = "DATE",
-                HorizontalTextAlignment = TextAlignment.Start,
-                FontAttributes = FontAttributes.Bold
-            }, 0, 0);
-
-            labelLayout.Children.Add(new Label
-            {
-                Text = "AMOUNT",
-                HorizontalTextAlignment = TextAlignment.End,
-                FontAttributes = FontAttributes.Bold
-            }, 1, 0);
-            labelLayout.Children.Add(new Label
-            {
-                Text = "BALANCE",
-                HorizontalTextAlignment = TextAlignment.End,
-                FontAttributes = FontAttributes.Bold
-            }, 2, 0);
+            labelLayout.Children.Add(dateButton, 0, 0);
+            labelLayout.Children.Add(amountButton, 1, 0);
+            labelLayout.Children.Add(balanceButton, 2, 0);
 
             Task.WhenAll(Takingcareofbussiness());
 
@@ -152,20 +167,32 @@ namespace App1.Layout
                         {
                             var result = t.Result;
 
-                            Transactions.TransactionList jsonObject =
-                                JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
+                            transactionList =
+                                JsonConvert.DeserializeObject<TransactionList>(result);
 
+                            dateAscending = true;
+                            amountAscending = true;
+                            valueAscending = true;
 
+                            //used to take out the t and z out of the date information received from OpenBank
+                            for (int i = 0; i < transactionList.transactions.Count; i++)
+                            {
+                                char[] delimiters = new char[] { 'T', 'Z' };
+
+                                var date = transactionList.transactions[i].details.completed.Split(delimiters);
+                                var test = string.Join(" ", date);
+                                transactionList.transactions[i].details.completed = test;
+                            }
 
                             _listView = new ListView
                             {
                                 HasUnevenRows = true,
                                 Margin = 10,
                                 SeparatorColor = Color.Teal,
-                                ItemsSource = jsonObject.transactions,
+                                ItemsSource = transactionList.transactions,
                                 ItemTemplate = new DataTemplate(typeof(TransactionCell))
                             };
-                            _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Transactions.Transaction);
+                            _listView.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as Transaction);
                         });
                     }
                 });
@@ -198,7 +225,29 @@ namespace App1.Layout
             }
         }
 
-        private async void NavigateTo(Transactions.Transaction transaction)
+        private void FilterDate(string filter)
+        {
+            //preparing for the list
+            _listView.BeginRefresh();
+
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                //If nothing changed stays the same
+                _listView.ItemsSource = transactionList.transactions;
+            }
+            else
+            {
+                //Changes the asked for date according to what was searched
+                _listView.ItemsSource = transactionList.transactions
+                    .Where(x => x.details.completed.ToLower()
+                   .Contains(filter.ToLower()));
+            }
+
+            _listView.EndRefresh();
+        }
+
+        //Navigate to the specified transaction verifying detailed information about it
+        private async void NavigateTo(Transaction transaction)
         {
             if (transaction == null)
                 return;
@@ -222,6 +271,160 @@ namespace App1.Layout
             catch (Exception err)
             {
                 Debug.WriteLine("Caught error transactionpage: {0}.", err);
+            }
+        }
+
+        //used to order according to Dates received
+        private void OnDateButton_Clicked(object sender, EventArgs e)
+        {
+            int i = 0;
+            try
+            {
+                List<TransactionList> transaction;
+
+                if (!dateAscending)
+                {
+                    _listView.BeginRefresh();
+
+                    transaction = (List<TransactionList>)(from newdate in transactionList.transactions
+                                                          orderby newdate.details.completed
+                                                          select newdate).ToList<TransactionList>();
+
+                    _listView = new ListView
+                    {
+                        HasUnevenRows = true,
+                        Margin = 10,
+                        SeparatorColor = Color.Teal,
+                        ItemsSource = transaction[i].transactions,
+                        ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                    };
+                    _listView.EndRefresh();
+                    dateAscending = false;
+                }
+                else
+                {
+                    _listView.BeginRefresh();
+                    transaction = (List<TransactionList>)(from newdate in transactionList.transactions
+                                                          orderby newdate.details.completed descending
+                                                          select newdate).ToList<TransactionList>();
+
+                    _listView = new ListView
+                    {
+                        HasUnevenRows = true,
+                        Margin = 10,
+                        SeparatorColor = Color.Teal,
+                        ItemsSource = transaction[i].transactions,
+                        ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                    };
+                    _listView.EndRefresh();
+                    dateAscending = true;
+                }
+            }
+            catch (Exception err)
+            {
+                _listView.EndRefresh();
+                Debug.WriteLine("errmessage : {0}", err);
+            }
+        }
+
+        private void OnAmountButton_Clicked(object sender, EventArgs e)
+        {
+            int i = 0;
+            try
+            {
+                List<TransactionList> transaction;
+
+                if (!amountAscending)
+                {
+                    _listView.BeginRefresh();
+                    transaction = (List<TransactionList>)(from newvalue in transactionList.transactions
+                                                          orderby newvalue.details.new_balance.amount
+                                                          select newvalue).ToList<TransactionList>();
+
+                    _listView = new ListView
+                    {
+                        HasUnevenRows = true,
+                        Margin = 10,
+                        SeparatorColor = Color.Teal,
+                        ItemsSource = transaction[i].transactions,
+                        ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                    };
+                    _listView.EndRefresh();
+                    amountAscending = false;
+                }
+                else
+                {
+                    _listView.BeginRefresh();
+                    transaction = (List<TransactionList>)(from newvalue in transactionList.transactions
+                                                          orderby newvalue.details.new_balance.amount descending
+                                                          select newvalue).ToList<TransactionList>();
+
+                    _listView = new ListView
+                    {
+                        HasUnevenRows = true,
+                        Margin = 10,
+                        SeparatorColor = Color.Teal,
+                        ItemsSource = transaction[i].transactions,
+                        ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                    };
+                    _listView.EndRefresh();
+                    amountAscending = true;
+                }
+            }
+            catch (Exception err)
+            {
+                _listView.EndRefresh();
+                Debug.WriteLine("errmessage : {0}", err);
+            }
+        }
+
+        private void OnBalanceButton_Clicked(object sender, EventArgs e)
+        {
+            int i = 0;
+            try
+            {
+                List<TransactionList> transaction;
+                if (!valueAscending)
+                {
+                    _listView.BeginRefresh();
+                    transaction = (List<TransactionList>)(from newBalance in transactionList.transactions
+                                                          orderby newBalance.details.new_balance.amount
+                                                          select newBalance).ToList<TransactionList>();
+
+                    _listView = new ListView
+                    {
+                        HasUnevenRows = true,
+                        Margin = 10,
+                        SeparatorColor = Color.Teal,
+                        ItemsSource = transaction[i].transactions,
+                        ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                    };
+                    _listView.EndRefresh();
+                    valueAscending = false;
+                }
+                else
+                {
+                    _listView.BeginRefresh();
+                    transaction = (List<TransactionList>)(from newBalance in transactionList.transactions
+                                                          orderby newBalance.details.new_balance.amount descending
+                                                          select newBalance).ToList<TransactionList>();
+
+                    _listView = new ListView
+                    {
+                        HasUnevenRows = true,
+                        Margin = 10,
+                        SeparatorColor = Color.Teal,
+                        ItemsSource = transaction[i].transactions,
+                        ItemTemplate = new DataTemplate(typeof(TransactionCell))
+                    };
+                    _listView.EndRefresh();
+                    valueAscending = true;
+                }
+            }
+            catch (Exception err)
+            {
+                _listView.EndRefresh();
+                Debug.WriteLine("errmessage : {0}", err);
             }
         }
     }

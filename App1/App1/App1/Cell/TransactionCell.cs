@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace App1.Cell
 {
@@ -30,8 +29,6 @@ namespace App1.Cell
             amountLabel.SetBinding(Label.TextProperty, "details.value.amount");
             //balance of the users account
             balanceLabel.SetBinding(Label.TextProperty, "details.new_balance.amount");
-
-            Debug.WriteLine("Should have added to the Transaction page");
 
             grid.BackgroundColor = Color.Gray;
             grid.ColumnSpacing = 5;

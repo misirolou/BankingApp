@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Android.OS;
 using Syncfusion.SfChart.XForms.Droid;
 
-
 namespace App1.Droid
 {
     [Activity(Label = "App1", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]

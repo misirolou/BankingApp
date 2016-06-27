@@ -68,6 +68,7 @@ namespace App1.Cell
 
             View = grid;
         }
+
         //Leaving this code here, this was supposed to be a more intuitive way of displaying information for other pages
         //but it seems not to work may need some help over here
         //This code is used in properties that may change according to the user doing something wont be used but i´ll leave the example

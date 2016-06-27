@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace App1.Layout
 {
-    //This page is the mainpage used to display the account detailed information that was selected 
+    //This page is the mainpage used to display the account detailed information that was selected
     internal class PrincipalPage : ContentPage
     {
         private Label numberLabel, nameLabel, ibanLabel, amountLabel, bankLabel, currencyLabel, typeLabel, swiftLabel;
@@ -131,7 +131,7 @@ namespace App1.Layout
             ButtonLayout.Children.Add(Paymentsbutton, 1, 0);
             ButtonLayout.Children.Add(cardsbutton, 2, 0);
             ButtonLayout.Children.Add(BalcaoButton, 0, 1);
-            ButtonLayout.Children.Add(ProductButton, 1,1);
+            ButtonLayout.Children.Add(ProductButton, 1, 1);
             ButtonLayout.Children.Add(AtmButton, 2, 1);
 
             //Layout of the Home page(PrincipalPage.cs)
@@ -152,7 +152,7 @@ namespace App1.Layout
             };
         }
 
-        //Used to take care of bussiness, to show the accounts detailed information 
+        //Used to take care of bussiness, to show the accounts detailed information
         private async Task Takingcareofbussiness()
         {
             //trying to get information online if some error occurs this is caught and taken care of, a message is displayed in this case
@@ -345,7 +345,6 @@ namespace App1.Layout
                 Debug.WriteLine("Caught error cardspage: {0}.", err);
             }
         }
-
 
         private async void OnProductButtonClicked(object sender, EventArgs e)
         {

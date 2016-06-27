@@ -4,7 +4,6 @@ using App1.REST;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using App1.Annotations;
 using Xamarin.Forms;
 
 namespace App1.Layout
@@ -67,7 +66,7 @@ namespace App1.Layout
             Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            Labelgrid.Children.Add(new Label() {Text = "Code", FontAttributes = FontAttributes.Bold}, 0, 0);
+            Labelgrid.Children.Add(new Label() { Text = "Code", FontAttributes = FontAttributes.Bold }, 0, 0);
             Labelgrid.Children.Add(new Label() { Text = "Name", FontAttributes = FontAttributes.Bold }, 1, 0);
             Labelgrid.Children.Add(new Label() { Text = "Family", FontAttributes = FontAttributes.Bold }, 2, 0);
             Labelgrid.Children.Add(new Label() { Text = "Super_family", FontAttributes = FontAttributes.Bold }, 3, 0);

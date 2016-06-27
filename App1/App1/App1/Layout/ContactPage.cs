@@ -2,7 +2,6 @@
 using App1.Models;
 using App1.REST;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,7 +88,6 @@ namespace App1.Layout
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             test = t.Result;
-                            
 
                             _listView = new ListView
                             {
@@ -106,7 +104,8 @@ namespace App1.Layout
                 IsBusy = false;
 
                 searchBar.TextChanged += (sender, e) => FilterContacts(searchBar.Text);
-                searchBar.SearchButtonPressed += (sender, e) => {
+                searchBar.SearchButtonPressed += (sender, e) =>
+                {
                     FilterContacts(searchBar.Text);
                 };
 
@@ -140,7 +139,7 @@ namespace App1.Layout
             }
             else
             {
-                Debug.WriteLine("test first bank {0}",test.banks[0].full_name);
+                Debug.WriteLine("test first bank {0}", test.banks[0].full_name);
                 _listView.ItemsSource = test.banks
                     .Where(x => x.short_name.ToLower()
                    .Contains(filter.ToLower()));

@@ -43,10 +43,8 @@ namespace App1.ViewModel
                 return true;
             }
 
-
             return false;
         }
-
 
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -55,7 +53,6 @@ namespace App1.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

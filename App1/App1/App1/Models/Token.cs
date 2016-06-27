@@ -12,5 +12,4 @@ namespace App1.Models
             this.token = token;
         }
     }
-
 }
