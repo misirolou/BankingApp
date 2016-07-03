@@ -2,10 +2,13 @@
 using App1.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -136,118 +139,62 @@ namespace App1.REST
         //The user should be autheticated to make a payment all these attributes are received from the payment page
         public async Task<bool> MakePayment(Payments.To accountTo, Payments.To bankTo, Payments.Value currencyTo, Payments.Value amountTo, Payments.Body descriptionTo)
         {
-            string responseFromServer;
             //Url used to make the request to OpenBank
             var url = string.Format(Constants.PaymentUrl, AccountsPage.Bankid, AccountsPage.Accountid);
-            var request2 = (HttpWebRequest)WebRequest.Create(url);
-            request2.ContentType = "application/json";
-            //method used to make the request
-            request2.Method = "POST";
-            //Access token and Body
-            var authToken = string.Format("token=\"{0}\"", Token);
-            request2.Headers[HttpRequestHeader.Authorization] = "DirectLogin " + authToken;
+
+            //Token needed to verify the users authenticity
+            var authToken = string.Format(" token=\"{0}\"", Token);
+
+            //body that will be sent to the server containing the information the user added to the payment info
             body = "{ \"to\" :{\"bank_id\":\"" + bankTo.bank_id + "\",\"account_id\":\"" + accountTo.account_id + "\" },  \"value\":{ \"currency\": \"" + currencyTo.currency + "\",   \"amount\":\"" + amountTo.amount + "\" },  \"description\":\"" + descriptionTo.description + "\"}";
 
-            byte[] buffer = Encoding.UTF8.GetBytes(body);
-            Debug.WriteLine("buuferlength {0}", buffer.Length);
-            //request2.BeginGetRequestStream(new AsyncCallback(GetRequestStreamCallback), request2);
             try
             {
-                using (var requestStream = await request2.GetRequestStreamAsync())
+                using (_client = new HttpClient())
                 {
-                    requestStream.Write(buffer, 0, buffer.Length);
-                    requestStream.Flush();
-                    requestStream.Dispose();
-                }
+                    _client.MaxResponseContentBufferSize = 256000;
+                    //_client.DefaultRequestHeaders.Add("content-type", "application/json");
+                    //Headers
+                    _client.DefaultRequestHeaders.Accept.Clear();
 
-                using (var response = await request2.GetResponseAsync() as HttpWebResponse)
-                {
-                    Debug.WriteLine("response http ::{0}", response);
+                    _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DirectLogin", authToken);
+                    //body
+                    var content = new StringContent(body);
+                    content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
+
+                 /*     var formContent = new FormUrlEncodedContent(new[]
+                      {
+                          new KeyValuePair<string, string>("Content-Type", "application/json"),
+                          new KeyValuePair<string, string>("Body", body)
+                      });*/
+                    
+                    //Response message received from OpenBank
+                    HttpResponseMessage response = null;
+                    response = await _client.PostAsJsonAsync(url, body);
+                   // response = await _client.PostAsync(url, content);
+
                     if (response != null && response.StatusCode != HttpStatusCode.OK)
                     {
-                        Debug.WriteLine("Error fetching data. Server returned status code: {0}", response.StatusCode);
-                        Debug.WriteLine("Something wrong ::{0}", response);
+                        Debug.WriteLine("BODY OF INFORMATION ADDED {0}", body);
+
+                        Debug.WriteLine("Error fetching data. Server returned status code: {0} ::: {1} :::: {2}",response.StatusCode, response.Content.Headers, response.Headers);
+                        Debug.WriteLine("Requestmessage: {0}", response.RequestMessage);
+                        Debug.WriteLine("Requset uri {0}:", response.RequestMessage.RequestUri);
+                        Debug.WriteLine("Requst header: {0}:: Content::{1}", response.RequestMessage.Headers, response.RequestMessage.Content.Headers);
                         return false;
                     }
-                    if (response != null)
-                        using (Stream dataStream = response.GetResponseStream())
-                        {
-                            try
-                            {
-                                //Reader used to read information received
-                                StreamReader reader = new StreamReader(dataStream);
-                                Payment = reader.ReadToEnd();
-                                Debug.WriteLine("token received {0}", Payment);
-                                if (string.IsNullOrWhiteSpace(Payment))
-                                {
-                                    Debug.WriteLine("Response contained empty body...");
-                                    return false;
-                                }
-                                else
-                                {
-                                    var json = Payment;
-                                    Debug.WriteLine("json token {0}", json);
-                                    return true;
-                                }
-                            }
-                            catch (WebException err)
-                            {
-                                Stream stream = err.Response.GetResponseStream();
-                                StreamReader reader = new StreamReader(stream);
-                                responseFromServer = reader.ReadToEnd();
-
-                                if (string.IsNullOrWhiteSpace(responseFromServer))
-                                {
-                                    Debug.WriteLine("Response contained empty body...{0}", err.Response);
-                                }
-                                return false;
-                            }
-                        }
-                    return false;
+                    else
+                    {
+                        Debug.WriteLine(@"				TodoItem successfully saved.");
+                        return true;
+                    }
                 }
-                return false;
             }
-            catch (WebException err)
+            catch (Exception ex)
             {
-                Stream stream = err.Response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-                responseFromServer = reader.ReadToEnd();
-
-                if (string.IsNullOrWhiteSpace(responseFromServer))
-                {
-                    Debug.WriteLine("Response contained empty body..., {0}", err.Response);
-                }
+                Debug.WriteLine(@"				ERROR {0}", ex.Message);
                 return false;
-            }
-            return false;
-        }
-
-        private void GetRequestStreamCallback(IAsyncResult asynchronousResult)
-        {
-            HttpWebRequest request = (HttpWebRequest)asynchronousResult.AsyncState;
-            // End the stream request operation
-
-            Stream postStream = request.EndGetRequestStream(asynchronousResult);
-
-            // Create the post data
-            byte[] byteArray = Encoding.UTF8.GetBytes(body);
-
-            postStream.Write(byteArray, 0, byteArray.Length);
-            postStream.Flush();
-            postStream.Dispose();
-
-            //Start the web request
-            request.BeginGetResponse(new AsyncCallback(GetResponceStreamCallback), request);
-        }
-
-        private void GetResponceStreamCallback(IAsyncResult callbackResult)
-        {
-            HttpWebRequest request = (HttpWebRequest)callbackResult.AsyncState;
-            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(callbackResult);
-            using (StreamReader httpWebStreamReader = new StreamReader(response.GetResponseStream()))
-            {
-                string result = httpWebStreamReader.ReadToEnd();
-                Debug.WriteLine("result {0}", result);
             }
         }
 

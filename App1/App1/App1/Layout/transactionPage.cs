@@ -88,7 +88,7 @@ namespace App1.Layout
                 Text = "DATE",
                 FontAttributes = FontAttributes.Bold
             };
-            //dateButton.Clicked += OnDateButton_Clicked;
+            dateButton.Clicked += OnDateButton_Clicked;
 
             Button amountButton = new Button
             {
@@ -280,22 +280,26 @@ namespace App1.Layout
             int i = 0;
             try
             {
-                List<TransactionList> transaction;
-
-                if (!dateAscending)
+                if (dateAscending)
                 {
                     _listView.BeginRefresh();
 
-                    transaction = (List<TransactionList>)(from newdate in transactionList.transactions
-                                                          orderby newdate.details.completed
-                                                          select newdate).ToList<TransactionList>();
+                    Debug.WriteLine("date test {0}", transactionList.transactions[i].details.completed);
+
+                   var transaction = (from newdate in transactionList.transactions
+                        orderby newdate.details.completed
+                        select newdate).Cast<TransactionList>().ToList();
+
+                    List<TransactionList> newList = transaction.ToList();
+
+                    Debug.WriteLine("newlist {0} _:", newList.Count);
 
                     _listView = new ListView
                     {
                         HasUnevenRows = true,
                         Margin = 10,
                         SeparatorColor = Color.Teal,
-                        ItemsSource = transaction[i].transactions,
+                        ItemsSource = newList[i].transactions,
                         ItemTemplate = new DataTemplate(typeof(TransactionCell))
                     };
                     _listView.EndRefresh();
@@ -304,16 +308,18 @@ namespace App1.Layout
                 else
                 {
                     _listView.BeginRefresh();
-                    transaction = (List<TransactionList>)(from newdate in transactionList.transactions
+                   var transaction = (from newdate in transactionList.transactions
                                                           orderby newdate.details.completed descending
                                                           select newdate).ToList<TransactionList>();
+
+                    List<TransactionList> newList = transaction.ToList();
 
                     _listView = new ListView
                     {
                         HasUnevenRows = true,
                         Margin = 10,
                         SeparatorColor = Color.Teal,
-                        ItemsSource = transaction[i].transactions,
+                        ItemsSource = newList[i].transactions,
                         ItemTemplate = new DataTemplate(typeof(TransactionCell))
                     };
                     _listView.EndRefresh();

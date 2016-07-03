@@ -1,14 +1,18 @@
-﻿using App1.Models;
+﻿using System;
+using App1.Models;
 using App1.REST;
 using Newtonsoft.Json;
 using Syncfusion.SfChart.XForms;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Java.Lang;
 using Xamarin.Forms;
+using Exception = System.Exception;
+using String = System.String;
 
 namespace App1.Layout
 {
@@ -98,8 +102,20 @@ namespace App1.Layout
                             Transactions.TransactionList jsonObject =
                                 JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
 
-                            List<double> valueList = jsonObject.transactions.Select(x => double.Parse(x.details.value.amount)).ToList();
+                            for (int i = 0; i < jsonObject.transactions.Count; i++)
+                            {
+                                var changevalue = jsonObject.transactions[i].details.value.amount.Replace(".", ",");
+                                var changebalance = jsonObject.transactions[i].details.new_balance.amount.Replace(".", ",");
+                                jsonObject.transactions[i].details.value.amount = changevalue;
+                                jsonObject.transactions[i].details.new_balance.amount = changebalance;
+                            }
+                            Debug.WriteLine("changedvalue {0}", jsonObject.transactions[0].details.value.amount);
+
+                            Debug.WriteLine("changing string to double {0}", double.Parse(jsonObject.transactions[0].details.value.amount));
+                            Debug.WriteLine("changing string to double {0}", double.Parse(jsonObject.transactions[0].details.new_balance.amount));
+
                             List<double> newBalanceList = jsonObject.transactions.Select(x => double.Parse(x.details.new_balance.amount)).ToList();
+                            List<double> valueList = jsonObject.transactions.Select(x => double.Parse(x.details.value.amount)).ToList();
                             List<String> completedDateList = jsonObject.transactions.Select(x => x.details.completed).ToList();
 
                             //Collection of the value amount and the dates of the transactions made

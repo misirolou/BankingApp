@@ -12,9 +12,9 @@ namespace App1.Droid
         {
             base.OnCreate(bundle);
 
-            Xamarin.FormsMaps.Init(this, bundle);
+            Xamarin.FormsMaps.Init(this, bundle); //initilizing maps
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            new SfChartRenderer();
+            new SfChartRenderer(); //necessary to intialize syncfusion charts
             //App.Speech = new Speech();
             LoadApplication(new App());
         }

@@ -51,13 +51,11 @@ namespace App1.Cell
             grid.ColumnSpacing = 2;
             grid.RowSpacing = 5;
             //used a grid to display information of the transactions
-            grid.Children.Add(codeLabel, 0, 0);
-            Grid.SetColumnSpan(codeLabel, 2);
-            grid.Children.Add(nameLabel, 0, 1);
+            grid.Children.Add(nameLabel, 0, 0);
             Grid.SetColumnSpan(nameLabel, 2);
-            grid.Children.Add(familyLabel, 0, 2);
-            grid.Children.Add(super_familyLabel, 1, 2);
-            grid.Children.Add(emptylabel, 0, 3);
+            grid.Children.Add(familyLabel, 0, 1);
+            grid.Children.Add(super_familyLabel, 1, 1);
+            grid.Children.Add(emptylabel, 0, 2);
             Grid.SetColumnSpan(emptylabel, 2);
 
             View = grid;
