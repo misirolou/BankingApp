@@ -94,7 +94,7 @@ namespace App1.Layout
             innerGrid.Children.Add(_bankEntry, 0, 1);
             innerGrid.Children.Add(new Label() { Text = "To Account_id" }, 0, 2);
             innerGrid.Children.Add(_userEntry, 0, 3);
-            innerGrid.Children.Add(new Label() { Text = "currenct add EUR" }, 0, 4);
+            innerGrid.Children.Add(new Label() { Text = "currency add EUR" }, 0, 4);
             innerGrid.Children.Add(_currencyEntry, 0, 5);
             innerGrid.Children.Add(new Label() { Text = "Amount" }, 0, 6);
             innerGrid.Children.Add(_amountEntry, 0, 7);

@@ -53,7 +53,7 @@ namespace App1.Layout
             indicator.SetBinding(ActivityIndicator.IsRunningProperty, "IsBusy");
             indicator.SetBinding(ActivityIndicator.IsVisibleProperty, "IsBusy");
 
-            Button exitButton = new Button()
+       /*     Button exitButton = new Button()
             {
                 Image = (FileImageSource)Device.OnPlatform(
                     iOS: ImageSource.FromFile("Exit.png"),
@@ -63,7 +63,7 @@ namespace App1.Layout
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 BackgroundColor = Color.Gray
             };
-            exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();
+            exitButton.Clicked += async (sender, args) => await Navigation.PopToRootAsync();*/
 
             menuLayout = new StackLayout()
             {
@@ -78,8 +78,7 @@ namespace App1.Layout
                         Text = "your transaction Information",
                         HorizontalTextAlignment = TextAlignment.Center,
                         FontAttributes = FontAttributes.Bold
-                    },
-                    exitButton
+                    }
                 }
             };
 

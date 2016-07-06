@@ -64,6 +64,7 @@ namespace App1.Layout
             Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             Labelgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            Labelgrid.BackgroundColor = Color.Gray;
 
             Labelgrid.Children.Add(new Label() { Text = "Name", FontAttributes = FontAttributes.Bold }, 1, 0);
             Labelgrid.Children.Add(new Label() { Text = "Family", FontAttributes = FontAttributes.Bold }, 2, 0);

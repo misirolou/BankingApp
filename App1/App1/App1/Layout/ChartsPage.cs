@@ -102,22 +102,24 @@ namespace App1.Layout
                             Transactions.TransactionList jsonObject =
                                 JsonConvert.DeserializeObject<Transactions.TransactionList>(result);
 
-                            for (int i = 0; i < jsonObject.transactions.Count; i++)
+                            foreach (Transactions.Transaction t1 in jsonObject.transactions)
                             {
-                                var changevalue = jsonObject.transactions[i].details.value.amount.Replace(".", ",");
-                                var changebalance = jsonObject.transactions[i].details.new_balance.amount.Replace(".", ",");
-                                jsonObject.transactions[i].details.value.amount = changevalue;
-                                jsonObject.transactions[i].details.new_balance.amount = changebalance;
+                                var changevalue = t1.details.value.amount.Replace(".", ",");
+                                Debug.WriteLine("changevalue {0}", changevalue);
+                                var changebalance = t1.details.new_balance.amount.Replace(".", ",");
+                                Debug.WriteLine("changebalance {0}", changebalance);
+                                t1.details.value.amount = changevalue;
+                                t1.details.new_balance.amount = changebalance;
                             }
-                            Debug.WriteLine("changedvalue {0}", jsonObject.transactions[0].details.value.amount);
-
-                            Debug.WriteLine("changing string to double {0}", double.Parse(jsonObject.transactions[0].details.value.amount));
-                            Debug.WriteLine("changing string to double {0}", double.Parse(jsonObject.transactions[0].details.new_balance.amount));
-
-                            List<double> newBalanceList = jsonObject.transactions.Select(x => double.Parse(x.details.new_balance.amount)).ToList();
-                            List<double> valueList = jsonObject.transactions.Select(x => double.Parse(x.details.value.amount)).ToList();
-                            List<String> completedDateList = jsonObject.transactions.Select(x => x.details.completed).ToList();
-
+                            
+                                List<double> newBalanceList =
+                                    jsonObject.transactions.Select(x => double.Parse(x.details.new_balance.amount))
+                                        .ToList();
+                                List<double> valueList =
+                                    jsonObject.transactions.Select(x => double.Parse(x.details.value.amount)).ToList();
+                                List<String> completedDateList =
+                                    jsonObject.transactions.Select(x => x.details.completed).ToList();
+                            
                             //Collection of the value amount and the dates of the transactions made
                             ObservableCollection<ChartDataPoint> chartsvalue = new ObservableCollection<ChartDataPoint>();
 

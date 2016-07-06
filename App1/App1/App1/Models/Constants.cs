@@ -1,4 +1,6 @@
-﻿namespace App1.Models
+﻿using App1.Layout;
+
+namespace App1.Models
 {
     public class Constants
     {
@@ -42,5 +44,7 @@
 
         //Payments made by the logged in user {0} = Bank ID ; {1} = Account ID
         public const string PaymentUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0/banks/{0}/accounts/{1}/owner/transaction-request-types/SANDBOX_TAN/transaction-requests";
+
+        public const string OtherPaymentUrl = "https://apisandbox.openbankproject.com/obp/v2.0.0//banks/{0}/accounts/{1}/owner/transactions";
     }
 }
